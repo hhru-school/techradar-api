@@ -1,0 +1,8 @@
+spring:
+  jersey:
+    type: filter
+db:
+  driver-class-name: org.postgresql.Driver
+  url: jdbc:postgresql://localhost:54321/tech_radar
+  username: postgres
+  password: postgres
