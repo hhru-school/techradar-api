@@ -1,4 +1,4 @@
-package techradar.config;
+package ru.hh.techradar.config;
 
 import java.util.Properties;
 import javax.sql.DataSource;
@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
+import ru.hh.techradar.entity.Company;
 
 @Configuration
 public class HibernateConfig {
@@ -36,6 +37,7 @@ public class HibernateConfig {
   public LocalSessionFactoryBean localSessionFactoryBean(DataSource dataSource) {
     LocalSessionFactoryBean localSessionFactoryBean = new LocalSessionFactoryBean();
     localSessionFactoryBean.setDataSource(dataSource);
+    localSessionFactoryBean.setAnnotatedClasses(Company.class);
 
     Properties properties = new Properties();
     properties.put(Environment.DIALECT, DIALECT);
