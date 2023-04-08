@@ -8,7 +8,7 @@ GRANT ALL PRIVILEGES ON DATABASE tech_radar TO postgres;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS company
 (
-    id   INT         NOT NULL,
+    id   BIGSERIAL   NOT NULL,
     name VARCHAR(45) NOT NULL,
     PRIMARY KEY (id)
 );
@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS company
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS users
 (
-    id         INT         NOT NULL,
+    id         BIGSERIAL   NOT NULL,
     username   VARCHAR(45) NOT NULL,
     password   VARCHAR(45) NOT NULL,
     company_id INT         NOT NULL,
@@ -41,7 +41,7 @@ CREATE UNIQUE INDEX username_UNIQUE ON users (username ASC);
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS radar
 (
-    id         INT         NOT NULL,
+    id         BIGSERIAL   NOT NULL,
     name       VARCHAR(45) NOT NULL,
     company_id INT         NOT NULL,
     user_id    INT         NOT NULL,
@@ -68,7 +68,7 @@ CREATE INDEX fk_radar_user1_idx ON radar (user_id ASC);
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS ring
 (
-    id         INT       NOT NULL,
+    id         BIGSERIAL NOT NULL,
     created_at TIMESTAMP NOT NULL,
     removed_at TIMESTAMP NULL,
     radar_id   INT       NOT NULL,
@@ -88,7 +88,7 @@ CREATE INDEX fk_ring_radar1_idx ON ring (radar_id ASC);
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS quadrant
 (
-    id         INT         NOT NULL,
+    id         BIGSERIAL   NOT NULL,
     name       VARCHAR(45) NOT NULL,
     radar_id   INT         NOT NULL,
     position   INT         NOT NULL,
@@ -110,7 +110,7 @@ CREATE INDEX fk_sector_radar1_idx ON quadrant (radar_id ASC);
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS blip
 (
-    id                        INT          NOT NULL,
+    id                        BIGSERIAL    NOT NULL,
     name                      VARCHAR(45)  NOT NULL,
     description               VARCHAR(500) NULL,
     radar_id                  INT          NOT NULL,
@@ -131,7 +131,7 @@ CREATE INDEX fk_technology_radar1_idx ON blip (radar_id ASC);
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS blip_log
 (
-    id           INT          NOT NULL,
+    id           BIGSERIAL    NOT NULL,
     created_at   TIMESTAMP    NOT NULL,
     comment      VARCHAR(500) NOT NULL,
     version_name VARCHAR(128) NULL,
@@ -176,7 +176,7 @@ CREATE INDEX fk_technology_log_user1_idx ON blip_log (user_id ASC);
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS ring_settings
 (
-    id         INT         NOT NULL,
+    id         BIGSERIAL   NOT NULL,
     created_at TIMESTAMP   NOT NULL,
     name       VARCHAR(45) NOT NULL,
     position   INT         NOT NULL,
@@ -197,7 +197,7 @@ CREATE INDEX fk_ring_settings_ring1_idx ON ring_settings (ring_id ASC);
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS quadrant_settings
 (
-    id          INT         NOT NULL,
+    id          BIGSERIAL   NOT NULL,
     created_at  TIMESTAMP   NOT NULL,
     name        VARCHAR(45) NOT NULL,
     position    INT         NOT NULL,
