@@ -8,7 +8,7 @@ import ru.hh.techradar.dto.CompanyDto;
 import ru.hh.techradar.entity.Company;
 
 @Component
-public class CompanyMapper implements Mapper<Company, CompanyDto> {
+public class CompanyMapper implements BaseMapper<Company, CompanyDto> {
 
   @Override
   public Company toEntity(CompanyDto dto) {

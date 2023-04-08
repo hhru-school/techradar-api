@@ -31,6 +31,14 @@ public class CompanyController {
   }
 
   @GET
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response findAll() {
+    return Response
+        .ok(companyMapper.toDtos(companyService.findAll()))
+        .build();
+  }
+
+  @GET
   @Path("/{id}")
   @Produces(MediaType.APPLICATION_JSON)
   public Response findById(@PathParam("id") Long id) {

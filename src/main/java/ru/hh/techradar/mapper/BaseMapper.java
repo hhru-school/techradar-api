@@ -3,7 +3,7 @@ package ru.hh.techradar.mapper;
 import java.util.Collection;
 import java.util.List;
 
-public interface Mapper<T, S> {
+public interface BaseMapper<T, S> {
 
   T toEntity(S dto);
 

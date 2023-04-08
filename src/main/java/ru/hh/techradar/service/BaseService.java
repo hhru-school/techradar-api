@@ -1,6 +1,8 @@
 package ru.hh.techradar.service;
 
-public interface Service<T> {
+import java.util.List;
+
+public interface BaseService<T> {
 
   T findById(Long id);
 
@@ -9,4 +11,6 @@ public interface Service<T> {
   T update(Long id, T entity);
 
   T save(T entity);
+
+  List<T> findAll();
 }

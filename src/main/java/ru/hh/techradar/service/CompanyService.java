@@ -2,13 +2,15 @@ package ru.hh.techradar.service;
 
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
+import java.util.List;
+import org.springframework.stereotype.Service;
 import ru.hh.techradar.entity.Company;
 import ru.hh.techradar.exception.NotFoundException;
 import ru.hh.techradar.mapper.CompanyMapper;
 import ru.hh.techradar.repository.CompanyRepository;
 
-@org.springframework.stereotype.Service
-public class CompanyService implements Service<Company> {
+@Service
+public class CompanyService implements BaseService<Company> {
 
   private final CompanyRepository companyRepository;
   private final CompanyMapper companyMapper;
@@ -46,5 +48,11 @@ public class CompanyService implements Service<Company> {
   @Transactional
   public Company save(Company company) {
     return companyRepository.save(company);
+  }
+
+  @Override
+  @Transactional
+  public List<Company> findAll() {
+    return companyRepository.findAll();
   }
 }
