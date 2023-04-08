@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS users
     id         BIGSERIAL   NOT NULL,
     username   VARCHAR(45) NOT NULL,
     password   VARCHAR(45) NOT NULL,
-    company_id INT         NOT NULL,
+    company_id BIGINT      NOT NULL,
     PRIMARY KEY (id),
     CONSTRAINT fk_user_company1
         FOREIGN KEY (company_id)
@@ -43,8 +43,8 @@ CREATE TABLE IF NOT EXISTS radar
 (
     id         BIGSERIAL   NOT NULL,
     name       VARCHAR(45) NOT NULL,
-    company_id INT         NOT NULL,
-    user_id    INT         NOT NULL,
+    company_id BIGINT      NOT NULL,
+    user_id    BIGINT      NOT NULL,
     PRIMARY KEY (id),
     CONSTRAINT fk_radar_company1
         FOREIGN KEY (company_id)
@@ -71,7 +71,7 @@ CREATE TABLE IF NOT EXISTS ring
     id         BIGSERIAL NOT NULL,
     created_at TIMESTAMP NOT NULL,
     removed_at TIMESTAMP NULL,
-    radar_id   INT       NOT NULL,
+    radar_id   BIGINT    NOT NULL,
     PRIMARY KEY (id),
     CONSTRAINT fk_ring_radar1
         FOREIGN KEY (radar_id)
@@ -90,7 +90,7 @@ CREATE TABLE IF NOT EXISTS quadrant
 (
     id         BIGSERIAL   NOT NULL,
     name       VARCHAR(45) NOT NULL,
-    radar_id   INT         NOT NULL,
+    radar_id   BIGINT      NOT NULL,
     position   INT         NOT NULL,
     created_at TIMESTAMP   NOT NULL,
     removed_at TIMESTAMP   NULL,
@@ -110,11 +110,10 @@ CREATE INDEX fk_sector_radar1_idx ON quadrant (radar_id ASC);
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS blip
 (
-    id                        BIGSERIAL    NOT NULL,
-    name                      VARCHAR(45)  NOT NULL,
-    description               VARCHAR(500) NULL,
-    radar_id                  INT          NOT NULL,
-    based_on_blip_template_id INT          NOT NULL,
+    id          BIGSERIAL    NOT NULL,
+    name        VARCHAR(45)  NOT NULL,
+    description VARCHAR(500) NULL,
+    radar_id    BIGINT       NOT NULL,
     PRIMARY KEY (id),
     CONSTRAINT fk_technology_radar1
         FOREIGN KEY (radar_id)
@@ -135,10 +134,10 @@ CREATE TABLE IF NOT EXISTS blip_log
     created_at   TIMESTAMP    NOT NULL,
     comment      VARCHAR(500) NOT NULL,
     version_name VARCHAR(128) NULL,
-    blip_id      INT          NOT NULL,
-    quadrant_id  INT          NOT NULL,
-    ring_id      INT          NOT NULL,
-    user_id      INT          NOT NULL,
+    blip_id      BIGINT       NOT NULL,
+    quadrant_id  BIGINT       NOT NULL,
+    ring_id      BIGINT       NOT NULL,
+    user_id      BIGINT       NOT NULL,
     PRIMARY KEY (id),
     CONSTRAINT fk_technology_log_technology1
         FOREIGN KEY (blip_id)
@@ -180,7 +179,7 @@ CREATE TABLE IF NOT EXISTS ring_settings
     created_at TIMESTAMP   NOT NULL,
     name       VARCHAR(45) NOT NULL,
     position   INT         NOT NULL,
-    ring_id    INT         NOT NULL,
+    ring_id    BIGINT      NOT NULL,
     PRIMARY KEY (id),
     CONSTRAINT fk_ring_settings_ring1
         FOREIGN KEY (ring_id)
@@ -201,7 +200,7 @@ CREATE TABLE IF NOT EXISTS quadrant_settings
     created_at  TIMESTAMP   NOT NULL,
     name        VARCHAR(45) NOT NULL,
     position    INT         NOT NULL,
-    quadrant_id INT         NOT NULL,
+    quadrant_id BIGINT      NOT NULL,
     PRIMARY KEY (id),
     CONSTRAINT fk_quadrant_settings_quadrant1
         FOREIGN KEY (quadrant_id)
