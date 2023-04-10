@@ -1,19 +1,21 @@
 package ru.hh.techradar.repository;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
+import ru.hh.techradar.entity.AuditableEntity;
 
-public interface BaseRepository<T> {
+public interface BaseRepository<K extends Serializable, E extends AuditableEntity<K>> {
 
-  Optional<T> findById(Long id);
+  Optional<E> findById(K id);
 
-  void deleteById(Long id);
+  void deleteById(K id);
 
-  T update(T entity);
+  E update(E entity);
 
-  T save(T entity);
+  E save(E entity);
 
-  void delete(T entity);
+  void delete(E entity);
 
-  List<T> findAll();
+  List<E> findAll();
 }

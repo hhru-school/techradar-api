@@ -1,16 +1,18 @@
 package ru.hh.techradar.service;
 
+import java.io.Serializable;
 import java.util.List;
+import ru.hh.techradar.entity.AuditableEntity;
 
-public interface BaseService<T> {
+public interface BaseService<K extends Serializable, E extends AuditableEntity<K>> {
 
-  T findById(Long id);
+  E findById(K id);
 
-  void deleteById(Long id);
+  void deleteById(K id);
 
-  T update(Long id, T entity);
+  E update(K id, E entity);
 
-  T save(T entity);
+  E save(E entity);
 
-  List<T> findAll();
+  List<E> findAll();
 }

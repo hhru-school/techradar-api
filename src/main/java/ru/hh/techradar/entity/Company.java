@@ -10,11 +10,11 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "company")
-public class Company {
+public class Company extends AuditableEntity<Long> {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "id", nullable = false)
+  @Column(name = "company_id", nullable = false)
   private Long id;
 
   @Column(name = "name", nullable = false)
@@ -59,5 +59,13 @@ public class Company {
   @Override
   public int hashCode() {
     return Objects.hash(id, name);
+  }
+
+  @Override
+  public String toString() {
+    return "Company{" +
+        "id=" + id +
+        ", name='" + name + '\'' +
+        '}';
   }
 }
