@@ -10,8 +10,8 @@ import ru.hh.techradar.entity.Company;
 class CompanyMapperTest {
 
   private final CompanyMapper companyMapper = new CompanyMapper();
-  List<Company> companies;
-  List<CompanyDto> companyDtos;
+  private List<Company> companies;
+  private List<CompanyDto> companyDtos;
 
 
   @BeforeEach
