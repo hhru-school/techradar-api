@@ -21,13 +21,13 @@ CREATE TABLE IF NOT EXISTS company
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS tr_user
 (
-    tr_user_id       BIGSERIAL,
+    user_id       BIGSERIAL,
     username         VARCHAR(45) NOT NULL,
     password         VARCHAR(255) NOT NULL,
     company_id       BIGINT,
     creation_time    TIMESTAMP   NOT NULL,
     last_change_time TIMESTAMP   NOT NULL,
-    PRIMARY KEY (tr_user_id),
+    PRIMARY KEY (user_id),
     CONSTRAINT fk_user_company
         FOREIGN KEY (company_id)
             REFERENCES company (company_id)
@@ -59,7 +59,7 @@ CREATE TABLE IF NOT EXISTS radar
             ON UPDATE NO ACTION,
     CONSTRAINT fk_radar_user
         FOREIGN KEY (author_id)
-            REFERENCES tr_user (tr_user_id)
+            REFERENCES tr_user (user_id)
             ON DELETE NO ACTION
             ON UPDATE NO ACTION
 );
@@ -96,9 +96,7 @@ CREATE INDEX fk_ring_radar_idx ON ring (radar_id ASC);
 CREATE TABLE IF NOT EXISTS quadrant
 (
     quadrant_id      BIGSERIAL,
-    name             VARCHAR(45) NOT NULL,
     radar_id         BIGINT      NOT NULL,
-    position         INT         NOT NULL,
     removed_at       TIMESTAMP   NULL,
     creation_time    TIMESTAMP   NOT NULL,
     last_change_time TIMESTAMP   NOT NULL,
@@ -167,7 +165,7 @@ CREATE TABLE IF NOT EXISTS blip_event
             ON UPDATE NO ACTION,
     CONSTRAINT fk_technology_log_user
         FOREIGN KEY (author_id)
-            REFERENCES tr_user (tr_user_id)
+            REFERENCES tr_user (user_id)
             ON DELETE NO ACTION
             ON UPDATE NO ACTION
 );
