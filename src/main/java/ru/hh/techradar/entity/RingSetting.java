@@ -64,13 +64,12 @@ public class RingSetting extends AuditableEntity<Long> {
 
   public RingSetting() {}
 
-  public RingSetting(Long id, String name, Integer position, Ring ring, Instant creationTime, Instant lastChangeTime) {
-    this.id = id;
+  public RingSetting(String name, Integer position, Ring ring, Instant creationTime) {
     this.name = name;
     this.position = position;
     this.ring = ring;
     setCreationTime(creationTime);
-    setLastChangeTime(lastChangeTime);
+    setLastChangeTime(creationTime);
   }
 
   @Override
@@ -100,10 +99,10 @@ public class RingSetting extends AuditableEntity<Long> {
     return "RingSetting {" +
         "id=" + id +
         ", name=" + name +
-        ", position='" + position +
-        ", ring" + ring +
-        ", creationTime" + getCreationTime() +
-        ", lastChangeTime" + getLastChangeTime()
+        ", position=" + position +
+        ", ring=" + ring +
+        ", creationTime=" + getCreationTime() +
+        ", lastChangeTime=" + getLastChangeTime()
         + '\n' + '}';
   }
 }
