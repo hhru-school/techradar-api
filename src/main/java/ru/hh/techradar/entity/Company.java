@@ -23,8 +23,7 @@ public class Company extends AuditableEntity<Long> {
   public Company() {
   }
 
-  public Company(Long id, String name) {
-    this.id = id;
+  public Company(String name) {
     this.name = name;
   }
 
