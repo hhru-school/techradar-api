@@ -2,19 +2,21 @@ package ru.hh.techradar.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.time.Instant;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
 @Table(name = "ring")
 public class Ring extends AuditableEntity<Long> {
-
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "ring_id", nullable = false)
@@ -23,9 +25,21 @@ public class Ring extends AuditableEntity<Long> {
   @Column(name = "removed_at")
   private Instant removedAt;
 
-  @ManyToOne
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "radar_id", nullable = false)
   private Radar radar;
+
+  @OneToMany(mappedBy = "ring", fetch = FetchType.LAZY)
+  private List<RingSetting> settings;
+
+  public List<RingSetting> getSettings() {
+    return settings;
+  }
+
+  public void setSettings(List<RingSetting> settings) {
+    this.settings = settings;
+  }
+
   public Long getId() {
     return id;
   }
@@ -43,7 +57,7 @@ public class Ring extends AuditableEntity<Long> {
   }
 
   public Radar getRadar() {
-    return radarId;
+    return radar;
   }
 
   public void setRadar(Radar radar) {
@@ -52,12 +66,18 @@ public class Ring extends AuditableEntity<Long> {
 
   public Ring() {}
 
-  public Ring(Long id, Instant removedAt, Radar radar, Instant creationTime, Instant lastChangeTime) {
+  public Ring(Radar radar, Instant creationTime) {
+    this.radar = radar;
+    setCreationTime(creationTime);
+    setLastChangeTime(creationTime);
+  }
+
+  public Ring(Long id, Radar radar, Instant creationTime, Instant lastChangeTime, Instant removedAt) {
     this.id = id;
-    this.removedAt = removedAt;
     this.radar = radar;
     setCreationTime(creationTime);
     setLastChangeTime(lastChangeTime);
+    this.removedAt = removedAt;
   }
 
   @Override
@@ -85,10 +105,10 @@ public class Ring extends AuditableEntity<Long> {
   public String toString() {
     return "Ring {" +
         "id=" + id +
-        ", removedAt='" + removedAt +
-        ", radarId" + radar +
-        ", creationTime" + getCreationTime() +
-        ", lastChangeTime" + getLastChangeTime()
+        ", removedAt=" + removedAt +
+        ", radarId=" + radar.getId() +
+        ", creationTime=" + getCreationTime() +
+        ", lastChangeTime=" + getLastChangeTime()
         + '\n' + '}';
   }
 }
