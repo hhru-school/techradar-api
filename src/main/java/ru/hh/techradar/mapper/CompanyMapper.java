@@ -36,7 +36,6 @@ public class CompanyMapper implements BaseMapper<Company, CompanyDto> {
     return dtos.stream().map(this::toEntity).toList();
   }
 
-  @Override
   public Company toUpdate(Company target, Company source) {
     if (Objects.nonNull(source.getName())) {
       target.setName(source.getName());

@@ -37,7 +37,6 @@ public class CompanyService implements BaseService<Long, Company> {
     companyRepository.deleteById(id);
   }
 
-
   @Override
   @Transactional
   public Company update(Long id, Company company) {
