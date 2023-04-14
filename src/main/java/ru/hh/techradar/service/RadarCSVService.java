@@ -1,14 +1,15 @@
 package ru.hh.techradar.service;
 
 import com.opencsv.bean.CsvToBeanBuilder;
-import jakarta.servlet.http.Part;
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.springframework.stereotype.Service;
 import ru.hh.techradar.entity.Blip;
 import ru.hh.techradar.entity.BlipEvent;
@@ -89,18 +90,16 @@ public class RadarCSVService {
     this.blipEventService = blipEventService;
   }
 
-  public void uploadRadar(Part file) {
-    //todo
+  public void uploadRadar(InputStream inputStream, FormDataContentDisposition fileDisposition) {
 //    Company company = companyService.save(new Company("HeadHunter"));
 //    User user = userService.save(new User("hh.user", "password", company));
     Company company = companyService.findById(1L);
     User user = userService.findById(1L);
     Map<String, RingSetting> ringSettingMap = new HashMap<>();
     Map<String, QuadrantSetting> quadrantSettingMap = new HashMap<>();
-    System.out.println(file.getSubmittedFileName());
-    Radar radar = radarService.save(new Radar(file.getSubmittedFileName(), company, user));
+    Radar radar = radarService.save(new Radar(fileDisposition.getFileName(), company, user));
     try (
-        BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8));
+        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
     ) {
       List<RadarCSV> radarCSVS = new CsvToBeanBuilder(reader)
           .withType(RadarCSV.class)
@@ -120,7 +119,7 @@ public class RadarCSVService {
         }
         Blip blip = blipService.save(new Blip(radarCSV.getBlipName(), radarCSV.getDescription(), radar));
         BlipEvent blipEvent = blipEventService.save(new BlipEvent(null,
-            file.getSubmittedFileName().split("-")[1].split("\\.")[0],
+            fileDisposition.getFileName().split("-")[1].split("\\.")[0],
             blip,
             quadrantSettingMap.get(radarCSV.getQuadrantName()).getQuadrant(),
             ringSettingMap.get(radarCSV.getRingName()).getRing(),
