@@ -12,6 +12,4 @@ public interface BaseMapper<T, S> {
   List<S> toDtos(Collection<T> entities);
 
   List<T> toEntities(Collection<S> dtos);
-
-  T toUpdate(T target, T source);
 }
