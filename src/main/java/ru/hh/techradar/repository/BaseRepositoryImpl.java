@@ -1,7 +1,6 @@
 package ru.hh.techradar.repository;
 
 import java.io.Serializable;
-import java.time.Instant;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -34,17 +33,11 @@ public abstract class BaseRepositoryImpl<K extends Serializable, E extends Audit
 
   @Override
   public E update(E entity) {
-    //TODO refactor to correct auditable mechanism
-    entity.setLastChangeTime(Instant.now());
     return sessionFactory.getCurrentSession().merge(entity);
   }
 
   @Override
   public E save(E entity) {
-    //TODO refactor to correct auditable mechanism
-    Instant now = Instant.now();
-    entity.setCreationTime(now);
-    entity.setLastChangeTime(now);
     sessionFactory.getCurrentSession().persist(entity);
     return entity;
   }
