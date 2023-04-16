@@ -11,6 +11,7 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import ru.hh.techradar.entity.Company;
+import ru.hh.techradar.entity.User;
 
 @Configuration
 public class HibernateConfig {
@@ -37,7 +38,10 @@ public class HibernateConfig {
   public LocalSessionFactoryBean localSessionFactoryBean(DataSource dataSource) {
     LocalSessionFactoryBean localSessionFactoryBean = new LocalSessionFactoryBean();
     localSessionFactoryBean.setDataSource(dataSource);
-    localSessionFactoryBean.setAnnotatedClasses(Company.class);
+    localSessionFactoryBean.setAnnotatedClasses(
+        Company.class,
+        User.class
+    );
 
     Properties properties = new Properties();
     properties.put(Environment.DIALECT, DIALECT);
