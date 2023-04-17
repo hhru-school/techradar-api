@@ -5,7 +5,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import ru.hh.techradar.controller.CompanyController;
 import ru.hh.techradar.controller.QuadrantController;
+import ru.hh.techradar.exception.DateParseExceptionMapper;
 import ru.hh.techradar.exception.NotFoundExceptionMapper;
+import ru.hh.techradar.util.DateFormatParamConverterProvider;
 
 @Configuration
 public class ContextConfig {
@@ -16,6 +18,9 @@ public class ContextConfig {
     resourceConfig.register(CompanyController.class);
     resourceConfig.register(QuadrantController.class);
     resourceConfig.register(NotFoundExceptionMapper.class);
+    resourceConfig.register(DateParseExceptionMapper.class);
+    resourceConfig.register(DateFormatParamConverterProvider.class);
+    resourceConfig.register(PreRequestFilter.class);
     return resourceConfig;
   }
 }
