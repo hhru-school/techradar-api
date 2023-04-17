@@ -1,6 +1,5 @@
 package ru.hh.techradar.service;
 
-import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import java.time.Instant;
 import java.util.List;
@@ -16,7 +15,6 @@ public class CompanyService implements BaseService<Long, Company> {
   private final CompanyRepository companyRepository;
   private final CompanyMapper companyMapper;
 
-  @Inject
   public CompanyService(
       CompanyRepository companyRepository,
       CompanyMapper companyMapper

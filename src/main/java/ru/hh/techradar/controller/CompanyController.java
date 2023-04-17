@@ -1,6 +1,5 @@
 package ru.hh.techradar.controller;
 
-import jakarta.inject.Inject;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
@@ -11,17 +10,18 @@ import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import org.springframework.stereotype.Controller;
 import ru.hh.techradar.dto.CompanyDto;
 import ru.hh.techradar.mapper.CompanyMapper;
 import ru.hh.techradar.service.CompanyService;
 
+@Controller
 @Path("/api/companies")
 public class CompanyController {
 
   private final CompanyMapper companyMapper;
   private final CompanyService companyService;
 
-  @Inject
   public CompanyController(
       CompanyMapper companyMapper,
       CompanyService companyService
