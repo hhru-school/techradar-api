@@ -24,7 +24,7 @@ public class QuadrantRepository extends BaseRepositoryImpl<Long, Quadrant> {
                         "SELECT max(setting.id) FROM Quadrant quadrant " +
                         "LEFT JOIN QuadrantSetting setting ON setting.quadrant.id = quadrant.id " +
                         "WHERE quadrant.radar.id = :radarId " +
-                        "AND (quadrant.removedAt IS NULL OR (:actualDate BETWEEN quadrant.creationTime AND quadrant.removedAt)) " +
+                        "AND (quadrant.removedAt IS NULL OR (quadrant.creationTime <=:actualDate AND quadrant.removedAt > :actualDate)) " +
                         "AND setting.creationTime <= :actualDate " +
                         "GROUP BY quadrant.id" +
                         ") " +
