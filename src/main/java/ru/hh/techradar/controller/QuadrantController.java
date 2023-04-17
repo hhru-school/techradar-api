@@ -12,6 +12,7 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import java.time.Instant;
 import ru.hh.techradar.dto.QuadrantDto;
 import ru.hh.techradar.mapper.QuadrantMapper;
 import ru.hh.techradar.service.QuadrantService;
@@ -32,10 +33,12 @@ public class QuadrantController {
 
   @GET
   @Produces(MediaType.APPLICATION_JSON)
-  public Response findAllByFilter(@QueryParam("radarId") Long radarId) {
-    //TODO: @QueryParam("actualDate") Instant actualDate - don't work
+  public Response findAllByFilter(
+      @QueryParam("radarId") Long radarId,
+      @QueryParam("actualDate") Instant actualDate
+  ) {
     return Response
-        .ok(quadrantMapper.toDtos(quadrantService.findAllByFilter(radarId)))
+        .ok(quadrantMapper.toDtos(quadrantService.findAllByFilter(radarId, actualDate)))
         .build();
   }
 

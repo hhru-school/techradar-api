@@ -34,7 +34,7 @@ public class Quadrant extends AuditableEntity<Long> {
   @JoinColumn(name = "radar_id", nullable = false)
   private Radar radar;
 
-  @OneToMany(mappedBy = "quadrant", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+  @OneToMany(mappedBy = "quadrant", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
   private List<QuadrantSetting> settings = new ArrayList<>();
 
   @Transient

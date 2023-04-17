@@ -24,8 +24,11 @@ public class QuadrantService {
   }
 
   @Transactional(readOnly = true)
-  public List<Quadrant> findAllByFilter(Long radarId) {
-    return quadrantRepository.findAllByFilter(radarId);
+  public List<Quadrant> findAllByFilter(Long radarId, Instant actualDate) {
+    if (Objects.isNull(actualDate)) {
+      actualDate = Instant.now();
+    }
+    return quadrantRepository.findAllByFilter(radarId, actualDate);
   }
 
   @Transactional(readOnly = true)
@@ -37,7 +40,7 @@ public class QuadrantService {
   @Transactional
   public void deleteById(Long id) {
     Quadrant found = quadrantRepository.findById(id).orElseThrow(() -> new NotFoundException(Quadrant.class, id));
-    if (Objects.isNull(found.getRemovedAt())){
+    if (Objects.isNull(found.getRemovedAt())) {
       found.setRemovedAt(Instant.now());
       quadrantRepository.update(found);
     }
