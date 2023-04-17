@@ -16,10 +16,8 @@ import java.util.List;
 import java.util.Optional;
 import ru.hh.techradar.dto.RingDto;
 import ru.hh.techradar.entity.Ring;
-import ru.hh.techradar.entity.RingSetting;
 import ru.hh.techradar.mapper.RingMapper;
 import ru.hh.techradar.service.RingService;
-import ru.hh.techradar.service.RingSettingService;
 
 @Path("/api/radars")
 public class RingController {
@@ -37,10 +35,7 @@ public class RingController {
   @Produces(MediaType.APPLICATION_JSON)
   public Response getRingsByDateAndRadar(@PathParam("date") String dateString, @PathParam("radarId") Long radarId) {
     Instant filterDate = parseInstantString(dateString).orElseThrow();
-    List<Ring> currentRings = ringService.fetchRingsByRadarId(radarId).stream().filter(
-        ring -> ring.getRemovedAt() != null && ring.getRemovedAt().compareTo(filterDate) > 0 ||
-            (ring.getCreationTime().compareTo(filterDate) < 0)
-    ).toList();
+    List<Ring> currentRings = ringService.fetchRingsByRadarId(radarId, filterDate);
     return Response.ok(ringMapper.toDtosByDate(currentRings, filterDate)).build();
   }
 
@@ -62,7 +57,9 @@ public class RingController {
   @Produces(MediaType.APPLICATION_JSON)
   public Response updateRing(@PathParam("radarId") Long radarId, RingDto ringDto) {
     Ring newRing = ringService.update(ringDto.getId(), ringMapper.toEntity(ringDto, radarId));
-    return Response.ok(ringMapper.toDtoByDate(newRing, Instant.now())).build();
+    return Response.ok(
+        ringMapper.toDtoByDate(newRing, Instant.now())
+    ).build();
   }
 
   @DELETE

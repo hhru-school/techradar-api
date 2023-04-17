@@ -22,12 +22,14 @@ public class RingRepository extends BaseRepositoryImpl<Long, Ring> {
     this.radarService = radarService;
   }
 
-  public Optional<List<Ring>> fetchRingsByRadarId(Long radarId) {
+  public Optional<List<Ring>> fetchRingsByRadarId(Long radarId, Instant actualDate) {
     Radar radar = radarService.findById(radarId);
       return Optional.of(
           sessionFactory.getCurrentSession()
-          .createQuery("SELECT r FROM Ring r WHERE r.radar = :radar", Ring.class)
+          .createQuery("SELECT r FROM Ring r " +
+              "WHERE r.radar = :radar AND (r.removedAt IS NULL) AND r.creationTime < :actualDate", Ring.class)
           .setParameter("radar", radar)
+          .setParameter("actualDate", actualDate)
           .list()
       );
   }
