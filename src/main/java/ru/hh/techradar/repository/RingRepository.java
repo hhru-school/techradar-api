@@ -2,13 +2,10 @@ package ru.hh.techradar.repository;
 
 import java.time.Instant;
 import java.util.List;
-import java.util.Optional;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
 import ru.hh.techradar.entity.Radar;
 import ru.hh.techradar.entity.Ring;
-import ru.hh.techradar.entity.RingSetting;
-import ru.hh.techradar.exception.NotFoundException;
 import ru.hh.techradar.service.RadarService;
 
 @Repository
@@ -22,15 +19,15 @@ public class RingRepository extends BaseRepositoryImpl<Long, Ring> {
     this.radarService = radarService;
   }
 
-  public Optional<List<Ring>> fetchRingsByRadarId(Long radarId, Instant actualDate) {
+  public List<Ring> fetchRingsByRadarId(Long radarId, Instant actualDate) {
     Radar radar = radarService.findById(radarId);
-      return Optional.of(
-          sessionFactory.getCurrentSession()
-          .createQuery("SELECT r FROM Ring r " +
-              "WHERE r.radar = :radar AND (r.removedAt IS NULL) AND r.creationTime < :actualDate", Ring.class)
-          .setParameter("radar", radar)
-          .setParameter("actualDate", actualDate)
-          .list()
-      );
+    return sessionFactory.getCurrentSession()
+        .createQuery("SELECT r FROM Ring r " +
+            "WHERE r.radar = :radar " +
+            "AND (r.removedAt IS NULL AND r.creationTime < :actualDate) OR " +
+            "(r.removedAt > :actualDate AND r.creationTime < :actualDate)", Ring.class)
+        .setParameter("radar", radar)
+        .setParameter("actualDate", actualDate)
+        .list();
   }
 }

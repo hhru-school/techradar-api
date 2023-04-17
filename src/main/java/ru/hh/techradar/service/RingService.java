@@ -53,6 +53,6 @@ public class RingService implements BaseService<Long, Ring> {
 
   @Transactional
   public List<Ring> fetchRingsByRadarId(Long radarId, Instant actualDate) {
-    return ringRepository.fetchRingsByRadarId(radarId, actualDate).orElseThrow(() -> new NotFoundException(Ring.class, radarId));
+    return ringRepository.fetchRingsByRadarId(radarId, actualDate);
   }
 }
