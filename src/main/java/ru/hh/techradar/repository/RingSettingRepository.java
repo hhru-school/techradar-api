@@ -3,7 +3,6 @@ package ru.hh.techradar.repository;
 import jakarta.transaction.Transactional;
 import java.time.Instant;
 import java.util.Optional;
-import org.hibernate.ScrollableResults;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
 import ru.hh.techradar.entity.Ring;

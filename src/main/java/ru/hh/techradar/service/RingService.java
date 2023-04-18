@@ -1,5 +1,6 @@
 package ru.hh.techradar.service;
 
+import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import java.time.Instant;
 import java.util.List;
@@ -15,6 +16,7 @@ public class RingService implements BaseService<Long, Ring> {
   private final RingRepository ringRepository;
   private final RingMapper ringMapper;
 
+  @Inject
   public RingService(RingRepository ringRepository, RingMapper ringMapper) {
     this.ringRepository = ringRepository;
     this.ringMapper = ringMapper;

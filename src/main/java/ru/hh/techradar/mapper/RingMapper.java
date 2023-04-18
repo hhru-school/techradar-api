@@ -1,16 +1,15 @@
 package ru.hh.techradar.mapper;
 
+import jakarta.inject.Inject;
 import java.time.Instant;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import org.springframework.stereotype.Component;
 import ru.hh.techradar.dto.RingDto;
 import ru.hh.techradar.entity.Radar;
 import ru.hh.techradar.entity.Ring;
 import ru.hh.techradar.entity.RingSetting;
-import ru.hh.techradar.exception.NotFoundException;
-import ru.hh.techradar.repository.RadarRepository;
-import ru.hh.techradar.repository.RingRepository;
 import ru.hh.techradar.service.RadarService;
 import ru.hh.techradar.service.RingSettingService;
 
@@ -18,10 +17,13 @@ import ru.hh.techradar.service.RingSettingService;
 public class RingMapper implements BaseMapper<Ring, RingDto> {
   private final RingSettingService ringSettingService;
   private final RadarService radarService;
+
+  @Inject
   public RingMapper(RadarService radarService, RingSettingService ringSettingService) {
     this.radarService = radarService;
     this.ringSettingService = ringSettingService;
   }
+
   @Deprecated
   @Override
   public Ring toEntity(RingDto dto) {
@@ -30,18 +32,19 @@ public class RingMapper implements BaseMapper<Ring, RingDto> {
 
   public Ring toEntity(RingDto dto, Long radarId) {
     Radar radar = radarService.findById(radarId);
+    Instant currentTime = Instant.now();
     var ring = new Ring(
         dto.getId(),
         radar,
-        dto.getCreationTime(),
-        dto.getLastChangeTime(),
-        dto.getRemovedAt()
+        currentTime,
+        currentTime,
+        null
     );
     RingSetting ringSetting = new RingSetting(
         dto.getName(),
         dto.getPosition(),
         ring,
-        Instant.now()
+        currentTime
     );
     if (dto.getId() != null) {
       ringSettingService.save(ringSetting);
@@ -57,14 +60,11 @@ public class RingMapper implements BaseMapper<Ring, RingDto> {
   }
 
   public RingDto toDtoByDate(Ring entity, Instant date) {
-    RingSetting ringSetting = ringSettingService.findRingSettingByDate(entity, date).orElseThrow(() -> new NotFoundException(Ring.class, date));
+    RingSetting ringSetting = ringSettingService.findRingSettingByDate(entity, date);
     return new RingDto(
         entity.getId(),
         ringSetting.getName(),
-        ringSetting.getPosition(),
-        entity.getCreationTime(),
-        entity.getLastChangeTime(),
-        entity.getRemovedAt()
+        ringSetting.getPosition()
     );
   }
 
@@ -87,22 +87,15 @@ public class RingMapper implements BaseMapper<Ring, RingDto> {
   public List<Ring> toEntities(Collection<RingDto> dtos, Long radarId) {
     return dtos.stream().map(dto -> toEntity(dto, radarId)).toList();
   }
+
   @Override
   public Ring toUpdate(Ring target, Ring source) {
-    if (source.getCreationTime() != null) {
-      target.setCreationTime(source.getCreationTime());
-    }
-    if (source.getLastChangeTime() != null) {
-      target.setLastChangeTime(source.getLastChangeTime());
-    } else {
-      target.setLastChangeTime(Instant.now());
-    }
-    if (source.getRemovedAt() != null) {
-      target.setRemovedAt(source.getRemovedAt());
-    }
-    if (source.getRadar() != null) {
-      target.setRadar(source.getRadar());
-    }
+    target.setCreationTime(Objects.requireNonNull(source.getCreationTime()));
+    target.setLastChangeTime(
+        Objects.requireNonNullElse(source.getLastChangeTime(), Instant.now())
+    );
+    target.setRemovedAt(Objects.requireNonNull(source.getRemovedAt()));
+    target.setRadar(Objects.requireNonNull(source.getRadar()));
     return target;
   }
 }

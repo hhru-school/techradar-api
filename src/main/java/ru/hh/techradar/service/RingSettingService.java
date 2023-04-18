@@ -4,7 +4,6 @@ import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import java.time.Instant;
 import java.util.List;
-import java.util.Optional;
 import org.springframework.stereotype.Service;
 import ru.hh.techradar.entity.Ring;
 import ru.hh.techradar.entity.RingSetting;
@@ -52,7 +51,7 @@ public class RingSettingService implements BaseService<Long, RingSetting> {
   }
 
   @Transactional
-  public Optional<RingSetting> findRingSettingByDate(Ring ring, Instant date) {
-    return ringSettingRepository.findRingSettingByDate(ring, date);
+  public RingSetting findRingSettingByDate(Ring ring, Instant date) {
+    return ringSettingRepository.findRingSettingByDate(ring, date).orElseThrow(() -> new NotFoundException(RingSetting.class, ring));
   }
 }

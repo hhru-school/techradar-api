@@ -34,6 +34,23 @@ public class Ring extends AuditableEntity<Long> {
   @OneToMany(mappedBy = "ring", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
   private List<RingSetting> settings = new ArrayList<>();
 
+  public Ring() {
+  }
+
+  public Ring(Radar radar, Instant creationTime) {
+    this.radar = radar;
+    setCreationTime(creationTime);
+    setLastChangeTime(creationTime);
+  }
+
+  public Ring(Long id, Radar radar, Instant creationTime, Instant lastChangeTime, Instant removedAt) {
+    this.id = id;
+    this.radar = radar;
+    setCreationTime(creationTime);
+    setLastChangeTime(lastChangeTime);
+    this.removedAt = removedAt;
+  }
+
   public List<RingSetting> getSettings() {
     return settings;
   }
@@ -64,22 +81,6 @@ public class Ring extends AuditableEntity<Long> {
 
   public void setRadar(Radar radar) {
     this.radar = radar;
-  }
-
-  public Ring() {}
-
-  public Ring(Radar radar, Instant creationTime) {
-    this.radar = radar;
-    setCreationTime(creationTime);
-    setLastChangeTime(creationTime);
-  }
-
-  public Ring(Long id, Radar radar, Instant creationTime, Instant lastChangeTime, Instant removedAt) {
-    this.id = id;
-    this.radar = radar;
-    setCreationTime(creationTime);
-    setLastChangeTime(lastChangeTime);
-    this.removedAt = removedAt;
   }
 
   @Override

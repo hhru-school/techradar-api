@@ -30,6 +30,17 @@ public class RingSetting extends AuditableEntity<Long> {
   @JoinColumn(name = "ring_id", nullable = false)
   private Ring ring;
 
+  public RingSetting() {
+  }
+
+  public RingSetting(String name, Integer position, Ring ring, Instant creationTime) {
+    this.name = name;
+    this.position = position;
+    this.ring = ring;
+    setCreationTime(creationTime);
+    setLastChangeTime(creationTime);
+  }
+
   public Long getId() {
     return id;
   }
@@ -60,16 +71,6 @@ public class RingSetting extends AuditableEntity<Long> {
 
   public void setRing(Ring ring) {
     this.ring = ring;
-  }
-
-  public RingSetting() {}
-
-  public RingSetting(String name, Integer position, Ring ring, Instant creationTime) {
-    this.name = name;
-    this.position = position;
-    this.ring = ring;
-    setCreationTime(creationTime);
-    setLastChangeTime(creationTime);
   }
 
   @Override

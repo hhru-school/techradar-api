@@ -65,7 +65,7 @@ public class RingController {
   @DELETE
   @Path("/{date}")
   @Consumes(MediaType.APPLICATION_JSON)
-  public Response setRingRemoved(@PathParam("date") String dateString, RingDto ringDto) {
+  public Response markRingAsRemoved(@PathParam("date") String dateString, RingDto ringDto) {
     Instant date = parseInstantString(dateString).orElseThrow();
     Ring ring = ringService.findById(ringDto.getId());
     ring.setRemovedAt(date);

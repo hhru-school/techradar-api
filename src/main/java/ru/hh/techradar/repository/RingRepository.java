@@ -1,5 +1,6 @@
 package ru.hh.techradar.repository;
 
+import jakarta.inject.Inject;
 import java.time.Instant;
 import java.util.List;
 import org.hibernate.SessionFactory;
@@ -13,6 +14,7 @@ public class RingRepository extends BaseRepositoryImpl<Long, Ring> {
   private final SessionFactory sessionFactory;
   private final RadarService radarService;
 
+  @Inject
   public RingRepository(SessionFactory sessionFactory, RadarService radarService) {
     super(sessionFactory, Ring.class);
     this.sessionFactory = sessionFactory;
