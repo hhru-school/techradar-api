@@ -9,6 +9,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.time.Instant;
+import java.util.Objects;
 
 @Entity
 @Table(name = "blip_event")
@@ -102,5 +103,47 @@ public class BlipEvent extends AuditableEntity<Long> {
 
   public void setUser(User user) {
     this.user = user;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (!(o instanceof BlipEvent blipEvent)) {
+      return false;
+    }
+
+    if (!id.equals(blipEvent.id)) {
+      return false;
+    }
+    if (!Objects.equals(comment, blipEvent.comment)) {
+      return false;
+    }
+    if (!Objects.equals(versionName, blipEvent.versionName)) {
+      return false;
+    }
+    if (!blip.equals(blipEvent.blip)) {
+      return false;
+    }
+    if (!quadrant.equals(blipEvent.quadrant)) {
+      return false;
+    }
+    if (!ring.equals(blipEvent.ring)) {
+      return false;
+    }
+    return user.equals(blipEvent.user);
+  }
+
+  @Override
+  public int hashCode() {
+    int result = id.hashCode();
+    result = 31 * result + (comment != null ? comment.hashCode() : 0);
+    result = 31 * result + (versionName != null ? versionName.hashCode() : 0);
+    result = 31 * result + blip.hashCode();
+    result = 31 * result + quadrant.hashCode();
+    result = 31 * result + ring.hashCode();
+    result = 31 * result + user.hashCode();
+    return result;
   }
 }

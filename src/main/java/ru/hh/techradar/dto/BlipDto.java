@@ -1,6 +1,7 @@
 package ru.hh.techradar.dto;
 
 import jakarta.validation.constraints.NotNull;
+import java.util.Objects;
 
 public class BlipDto {
   @NotNull
@@ -8,7 +9,6 @@ public class BlipDto {
   @NotNull
   private String name;
   private String description;
-
   private QuadrantDto quadrant;
   private RingDto ring;
 
@@ -59,5 +59,39 @@ public class BlipDto {
 
   public void setRing(RingDto ring) {
     this.ring = ring;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (!(o instanceof BlipDto blipDto)) {
+      return false;
+    }
+
+    if (!id.equals(blipDto.id)) {
+      return false;
+    }
+    if (!name.equals(blipDto.name)) {
+      return false;
+    }
+    if (!Objects.equals(description, blipDto.description)) {
+      return false;
+    }
+    if (!Objects.equals(quadrant, blipDto.quadrant)) {
+      return false;
+    }
+    return Objects.equals(ring, blipDto.ring);
+  }
+
+  @Override
+  public int hashCode() {
+    int result = id.hashCode();
+    result = 31 * result + name.hashCode();
+    result = 31 * result + (description != null ? description.hashCode() : 0);
+    result = 31 * result + (quadrant != null ? quadrant.hashCode() : 0);
+    result = 31 * result + (ring != null ? ring.hashCode() : 0);
+    return result;
   }
 }

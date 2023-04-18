@@ -15,6 +15,7 @@ public class BlipRepository extends BaseRepositoryImpl<Long, Blip> {
     super(sessionFactory, Blip.class);
     this.sessionFactory = sessionFactory;
   }
+
   public Blip findByIdAndActualDate(Long blipId, Instant actualDate) {
     Session session = sessionFactory.openSession();
     return session.createQuery("SELECT b FROM Blip b " +
@@ -29,9 +30,11 @@ public class BlipRepository extends BaseRepositoryImpl<Long, Blip> {
   public List<Blip> findActualBlipsByRadarIdAndActualDate(Long radarId, Instant actualDate) {
     Session session = sessionFactory.openSession();
     return session.createQuery("SELECT b FROM Blip b " +
-            "LEFT JOIN FETCH b.blipEvents s " +
-            "WHERE b.radar.id = :radarId and s.creationTime <= :actualDate " +
-            "order by s.creationTime desc", Blip.class)
+                "LEFT JOIN FETCH b.blipEvents be " +
+                "WHERE b.radar.id = :radarId AND be.creationTime IN (SELECT MAX(c.creationTime) FROM BlipEvent c " +
+                "WHERE c.blip.id = b.id AND c.creationTime <= :actualDate)" +
+                "ORDER BY b.name"
+            , Blip.class)
         .setParameter("radarId", radarId)
         .setParameter("actualDate", actualDate)
         .getResultList();

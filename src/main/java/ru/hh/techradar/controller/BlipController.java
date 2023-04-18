@@ -32,9 +32,10 @@ public class BlipController {
   @GET
   @Path("/{id}")
   @Produces(MediaType.APPLICATION_JSON)
-  public Response findByIdAndBlipEventId(
+  public Response findByIdAndFilter(
       @PathParam("id") Long id,
-      @QueryParam("blipEventId") Long blipEventId) {
+      @QueryParam("blipEventId") Long blipEventId
+  ) {
     return Response
         .ok(blipMapper.toDto(blipService.findByIdAndBlipEventId(id, blipEventId)))
         .build();

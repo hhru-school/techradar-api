@@ -12,6 +12,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "blip")
@@ -79,5 +80,39 @@ public class Blip extends AuditableEntity<Long> {
 
   public void setBlipEvents(List<BlipEvent> blipEvents) {
     this.blipEvents = blipEvents;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (!(o instanceof Blip blip)) {
+      return false;
+    }
+
+    if (!id.equals(blip.id)) {
+      return false;
+    }
+    if (!name.equals(blip.name)) {
+      return false;
+    }
+    if (!Objects.equals(description, blip.description)) {
+      return false;
+    }
+    if (!radar.equals(blip.radar)) {
+      return false;
+    }
+    return Objects.equals(blipEvents, blip.blipEvents);
+  }
+
+  @Override
+  public int hashCode() {
+    int result = id.hashCode();
+    result = 31 * result + name.hashCode();
+    result = 31 * result + (description != null ? description.hashCode() : 0);
+    result = 31 * result + radar.hashCode();
+    result = 31 * result + (blipEvents != null ? blipEvents.hashCode() : 0);
+    return result;
   }
 }
