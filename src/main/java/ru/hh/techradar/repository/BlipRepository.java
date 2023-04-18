@@ -39,4 +39,8 @@ public class BlipRepository extends BaseRepositoryImpl<Long, Blip> {
         .setParameter("actualDate", actualDate)
         .getResultList();
   }
+
+  public List<Blip> findActualBlipsByRadarId(Long radarId) {
+    return findActualBlipsByRadarIdAndActualDate(radarId, Instant.now());
+  }
 }
