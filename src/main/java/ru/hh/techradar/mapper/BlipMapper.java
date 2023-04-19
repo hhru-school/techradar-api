@@ -40,6 +40,6 @@ public class BlipMapper extends AbstractMapper<Blip, BlipDto> {
     Optional.ofNullable(source.getName()).ifPresent(target::setName);
     Optional.ofNullable(source.getDescription()).ifPresent(target::setDescription);
     Optional.ofNullable(source.getRadar()).ifPresent(target::setRadar);
-    return null;
+    return target;
   }
 }

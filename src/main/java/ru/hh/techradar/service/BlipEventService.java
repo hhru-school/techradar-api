@@ -14,10 +14,7 @@ public class BlipEventService implements BaseService<Long, BlipEvent> {
   private final BlipEventMapper blipEventMapper;
   private final BlipEventRepository blipEventRepository;
 
-  public BlipEventService(
-      BlipEventMapper blipEventMapper,
-      BlipEventRepository blipEventRepository
-  ) {
+  public BlipEventService(BlipEventMapper blipEventMapper, BlipEventRepository blipEventRepository) {
     this.blipEventMapper = blipEventMapper;
     this.blipEventRepository = blipEventRepository;
   }
@@ -53,6 +50,7 @@ public class BlipEventService implements BaseService<Long, BlipEvent> {
   public List<BlipEvent> findAll() {
     return blipEventRepository.findAll();
   }
+
   @Transactional(readOnly = true)
   public BlipEvent findActualBlipEventByBlipIdAndInstant(Long blipId, Instant instant) {
     return blipEventRepository.findActualBlipEventByBlipIdAndActualDate(blipId, instant).orElseThrow(IllegalArgumentException::new);
