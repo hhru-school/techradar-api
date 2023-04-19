@@ -17,8 +17,7 @@ public class QuadrantService {
 
   public QuadrantService(
       QuadrantRepository quadrantRepository,
-      RadarService radarService
-  ) {
+      RadarService radarService) {
     this.quadrantRepository = quadrantRepository;
     this.radarService = radarService;
   }
@@ -38,7 +37,7 @@ public class QuadrantService {
   }
 
   @Transactional
-  public void deleteById(Long id) {
+  public void archiveById(Long id) {
     Quadrant found = quadrantRepository.findById(id).orElseThrow(() -> new NotFoundException(Quadrant.class, id));
     if (Objects.isNull(found.getRemovedAt())) {
       found.setRemovedAt(Instant.now());

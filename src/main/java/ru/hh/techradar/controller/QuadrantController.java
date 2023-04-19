@@ -25,8 +25,7 @@ public class QuadrantController {
   @Inject
   public QuadrantController(
       QuadrantService quadrantService,
-      QuadrantMapper quadrantMapper
-  ) {
+      QuadrantMapper quadrantMapper) {
     this.quadrantService = quadrantService;
     this.quadrantMapper = quadrantMapper;
   }
@@ -71,10 +70,10 @@ public class QuadrantController {
         .build();
   }
 
-  @DELETE
-  @Path("/{id}")
-  public Response deleteById(@PathParam("id") Long id) {
-    quadrantService.deleteById(id);
+  @GET
+  @Path("/archive/{id}")
+  public Response archiveById(@PathParam("id") Long id) {
+    quadrantService.archiveById(id);
     return Response
         .status(Response.Status.NO_CONTENT)
         .build();
