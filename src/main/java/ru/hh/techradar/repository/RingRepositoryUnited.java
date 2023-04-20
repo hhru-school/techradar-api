@@ -29,14 +29,14 @@ public class RingRepositoryUnited {
   public List<Pair<Ring, RingSetting>> fetchPairsByRadarIdAndDate(Long radarId, Instant actualDate) {
     var currentSession = sessionFactory.getCurrentSession();
     List<Ring> rings = currentSession.createQuery("SELECT r FROM Ring r WHERE r.radar.id = :radarId " +
-            "AND r.creationTime < :actualDate AND (r.removedAt IS NULL OR r.removedAt > :actualDate)", Ring.class)
+            "AND r.creationTime <= :actualDate AND (r.removedAt IS NULL OR r.removedAt > :actualDate)", Ring.class)
         .setParameter("radarId", radarId)
         .setParameter("actualDate", actualDate)
         .list();
 
     return rings.stream().map(currentRing -> {
       var actualRingSetting = currentSession.createQuery("SELECT rs FROM RingSetting rs WHERE rs.ring.id = :ringId " +
-              "AND rs.creationTime < :actualDate ORDER BY rs.creationTime ASC LIMIT 1", RingSetting.class)
+              "AND rs.creationTime <= :actualDate ORDER BY rs.creationTime ASC LIMIT 1", RingSetting.class)
           .setParameter("actualDate", actualDate)
           .setParameter("ringId", currentRing.getId())
           .uniqueResultOptional().orElseThrow();
