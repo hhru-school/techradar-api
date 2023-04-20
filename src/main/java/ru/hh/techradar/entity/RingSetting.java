@@ -107,3 +107,4 @@ public class RingSetting extends AuditableEntity<Long> {
         + '\n' + '}';
   }
 }
+

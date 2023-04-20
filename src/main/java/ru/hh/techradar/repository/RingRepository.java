@@ -12,3 +12,4 @@ public class RingRepository extends BaseRepositoryImpl<Long, Ring> {
     super(sessionFactory, Ring.class);
   }
 }
+
