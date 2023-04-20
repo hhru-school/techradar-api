@@ -1,53 +1,64 @@
 package ru.hh.techradar.service;
 
-import jakarta.inject.Inject;
+import java.time.Instant;
 import java.util.List;
+import java.util.Objects;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.hh.techradar.entity.Ring;
+import ru.hh.techradar.entity.RingSetting;
 import ru.hh.techradar.exception.NotFoundException;
-import ru.hh.techradar.mapper.RingMapperUnited;
 import ru.hh.techradar.repository.RingRepository;
 
 @Service
-public class RingService implements BaseService<Long, Ring> {
+public class RingService {
   private final RingRepository ringRepository;
-  private final RingMapperUnited ringMapperUnited;
+  private final RadarService radarService;
 
-  @Inject
-  public RingService(RingRepository ringRepository, RingMapperUnited ringMapperUnited) {
+  public RingService(
+      RingRepository ringRepository,
+      RadarService radarService
+  ) {
     this.ringRepository = ringRepository;
-    this.ringMapperUnited = ringMapperUnited;
+    this.radarService = radarService;
   }
 
-  @Override
+  @Transactional(readOnly = true)
+  public List<Ring> findAllByFilter(Long radarId, Instant actualDate) {
+    if (Objects.isNull(actualDate)) {
+      actualDate = Instant.now();
+    }
+    return ringRepository.findAllByFilter(radarId, actualDate);
+  }
+
   @Transactional(readOnly = true)
   public Ring findById(Long id) {
     return ringRepository.findById(id).orElseThrow(() -> new NotFoundException(Ring.class, id));
+
   }
 
-  @Override
   @Transactional
-  public void deleteById(Long id) {
-    ringRepository.deleteById(id);
+  public void archiveById(Long id) {
+    Ring found = ringRepository.findById(id).orElseThrow(() -> new NotFoundException(Ring.class, id));
+    if (Objects.isNull(found.getRemovedAt())) {
+      found.setRemovedAt(Instant.now());
+      ringRepository.update(found);
+    }
   }
 
-  @Override
   @Transactional
   public Ring update(Long id, Ring entity) {
     Ring found = ringRepository.findById(id).orElseThrow(() -> new NotFoundException(Ring.class, id));
-    return ringRepository.update(ringMapperUnited.toUpdate(found, entity));
+    found.setLastChangeTime(Instant.now());
+    RingSetting setting = entity.getCurrentSetting();
+    setting.setRing(found);
+    found.getSettings().add(setting);
+    return ringRepository.update(found);
   }
 
-  @Override
   @Transactional
-  public Ring save(Ring entity) {
+  public Ring save(Long radarId, Ring entity) {
+    entity.setRadar(radarService.findById(radarId));
     return ringRepository.save(entity);
-  }
-
-  @Override
-  @Transactional(readOnly = true)
-  public List<Ring> findAll() {
-    return ringRepository.findAll();
   }
 }

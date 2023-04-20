@@ -2,13 +2,13 @@ package ru.hh.techradar.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import java.time.Instant;
 import java.util.Objects;
 
 @Entity
@@ -26,19 +26,17 @@ public class RingSetting extends AuditableEntity<Long> {
   @Column(name = "position", nullable = false)
   private Integer position;
 
-  @ManyToOne
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "ring_id", nullable = false)
   private Ring ring;
 
   public RingSetting() {
   }
 
-  public RingSetting(String name, Integer position, Ring ring, Instant creationTime) {
+  public RingSetting(String name, Integer position, Ring ring) {
     this.name = name;
     this.position = position;
     this.ring = ring;
-    setCreationTime(creationTime);
-    setLastChangeTime(creationTime);
   }
 
   public Long getId() {

@@ -1,5 +1,6 @@
 package ru.hh.techradar.entity;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -12,6 +13,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
@@ -30,24 +32,20 @@ public class Ring extends AuditableEntity<Long> {
   @JoinColumn(name = "radar_id", nullable = false)
   private Radar radar;
 
-  @OneToMany(mappedBy = "ring", fetch = FetchType.LAZY, orphanRemoval = true)
+  @OneToMany(mappedBy = "ring", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
   private List<RingSetting> settings = new ArrayList<>();
+
+  public Ring(Radar radar) {
+    this.radar = radar;
+  }
 
   public Ring() {
   }
 
-  public Ring(Radar radar, Instant creationTime) {
-    this.radar = radar;
-    setCreationTime(creationTime);
-    setLastChangeTime(creationTime);
-  }
-
-  public Ring(Long id, Radar radar, Instant creationTime, Instant lastChangeTime, Instant removedAt) {
-    this.id = id;
-    this.radar = radar;
-    setCreationTime(creationTime);
-    setLastChangeTime(lastChangeTime);
-    this.removedAt = removedAt;
+  public RingSetting getCurrentSetting() {
+    return settings.stream()
+        .sorted(Comparator.comparing(RingSetting::getId).reversed())
+        .toList().get(0);
   }
 
   public List<RingSetting> getSettings() {

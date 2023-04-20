@@ -14,6 +14,8 @@ import ru.hh.techradar.entity.Company;
 import ru.hh.techradar.entity.Quadrant;
 import ru.hh.techradar.entity.QuadrantSetting;
 import ru.hh.techradar.entity.Radar;
+import ru.hh.techradar.entity.Ring;
+import ru.hh.techradar.entity.RingSetting;
 
 @Configuration
 public class HibernateConfig {
@@ -46,7 +48,9 @@ public class HibernateConfig {
         Company.class,
         Radar.class,
         Quadrant.class,
-        QuadrantSetting.class
+        QuadrantSetting.class,
+        Ring.class,
+        RingSetting.class
     );
 
     Properties properties = new Properties();
