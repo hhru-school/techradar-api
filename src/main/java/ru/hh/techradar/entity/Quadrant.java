@@ -11,7 +11,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import jakarta.persistence.Transient;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -36,9 +35,6 @@ public class Quadrant extends AuditableEntity<Long> {
 
   @OneToMany(mappedBy = "quadrant", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
   private List<QuadrantSetting> settings = new ArrayList<>();
-
-  @Transient
-  private QuadrantSetting currentSetting;
 
   public Quadrant() {
   }
@@ -83,10 +79,6 @@ public class Quadrant extends AuditableEntity<Long> {
     return settings.stream()
         .sorted(Comparator.comparing(QuadrantSetting::getId).reversed())
         .toList().get(0);
-  }
-
-  public void setCurrentSetting(QuadrantSetting currentSetting) {
-    this.currentSetting = currentSetting;
   }
 
   @Override
