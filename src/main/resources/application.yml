@@ -5,3 +5,4 @@ db:
   show-sql: true
   hbm2ddl-auto: validate
   dialect: org.hibernate.dialect.PostgreSQLDialect
+  default-batch-fetch-size: 10

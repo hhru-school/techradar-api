@@ -1,12 +1,12 @@
 package ru.hh.techradar.exception;
 
 import jakarta.ws.rs.core.Response;
-import java.time.ZonedDateTime;
+import java.time.Instant;
 
 public class Error {
   private String message;
   private Response.Status status;
-  private ZonedDateTime timestamp = ZonedDateTime.now();
+  private Instant timestamp;
 
   public Error() {
   }
@@ -14,6 +14,7 @@ public class Error {
   public Error(String message, Response.Status status) {
     this.message = message;
     this.status = status;
+    this.timestamp = Instant.now();
   }
 
   public String getMessage() {
@@ -32,11 +33,11 @@ public class Error {
     this.status = status;
   }
 
-  public ZonedDateTime getTimestamp() {
+  public Instant getTimestamp() {
     return timestamp;
   }
 
-  public void setTimestamp(ZonedDateTime timestamp) {
+  public void setTimestamp(Instant timestamp) {
     this.timestamp = timestamp;
   }
 }
