@@ -13,7 +13,6 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import java.time.Instant;
 import java.util.List;
-import java.util.Optional;
 import ru.hh.techradar.dto.RingDto;
 import ru.hh.techradar.entity.Ring;
 import ru.hh.techradar.entity.RingSetting;
@@ -43,9 +42,8 @@ public class RingController {
 
   @GET
   @Produces(MediaType.APPLICATION_JSON)
-  public Response getRingsByDateAndRadar(@QueryParam("date") String dateString, @QueryParam("radarId") Long radarId) {
-    Instant filterDate = parseInstantString(dateString).orElseThrow();
-    List<Pair<Ring, RingSetting>> currentPairs = ringServiceUnited.fetchPairsByRadarIdAndDate(radarId, filterDate);
+  public Response getRingsByDateAndRadar(@QueryParam("date") Instant date, @QueryParam("radarId") Long radarId) {
+    List<Pair<Ring, RingSetting>> currentPairs = ringServiceUnited.fetchPairsByRadarIdAndDate(radarId, date);
     return Response.ok(ringMapperUnited.toDtos(currentPairs)).build();
   }
 
@@ -89,19 +87,10 @@ public class RingController {
 
   @DELETE
   @Consumes(MediaType.APPLICATION_JSON)
-  public Response markRingAsRemoved(@QueryParam("date") String dateString, RingDto ringDto) {
-    Instant date = parseInstantString(dateString).orElseThrow();
+  public Response markRingAsRemoved(@QueryParam("date") Instant date, RingDto ringDto) {
     Ring ring = ringService.findById(ringDto.getId());
     ring.setRemovedAt(date);
     ringService.update(ringDto.getId(), ring);
     return Response.ok().build();
-  }
-
-  private Optional<Instant> parseInstantString(String date) {
-    try {
-      return Optional.of(Instant.parse(date));
-    } catch (Exception ex) {
-      return Optional.empty();
-    }
   }
 }
