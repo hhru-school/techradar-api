@@ -2,7 +2,6 @@ package ru.hh.techradar.controller;
 
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
-import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
@@ -30,14 +29,13 @@ public class BlipController {
   }
 
   @GET
-  @Path("/{id}")
   @Produces(MediaType.APPLICATION_JSON)
   public Response findByIdAndFilter(
-      @PathParam("id") Long id,
+      @QueryParam("blipId") Long blipId,
       @QueryParam("blipEventId") Long blipEventId
   ) {
     return Response
-        .ok(blipMapper.toDto(blipService.findByIdAndBlipEventId(id, blipEventId)))
+        .ok(blipMapper.toDto(blipService.findByIdAndBlipEventId(blipId, blipEventId)))
         .build();
   }
 }

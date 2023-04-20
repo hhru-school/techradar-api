@@ -19,9 +19,9 @@ public class BlipEventRepository extends BaseRepositoryImpl<Long, BlipEvent> {
   public Optional<BlipEvent> findActualBlipEventByBlipIdAndActualDate(Long blipId, Instant actualDate) {
     Session session = sessionFactory.openSession();
     return Optional.ofNullable(session.createQuery(
-            "select e from BlipEvent e " +
-                "where e.blip.id = :blipId and e.creationTime <= :actualDate " +
-                "order by e.creationTime desc", BlipEvent.class)
+            "SELECT e FROM BlipEvent e " +
+                "WHERE e.blip.id = :blipId AND e.creationTime <= :actualDate " +
+                "ORDER BY e.creationTime DESC", BlipEvent.class)
         .setMaxResults(1)
         .setParameter("blipId", blipId)
         .setParameter("actualDate", actualDate)

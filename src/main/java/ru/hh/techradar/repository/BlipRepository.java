@@ -20,8 +20,8 @@ public class BlipRepository extends BaseRepositoryImpl<Long, Blip> {
     Session session = sessionFactory.openSession();
     return session.createQuery("SELECT b FROM Blip b " +
             "LEFT JOIN FETCH b.blipEvents s " +
-            "WHERE b.id = :blipId and s.creationTime <= :actualDate " +
-            "order by s.creationTime desc", Blip.class)
+            "WHERE b.id = :blipId AND s.creationTime <= :actualDate " +
+            "ORDER BY s.creationTime DESC", Blip.class)
         .setParameter("blipId", blipId)
         .setParameter("actualDate", actualDate)
         .getSingleResult();

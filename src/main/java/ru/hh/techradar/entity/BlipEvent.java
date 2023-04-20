@@ -38,7 +38,16 @@ public class BlipEvent extends AuditableEntity<Long> {
   public BlipEvent() {
   }
 
-  public BlipEvent(Long id, String comment, String versionName, Blip blip, Quadrant quadrant, Ring ring, User user, Instant creationTime, Instant lastChangeTime) {
+  public BlipEvent(
+      Long id,
+      String comment,
+      String versionName,
+      Blip blip,
+      Quadrant quadrant,
+      Ring ring,
+      User user,
+      Instant creationTime,
+      Instant lastChangeTime) {
     super(creationTime, lastChangeTime);
     this.id = id;
     this.comment = comment;
