@@ -1,5 +1,6 @@
 package ru.hh.techradar.repository;
 
+import jakarta.inject.Inject;
 import java.time.Instant;
 import java.util.List;
 import org.hibernate.SessionFactory;
@@ -12,6 +13,7 @@ import ru.hh.techradar.util.Pair;
 public class RingRepositoryUnited {
   private final SessionFactory sessionFactory;
 
+  @Inject
   public RingRepositoryUnited(SessionFactory sessionFactory) {
     this.sessionFactory = sessionFactory;
   }
