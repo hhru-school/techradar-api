@@ -23,19 +23,8 @@ public class BlipController {
 
   @GET
   @Produces(MediaType.APPLICATION_JSON)
-  public Response findAll() {
-    return Response.ok(blipMapper.toDtos(blipService.findAll()))
-        .build();
-  }
-
-  @GET
-  @Produces(MediaType.APPLICATION_JSON)
   public Response findByIdAndFilter(
-      @QueryParam("blipId") Long blipId,
-      @QueryParam("blipEventId") Long blipEventId
-  ) {
-    return Response
-        .ok(blipMapper.toDto(blipService.findByIdAndBlipEventId(blipId, blipEventId)))
-        .build();
+      @QueryParam("blipId") Long blipId, @QueryParam("blipEventId") Long blipEventId) {
+    return Response.ok(blipMapper.toDto(blipService.findByIdAndBlipEventId(blipId, blipEventId))).build();
   }
 }
