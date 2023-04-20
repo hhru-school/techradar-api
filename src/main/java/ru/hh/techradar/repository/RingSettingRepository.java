@@ -1,6 +1,6 @@
 package ru.hh.techradar.repository;
 
-import jakarta.transaction.Transactional;
+import jakarta.inject.Inject;
 import java.time.Instant;
 import java.util.Optional;
 import org.hibernate.SessionFactory;
@@ -11,12 +11,12 @@ import ru.hh.techradar.entity.RingSetting;
 public class RingSettingRepository extends BaseRepositoryImpl<Long, RingSetting> {
   private final SessionFactory sessionFactory;
 
+  @Inject
   public RingSettingRepository(SessionFactory sessionFactory) {
     super(sessionFactory, RingSetting.class);
     this.sessionFactory = sessionFactory;
   }
 
-  @Transactional
   public Optional<RingSetting> findRingSettingByDate(Long ringId, Instant date) {
     return sessionFactory.getCurrentSession().createQuery(
             "SELECT rs FROM RingSetting rs " +
