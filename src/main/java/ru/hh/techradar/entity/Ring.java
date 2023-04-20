@@ -1,6 +1,5 @@
 package ru.hh.techradar.entity;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -31,7 +30,7 @@ public class Ring extends AuditableEntity<Long> {
   @JoinColumn(name = "radar_id", nullable = false)
   private Radar radar;
 
-  @OneToMany(mappedBy = "ring", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+  @OneToMany(mappedBy = "ring", fetch = FetchType.LAZY, orphanRemoval = true)
   private List<RingSetting> settings = new ArrayList<>();
 
   public Ring() {

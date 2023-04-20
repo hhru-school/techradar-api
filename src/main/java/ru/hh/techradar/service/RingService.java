@@ -1,29 +1,27 @@
 package ru.hh.techradar.service;
 
 import jakarta.inject.Inject;
-import jakarta.transaction.Transactional;
-import java.time.Instant;
 import java.util.List;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.hh.techradar.entity.Ring;
 import ru.hh.techradar.exception.NotFoundException;
-import ru.hh.techradar.mapper.RingMapper;
+import ru.hh.techradar.mapper.RingMapperUnited;
 import ru.hh.techradar.repository.RingRepository;
 
 @Service
 public class RingService implements BaseService<Long, Ring> {
-
   private final RingRepository ringRepository;
-  private final RingMapper ringMapper;
+  private final RingMapperUnited ringMapperUnited;
 
   @Inject
-  public RingService(RingRepository ringRepository, RingMapper ringMapper) {
+  public RingService(RingRepository ringRepository, RingMapperUnited ringMapperUnited) {
     this.ringRepository = ringRepository;
-    this.ringMapper = ringMapper;
+    this.ringMapperUnited = ringMapperUnited;
   }
 
   @Override
-  @Transactional
+  @Transactional(readOnly = true)
   public Ring findById(Long id) {
     return ringRepository.findById(id).orElseThrow(() -> new NotFoundException(Ring.class, id));
   }
@@ -38,7 +36,7 @@ public class RingService implements BaseService<Long, Ring> {
   @Transactional
   public Ring update(Long id, Ring entity) {
     Ring found = ringRepository.findById(id).orElseThrow(() -> new NotFoundException(Ring.class, id));
-    return ringRepository.update(ringMapper.toUpdate(found, entity));
+    return ringRepository.update(ringMapperUnited.toUpdate(found, entity));
   }
 
   @Override
@@ -48,13 +46,8 @@ public class RingService implements BaseService<Long, Ring> {
   }
 
   @Override
-  @Transactional
+  @Transactional(readOnly = true)
   public List<Ring> findAll() {
     return ringRepository.findAll();
-  }
-
-  @Transactional
-  public List<Ring> fetchRingsByRadarId(Long radarId, Instant actualDate) {
-    return ringRepository.fetchRingsByRadarId(radarId, actualDate);
   }
 }

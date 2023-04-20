@@ -16,36 +16,62 @@ import java.util.List;
 import java.util.Optional;
 import ru.hh.techradar.dto.RingDto;
 import ru.hh.techradar.entity.Ring;
-import ru.hh.techradar.mapper.RingMapper;
+import ru.hh.techradar.entity.RingSetting;
+import ru.hh.techradar.mapper.RingMapperUnited;
+import ru.hh.techradar.service.RadarService;
 import ru.hh.techradar.service.RingService;
+import ru.hh.techradar.service.RingServiceUnited;
+import ru.hh.techradar.util.Pair;
 
 @Path("/api/rings")
 public class RingController {
-  private final RingMapper ringMapper;
+  private final RingMapperUnited ringMapperUnited;
   private final RingService ringService;
+  private final RingServiceUnited ringServiceUnited;
+  private final RadarService radarService;
 
   @Inject
-  public RingController(RingMapper ringMapper, RingService ringService) {
-    this.ringMapper = ringMapper;
+  public RingController(
+      RingMapperUnited ringMapperUnited, RingService ringService, RingServiceUnited ringServiceUnited,
+      RadarService radarService
+  ) {
+    this.ringMapperUnited = ringMapperUnited;
     this.ringService = ringService;
+    this.ringServiceUnited = ringServiceUnited;
+    this.radarService = radarService;
   }
 
   @GET
   @Produces(MediaType.APPLICATION_JSON)
   public Response getRingsByDateAndRadar(@QueryParam("date") String dateString, @QueryParam("radarId") Long radarId) {
     Instant filterDate = parseInstantString(dateString).orElseThrow();
-    List<Ring> currentRings = ringService.fetchRingsByRadarId(radarId, filterDate);
-    return Response.ok(ringMapper.toDtosByDate(currentRings, filterDate)).build();
+    List<Pair<Ring, RingSetting>> currentPairs = ringServiceUnited.fetchPairsByRadarIdAndDate(radarId, filterDate);
+    return Response.ok(ringMapperUnited.toDtos(currentPairs)).build();
   }
 
   @POST
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   public Response addRing(@QueryParam("radarId") Long radarId, RingDto ringDto) {
+    var newRing = ringMapperUnited.toEntity(ringDto);
+    newRing.getFirst().setRadar(radarService.findById(radarId));
     return Response.ok(
-        ringMapper.toDtoByDate(
-            ringService.save(ringMapper.toEntity(ringDto, radarId)), Instant.now()
+        ringMapperUnited.toDto(
+            ringServiceUnited.save(newRing)
         )
+    ).build();
+  }
+
+  @Path("/force")
+  @PUT
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response forceUpdateRing(@QueryParam("radarId") Long radarId, RingDto ringDto) {
+    var newRing = ringMapperUnited.toEntity(ringDto);
+    newRing.getFirst().setRadar(radarService.findById(radarId));
+    var newPair = ringServiceUnited.forceUpdate(ringDto.getId(), newRing);
+    return Response.ok(
+        ringMapperUnited.toDto(newPair)
     ).build();
   }
 
@@ -53,9 +79,11 @@ public class RingController {
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   public Response updateRing(@QueryParam("radarId") Long radarId, RingDto ringDto) {
-    Ring newRing = ringService.update(ringDto.getId(), ringMapper.toEntity(ringDto, radarId));
+    var newRing = ringMapperUnited.toEntity(ringDto);
+    newRing.getFirst().setRadar(radarService.findById(radarId));
+    var newPair = ringServiceUnited.update(ringDto.getId(), newRing);
     return Response.ok(
-        ringMapper.toDtoByDate(newRing, Instant.now())
+        ringMapperUnited.toDto(newPair)
     ).build();
   }
 
@@ -65,7 +93,7 @@ public class RingController {
     Instant date = parseInstantString(dateString).orElseThrow();
     Ring ring = ringService.findById(ringDto.getId());
     ring.setRemovedAt(date);
-    ringService.save(ring);
+    ringService.update(ringDto.getId(), ring);
     return Response.ok().build();
   }
 

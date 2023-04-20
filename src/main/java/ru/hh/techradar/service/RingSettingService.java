@@ -1,11 +1,10 @@
 package ru.hh.techradar.service;
 
 import jakarta.inject.Inject;
-import jakarta.transaction.Transactional;
 import java.time.Instant;
 import java.util.List;
 import org.springframework.stereotype.Service;
-import ru.hh.techradar.entity.Ring;
+import org.springframework.transaction.annotation.Transactional;
 import ru.hh.techradar.entity.RingSetting;
 import ru.hh.techradar.exception.NotFoundException;
 import ru.hh.techradar.repository.RingSettingRepository;
@@ -20,7 +19,7 @@ public class RingSettingService implements BaseService<Long, RingSetting> {
   }
 
   @Override
-  @Transactional
+  @Transactional(readOnly = true)
   public RingSetting findById(Long id) {
     return ringSettingRepository.findById(id).orElseThrow(() -> new NotFoundException(RingSetting.class, id));
   }
@@ -31,11 +30,11 @@ public class RingSettingService implements BaseService<Long, RingSetting> {
     ringSettingRepository.deleteById(id);
   }
 
-  @Deprecated
+
   @Override
   @Transactional
   public RingSetting update(Long id, RingSetting entity) {
-    throw new UnsupportedOperationException("Use Ring method instead!");
+    return ringSettingRepository.update(entity);
   }
 
   @Override
@@ -45,13 +44,13 @@ public class RingSettingService implements BaseService<Long, RingSetting> {
   }
 
   @Override
-  @Transactional
+  @Transactional(readOnly = true)
   public List<RingSetting> findAll() {
     return ringSettingRepository.findAll();
   }
 
-  @Transactional
-  public RingSetting findRingSettingByDate(Ring ring, Instant date) {
-    return ringSettingRepository.findRingSettingByDate(ring, date).orElseThrow(() -> new NotFoundException(RingSetting.class, ring));
+  @Transactional(readOnly = true)
+  public RingSetting findRingSettingByDate(Long ringId, Instant date) {
+    return ringSettingRepository.findRingSettingByDate(ringId, date).orElseThrow(() -> new NotFoundException(RingSetting.class, ringId));
   }
 }

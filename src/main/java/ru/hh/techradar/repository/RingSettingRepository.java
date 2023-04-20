@@ -5,7 +5,6 @@ import java.time.Instant;
 import java.util.Optional;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
-import ru.hh.techradar.entity.Ring;
 import ru.hh.techradar.entity.RingSetting;
 
 @Repository
@@ -18,13 +17,12 @@ public class RingSettingRepository extends BaseRepositoryImpl<Long, RingSetting>
   }
 
   @Transactional
-  public Optional<RingSetting> findRingSettingByDate(Ring ring, Instant date) {
-    // todo check
+  public Optional<RingSetting> findRingSettingByDate(Long ringId, Instant date) {
     return sessionFactory.getCurrentSession().createQuery(
             "SELECT rs FROM RingSetting rs " +
-                "WHERE rs.ring = :ring AND :date >= rs.creationTime ORDER BY rs.creationTime DESC LIMIT 1", RingSetting.class
+                "WHERE rs.ring.id = :ringId AND :date >= rs.creationTime ORDER BY rs.creationTime DESC LIMIT 1", RingSetting.class
         )
-        .setParameter("ring", ring)
+        .setParameter("ringId", ringId)
         .setParameter("date", date)
         .uniqueResultOptional();
   }
