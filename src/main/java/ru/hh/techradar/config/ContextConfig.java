@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import ru.hh.techradar.controller.CompanyController;
 import ru.hh.techradar.controller.QuadrantController;
+import ru.hh.techradar.controller.RadarController;
 import ru.hh.techradar.controller.RingController;
 import ru.hh.techradar.exception.DateParseExceptionMapper;
 import ru.hh.techradar.exception.NotFoundExceptionMapper;
@@ -23,6 +24,7 @@ public class ContextConfig {
     resourceConfig.register(DateFormatParamConverterProvider.class);
     resourceConfig.register(PreRequestFilter.class);
     resourceConfig.register(RingController.class);
+    resourceConfig.register(RadarController.class);
     return resourceConfig;
   }
 }

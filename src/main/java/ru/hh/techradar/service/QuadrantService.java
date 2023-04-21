@@ -7,19 +7,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.hh.techradar.entity.Quadrant;
 import ru.hh.techradar.entity.QuadrantSetting;
+import ru.hh.techradar.entity.Radar;
 import ru.hh.techradar.exception.NotFoundException;
 import ru.hh.techradar.repository.QuadrantRepository;
 
 @Service
 public class QuadrantService {
   private final QuadrantRepository quadrantRepository;
-  private final RadarService radarService;
 
-  public QuadrantService(
-      QuadrantRepository quadrantRepository,
-      RadarService radarService) {
+  public QuadrantService(QuadrantRepository quadrantRepository) {
     this.quadrantRepository = quadrantRepository;
-    this.radarService = radarService;
   }
 
   @Transactional(readOnly = true)
@@ -56,8 +53,8 @@ public class QuadrantService {
   }
 
   @Transactional
-  public Quadrant save(Long radarId, Quadrant entity) {
-    entity.setRadar(radarService.findById(radarId));
+  public Quadrant save(Radar radar, Quadrant entity) {
+    entity.setRadar(radar);
     return quadrantRepository.save(entity);
   }
 }

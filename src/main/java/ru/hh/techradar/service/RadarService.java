@@ -34,7 +34,7 @@ public class RadarService implements BaseService<Long, Radar> {
 
   @Override
   public Radar findById(Long id) {
-    return null;
+    return radarRepository.findById(id).orElseThrow(() -> new NotFoundException(Radar.class, id));
   }
 
   @Override

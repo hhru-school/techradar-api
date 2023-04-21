@@ -13,21 +13,25 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import java.time.Instant;
 import ru.hh.techradar.dto.RingDto;
+import ru.hh.techradar.entity.Radar;
 import ru.hh.techradar.mapper.RingMapper;
+import ru.hh.techradar.service.RadarService;
 import ru.hh.techradar.service.RingService;
 
 @Path("/api/rings")
 public class RingController {
   private final RingService ringService;
   private final RingMapper ringMapper;
+  private final RadarService radarService;
 
   @Inject
   public RingController(
       RingService ringService,
-      RingMapper ringMapper
-  ) {
+      RingMapper ringMapper,
+      RadarService radarService) {
     this.ringService = ringService;
     this.ringMapper = ringMapper;
+    this.radarService = radarService;
   }
 
   @GET
@@ -54,8 +58,9 @@ public class RingController {
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   public Response save(@QueryParam("radarId") Long radarId, RingDto dto) {
+    Radar radar = radarService.findById(radarId);
     return Response
-        .ok(ringMapper.toDto(ringService.save(radarId, ringMapper.toEntity(dto))))
+        .ok(ringMapper.toDto(ringService.save(radar, ringMapper.toEntity(dto))))
         .status(Response.Status.CREATED)
         .build();
   }

@@ -2,7 +2,6 @@ package ru.hh.techradar.controller;
 
 import jakarta.inject.Inject;
 import jakarta.ws.rs.Consumes;
-import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.PUT;
@@ -14,20 +13,24 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import java.time.Instant;
 import ru.hh.techradar.dto.QuadrantDto;
+import ru.hh.techradar.entity.Radar;
 import ru.hh.techradar.mapper.QuadrantMapper;
 import ru.hh.techradar.service.QuadrantService;
+import ru.hh.techradar.service.RadarService;
 
 @Path("/api/quadrants")
 public class QuadrantController {
   private final QuadrantService quadrantService;
   private final QuadrantMapper quadrantMapper;
+  private final RadarService radarService;
 
   @Inject
   public QuadrantController(
       QuadrantService quadrantService,
-      QuadrantMapper quadrantMapper) {
+      QuadrantMapper quadrantMapper, RadarService radarService) {
     this.quadrantService = quadrantService;
     this.quadrantMapper = quadrantMapper;
+    this.radarService = radarService;
   }
 
   @GET
@@ -54,8 +57,9 @@ public class QuadrantController {
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   public Response save(@QueryParam("radarId") Long radarId, QuadrantDto dto) {
+    Radar radar = radarService.findById(radarId);
     return Response
-        .ok(quadrantMapper.toDto(quadrantService.save(radarId, quadrantMapper.toEntity(dto))))
+        .ok(quadrantMapper.toDto(quadrantService.save(radar, quadrantMapper.toEntity(dto))))
         .status(Response.Status.CREATED)
         .build();
   }

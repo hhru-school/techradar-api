@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Objects;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.hh.techradar.entity.Radar;
 import ru.hh.techradar.entity.Ring;
 import ru.hh.techradar.entity.RingSetting;
 import ru.hh.techradar.exception.NotFoundException;
@@ -13,14 +14,9 @@ import ru.hh.techradar.repository.RingRepository;
 @Service
 public class RingService {
   private final RingRepository ringRepository;
-  private final RadarService radarService;
 
-  public RingService(
-      RingRepository ringRepository,
-      RadarService radarService
-  ) {
+  public RingService(RingRepository ringRepository) {
     this.ringRepository = ringRepository;
-    this.radarService = radarService;
   }
 
   @Transactional(readOnly = true)
@@ -57,8 +53,8 @@ public class RingService {
   }
 
   @Transactional
-  public Ring save(Long radarId, Ring entity) {
-    entity.setRadar(radarService.findById(radarId));
+  public Ring save(Radar radar, Ring entity) {
+    entity.setRadar(radar);
     return ringRepository.save(entity);
   }
 }
