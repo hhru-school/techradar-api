@@ -12,6 +12,14 @@ public abstract class AuditableEntity<T extends Serializable> {
   @Column(name = "last_change_time", nullable = false)
   private Instant lastChangeTime = Instant.now();
 
+  public AuditableEntity() {
+  }
+
+  public AuditableEntity(Instant creationTime, Instant lastChangeTime) {
+    this.creationTime = creationTime;
+    this.lastChangeTime = lastChangeTime;
+  }
+
   public Instant getCreationTime() {
     return creationTime;
   }
