@@ -10,7 +10,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import jakarta.persistence.Transient;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -35,13 +35,13 @@ public class Radar extends AuditableEntity<Long> {
   private User author;
 //
   @OneToMany(mappedBy = "radar", fetch = FetchType.LAZY)
-  private List<Blip> blips;
+  private List<Blip> blips = new ArrayList<>();
 
   @OneToMany(mappedBy = "radar", fetch = FetchType.LAZY)
-  private List<Ring> rings;
+  private List<Ring> rings = new ArrayList<>();
 
   @OneToMany(mappedBy = "radar", fetch = FetchType.LAZY)
-  private List<Quadrant> quadrants;
+  private List<Quadrant> quadrants = new ArrayList<>();
 
   public Radar() {
   }

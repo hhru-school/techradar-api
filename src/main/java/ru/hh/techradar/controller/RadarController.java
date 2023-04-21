@@ -1,5 +1,6 @@
 package ru.hh.techradar.controller;
 
+import jakarta.validation.constraints.NotNull;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
@@ -7,6 +8,7 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import java.time.Instant;
 import org.springframework.stereotype.Controller;
 import ru.hh.techradar.mapper.RadarMapper;
 import ru.hh.techradar.service.RadarService;
@@ -25,12 +27,23 @@ public class RadarController {
   @GET
   @Path("/{id}")
   @Produces(MediaType.APPLICATION_JSON)
-  public Response findByIdAnd(
+  public Response findByIdAndFilter(
       @PathParam("id") Long id,
-      @QueryParam("blipEventId") Long blipEventId
+      @QueryParam("actualDate") Instant actualDate,
+      @QueryParam("blipEventId") Long blipEventId) {
+    return Response
+        .ok(radarMapper.toDto(radarService.findByIdAndFilter(id, actualDate, blipEventId)))
+        .build();
+  }
+
+  @GET
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response findAllByFilter(
+      @QueryParam("companyId") @NotNull Long companyId,
+      @QueryParam("actualDate") Instant actualDate
   ) {
     return Response
-        .ok(radarMapper.toDto(radarService.findByIdAndBlipEventId(id, blipEventId)))
+        .ok(radarMapper.toShortDtos(radarService.findAllByFilter(companyId, actualDate)))
         .build();
   }
 }
