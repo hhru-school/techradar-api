@@ -1,4 +1,5 @@
-FROM openjdk:19
+FROM openjdk:20
+MAINTAINER Tech Radar <tech.radar@rambler.ru>
 VOLUME /tmp
 ARG JAR_FILE=target/*.jar
 COPY ${JAR_FILE} app.jar

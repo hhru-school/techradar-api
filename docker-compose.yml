@@ -14,7 +14,7 @@ services:
       - radar
   techradar-api:
     container_name: techradar-api
-    image: techradar-api:1.0
+    image: techradarapi/techradar-api:1.0
     command: [
       "bash -c 'touch /app.jar'"
     ]
