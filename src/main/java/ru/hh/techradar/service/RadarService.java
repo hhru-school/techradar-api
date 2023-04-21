@@ -61,9 +61,9 @@ public class RadarService implements BaseService<Long, Radar> {
     BlipEvent blipEvent = blipEventService.findById(blipEventId);
     Instant actualDate = blipEvent.getCreationTime();
     Radar radar = radarRepository.findById(id).orElseThrow(() -> new NotFoundException(Radar.class, id));
-    radar.setQuadrants(quadrantService.findAllByRadarIdAndActualDate(radar.getId(), actualDate));
-    radar.setRings(ringService.findAllByRadarIdAndInstant(radar.getId(), actualDate));
-    radar.setBlips(blipService.findAllByRadarIdAndActualDate(radar.getId(), actualDate));
+    radar.setQuadrants(quadrantService.findAllByFilter(radar.getId(), actualDate));
+    radar.setRings(ringService.findAllByFilter(radar.getId(), actualDate));
+    radar.setBlips(blipService.findAllByFilter(radar.getId(), actualDate));
     return radar;
   }
 }

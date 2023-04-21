@@ -72,7 +72,7 @@ public class BlipService implements BaseService<Long, Blip> {
   }
 
   @Transactional(readOnly = true)
-  public List<Blip> findAllByRadarIdAndActualDate(Long radarId, Instant actualDate) {
+  public List<Blip> findAllByFilter(Long radarId, Instant actualDate) {
     return blipRepository.findActualBlipsByRadarIdAndActualDate(radarId, actualDate);
   }
 }

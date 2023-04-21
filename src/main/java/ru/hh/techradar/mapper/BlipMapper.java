@@ -35,7 +35,6 @@ public class BlipMapper extends AbstractMapper<Blip, BlipDto> {
     return blipDto;
   }
 
-  @Override
   public Blip toUpdate(Blip target, Blip source) {
     Optional.ofNullable(source.getName()).ifPresent(target::setName);
     Optional.ofNullable(source.getDescription()).ifPresent(target::setDescription);

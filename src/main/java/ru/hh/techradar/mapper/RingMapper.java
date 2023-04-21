@@ -1,6 +1,5 @@
 package ru.hh.techradar.mapper;
 
-import java.util.Collection;
 import java.util.List;
 import org.springframework.stereotype.Component;
 import ru.hh.techradar.dto.RingDto;
@@ -8,7 +7,7 @@ import ru.hh.techradar.entity.Ring;
 import ru.hh.techradar.entity.RingSetting;
 
 @Component
-public class RingMapper implements BaseMapper<Ring, RingDto> {
+public class RingMapper extends AbstractMapper<Ring, RingDto> {
   @Override
   public Ring toEntity(RingDto dto) {
     Ring ring = new Ring();
@@ -26,14 +25,6 @@ public class RingMapper implements BaseMapper<Ring, RingDto> {
     return dto;
   }
 
-  @Override
-  public List<RingDto> toDtos(Collection<Ring> entities) {
-    return entities.stream().map(this::toDto).toList();
-  }
 
-  @Override
-  public List<Ring> toEntities(Collection<RingDto> dtos) {
-    return dtos.stream().map(this::toEntity).toList();
-  }
 
 }

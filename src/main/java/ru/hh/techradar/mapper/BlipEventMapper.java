@@ -28,7 +28,6 @@ public class BlipEventMapper extends AbstractMapper<BlipEvent, BlipEventDto> {
     return blipEventDto;
   }
 
-  @Override
   public BlipEvent toUpdate(BlipEvent target, BlipEvent source) {
     Optional.ofNullable(source.getComment()).ifPresent(target::setComment);
     Optional.ofNullable(source.getVersionName()).ifPresent(target::setVersionName);
