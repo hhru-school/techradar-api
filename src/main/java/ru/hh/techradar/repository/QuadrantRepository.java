@@ -21,9 +21,9 @@ public class QuadrantRepository extends BaseRepositoryImpl<Long, Quadrant> {
         .createQuery("SELECT q FROM Quadrant q " +
                 "LEFT JOIN FETCH q.settings qs " +
                 "WHERE q.radar.id = :radarId " +
-                "AND q.creationTime < :actualDate " +
+                "AND q.creationTime <= :actualDate " +
                 "AND (q.removedAt IS NULL OR q.removedAt > :actualDate) " +
-                "AND qs.creationTime IN(SELECT max(qs2.creationTime) FROM QuadrantSetting qs2 WHERE qs2.quadrant.id = q.id) " +
+                "AND qs.creationTime IN(SELECT max(qs2.creationTime) FROM QuadrantSetting qs2 WHERE qs2.quadrant.id = q.id AND qs2.creationTime <= :actualDate) " +
                 "ORDER BY qs.position"
             , Quadrant.class)
         .setParameter("radarId", radarId)

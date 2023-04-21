@@ -23,9 +23,9 @@ public class RingRepository extends BaseRepositoryImpl<Long, Ring> {
         .createQuery("SELECT r FROM Ring r " +
                 "LEFT JOIN FETCH r.settings rs " +
                 "WHERE r.radar.id = :radarId " +
-                "AND r.creationTime < :actualDate " +
+                "AND r.creationTime <= :actualDate " +
                 "AND (r.removedAt IS NULL OR r.removedAt > :actualDate) " +
-                "AND rs.creationTime IN(SELECT max(rs2.creationTime) FROM RingSetting rs2 WHERE rs2.ring.id = r.id) " +
+                "AND rs.creationTime IN(SELECT max(rs2.creationTime) FROM RingSetting rs2 WHERE rs2.ring.id = r.id AND rs2.creationTime <= :actualDate) " +
                 "ORDER BY rs.position"
             , Ring.class)
         .setParameter("radarId", radarId)
