@@ -7,13 +7,6 @@ import ru.hh.techradar.entity.Blip;
 
 @Component
 public class BlipMapper extends AbstractMapper<Blip, BlipDto> {
-  private final QuadrantMapper quadrantMapper;
-  private final RingMapper ringMapper;
-
-  public BlipMapper(QuadrantMapper quadrantMapper, RingMapper ringMapper) {
-    this.quadrantMapper = quadrantMapper;
-    this.ringMapper = ringMapper;
-  }
 
   @Override
   public Blip toEntity(BlipDto dto) {
@@ -30,8 +23,8 @@ public class BlipMapper extends AbstractMapper<Blip, BlipDto> {
     blipDto.setId(entity.getId());
     blipDto.setName(entity.getName());
     blipDto.setDescription(entity.getDescription());
-    blipDto.setQuadrant(quadrantMapper.toDto(entity.getBlipEvents().get(0).getQuadrant()));
-    blipDto.setRing(ringMapper.toDto(entity.getBlipEvents().get(0).getRing()));
+    blipDto.setQuadrantId(entity.getQuadrantId());
+    blipDto.setRingId(entity.getRingId());
     return blipDto;
   }
 

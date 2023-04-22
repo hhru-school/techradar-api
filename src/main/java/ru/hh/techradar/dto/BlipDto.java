@@ -9,8 +9,8 @@ public class BlipDto {
   @NotNull
   private String name;
   private String description;
-  private QuadrantDto quadrant;
-  private RingDto ring;
+  private Long quadrantId;
+  private Long ringId;
 
   public BlipDto() {
   }
@@ -45,20 +45,20 @@ public class BlipDto {
     this.description = description;
   }
 
-  public QuadrantDto getQuadrant() {
-    return quadrant;
+  public Long getQuadrantId() {
+    return quadrantId;
   }
 
-  public void setQuadrant(QuadrantDto quadrant) {
-    this.quadrant = quadrant;
+  public void setQuadrantId(Long quadrantId) {
+    this.quadrantId = quadrantId;
   }
 
-  public RingDto getRing() {
-    return ring;
+  public Long getRingId() {
+    return ringId;
   }
 
-  public void setRing(RingDto ring) {
-    this.ring = ring;
+  public void setRingId(Long ringId) {
+    this.ringId = ringId;
   }
 
   @Override
@@ -69,29 +69,14 @@ public class BlipDto {
     if (!(o instanceof BlipDto blipDto)) {
       return false;
     }
-
-    if (!id.equals(blipDto.id)) {
-      return false;
-    }
-    if (!name.equals(blipDto.name)) {
-      return false;
-    }
-    if (!Objects.equals(description, blipDto.description)) {
-      return false;
-    }
-    if (!Objects.equals(quadrant, blipDto.quadrant)) {
-      return false;
-    }
-    return Objects.equals(ring, blipDto.ring);
+    return Objects.equals(id, blipDto.id) && name.equals(blipDto.name) && Objects.equals(
+        description,
+        blipDto.description
+    ) && quadrantId.equals(blipDto.quadrantId) && ringId.equals(blipDto.ringId);
   }
 
   @Override
   public int hashCode() {
-    int result = id.hashCode();
-    result = 31 * result + name.hashCode();
-    result = 31 * result + (description != null ? description.hashCode() : 0);
-    result = 31 * result + (quadrant != null ? quadrant.hashCode() : 0);
-    result = 31 * result + (ring != null ? ring.hashCode() : 0);
-    return result;
+    return Objects.hash(id, name, description, quadrantId, ringId);
   }
 }
