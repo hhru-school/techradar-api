@@ -74,6 +74,14 @@ public class Blip extends AuditableEntity<Long> {
     this.radar = radar;
   }
 
+  public Long getQuadrantId() {
+    return blipEvents.get(0).getQuadrant().getId();
+  }
+
+  public Long getRingId() {
+    return blipEvents.get(0).getRing().getId();
+  }
+
   public List<BlipEvent> getBlipEvents() {
     return blipEvents;
   }
