@@ -1,8 +1,8 @@
 db:
-  url: jdbc:postgresql://localhost:5433/tech_radar
-  username: postgres
-  password: postgres
-  show-sql: true
-  hbm2ddl-auto: validate
-  dialect: org.hibernate.dialect.PostgreSQLDialect
-  default-batch-fetch-size: 10
+  url: jdbc:postgresql://${POSTGRES_HOST:localhost}:${POSTGRES_PORT:5433}/${POSTGRES_DB:tech_radar}
+  username: ${POSTGRES_USER:postgres}
+  password: ${POSTGRES_PASSWORD:postgres}
+  show-sql: ${DB_SHOW_SQL:true}
+  hbm2ddl-auto: ${DB_HB2DDL_AUTO:validate}
+  dialect: ${DB_DIALECT:org.hibernate.dialect.PostgreSQLDialect}
+  default-batch-fetch-size: ${DB_DEFAULT_BATCH_FETCH_SIZE:10}
