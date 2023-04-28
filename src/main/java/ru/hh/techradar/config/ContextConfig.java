@@ -1,5 +1,6 @@
 package ru.hh.techradar.config;
 
+import jakarta.ws.rs.ApplicationPath;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,19 +13,17 @@ import ru.hh.techradar.exception.NotFoundExceptionMapper;
 import ru.hh.techradar.util.DateFormatParamConverterProvider;
 
 @Configuration
+@ApplicationPath("/")
 public class ContextConfig {
 
   @Bean
   public ResourceConfig resourceConfig() {
     ResourceConfig resourceConfig = new ResourceConfig();
-    resourceConfig.register(CompanyController.class);
-    resourceConfig.register(QuadrantController.class);
+    resourceConfig.packages("ru.hh.techradar.controller");
     resourceConfig.register(NotFoundExceptionMapper.class);
     resourceConfig.register(DateParseExceptionMapper.class);
     resourceConfig.register(DateFormatParamConverterProvider.class);
     resourceConfig.register(PreRequestFilter.class);
-    resourceConfig.register(RingController.class);
-    resourceConfig.register(RadarController.class);
     return resourceConfig;
   }
 }
