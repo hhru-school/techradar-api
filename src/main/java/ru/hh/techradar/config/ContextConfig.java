@@ -22,13 +22,13 @@ public class ContextConfig {
     return resourceConfig;
   }
 
-  public void exceptionMapperConfig(ResourceConfig resourceConfig) {
+  private void exceptionMapperConfig(ResourceConfig resourceConfig) {
     resourceConfig.register(NotFoundExceptionMapper.class);
     resourceConfig.register(ParamExceptionMapper.class);
     resourceConfig.register(ConstraintViolationExceptionMapper.class);
   }
 
-  public void converterProviderConfig(ResourceConfig resourceConfig) {
+  private void converterProviderConfig(ResourceConfig resourceConfig) {
     resourceConfig.register(DateFormatParamConverterProvider.class);
   }
 }
