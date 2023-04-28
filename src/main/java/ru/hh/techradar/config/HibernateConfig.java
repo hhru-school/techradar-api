@@ -47,25 +47,15 @@ public class HibernateConfig {
   public LocalSessionFactoryBean localSessionFactoryBean(DataSource dataSource) {
     LocalSessionFactoryBean localSessionFactoryBean = new LocalSessionFactoryBean();
     localSessionFactoryBean.setDataSource(dataSource);
-    localSessionFactoryBean.setAnnotatedClasses(
-        Company.class,
-        BlipEvent.class,
-        Blip.class,
-        Quadrant.class,
-        QuadrantSetting.class,
-        Radar.class,
-        Ring.class,
-        RingSetting.class,
-        User.class
-    );
+    localSessionFactoryBean.setPackagesToScan("ru.hh.techradar.entity");
 
     Properties properties = new Properties();
     properties.put(Environment.DIALECT, DIALECT);
     properties.put(Environment.SHOW_SQL, SHOW_SQL);
     properties.put(Environment.HBM2DDL_AUTO, HBM2DDL_AUTO);
     properties.put(Environment.DEFAULT_BATCH_FETCH_SIZE, DEFAULT_BATCH_FETCH_SIZE);
-
     localSessionFactoryBean.setHibernateProperties(properties);
+
     return localSessionFactoryBean;
   }
 
