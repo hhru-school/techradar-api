@@ -1,6 +1,7 @@
 package ru.hh.techradar.controller;
 
 import jakarta.inject.Inject;
+import jakarta.ws.rs.BeanParam;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
@@ -13,6 +14,7 @@ import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import ru.hh.techradar.dto.UserDto;
+import ru.hh.techradar.filter.UserFilter;
 import ru.hh.techradar.mapper.UserMapper;
 import ru.hh.techradar.service.UserService;
 
@@ -25,17 +27,16 @@ public class UserController {
   @Inject
   public UserController(
       UserService userService,
-      UserMapper userMapper
-  ) {
+      UserMapper userMapper) {
     this.userService = userService;
     this.userMapper = userMapper;
   }
 
   @GET
   @Produces(MediaType.APPLICATION_JSON)
-  public Response findAllByFilter(@QueryParam("companyId") Long companyId) {
+  public Response findAllByFilter(@BeanParam UserFilter filter) {
     return Response
-        .ok(userMapper.toDtos(userService.findAllByFilter(companyId)))
+        .ok(userMapper.toDtos(userService.findAllByFilter(filter)))
         .build();
   }
 
