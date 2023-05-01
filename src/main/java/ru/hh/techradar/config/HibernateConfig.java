@@ -11,13 +11,10 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import ru.hh.techradar.entity.Blip;
-import ru.hh.techradar.entity.BlipEvent;
 import ru.hh.techradar.entity.Company;
 import ru.hh.techradar.entity.Quadrant;
-import ru.hh.techradar.entity.QuadrantSetting;
 import ru.hh.techradar.entity.Radar;
 import ru.hh.techradar.entity.Ring;
-import ru.hh.techradar.entity.RingSetting;
 import ru.hh.techradar.entity.User;
 
 @Configuration
@@ -49,13 +46,10 @@ public class HibernateConfig {
     localSessionFactoryBean.setDataSource(dataSource);
     localSessionFactoryBean.setAnnotatedClasses(
         Company.class,
-        BlipEvent.class,
         Blip.class,
         Quadrant.class,
-        QuadrantSetting.class,
         Radar.class,
         Ring.class,
-        RingSetting.class,
         User.class
     );
 

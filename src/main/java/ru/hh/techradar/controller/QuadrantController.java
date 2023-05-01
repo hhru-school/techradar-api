@@ -4,7 +4,6 @@ import jakarta.inject.Inject;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
-import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
@@ -64,22 +63,22 @@ public class QuadrantController {
         .build();
   }
 
-  @PUT
-  @Path("/{id}")
-  @Consumes(MediaType.APPLICATION_JSON)
-  @Produces(MediaType.APPLICATION_JSON)
-  public Response update(@PathParam("id") Long id, QuadrantDto dto) {
-    return Response
-        .ok(quadrantMapper.toDto(quadrantService.update(id, quadrantMapper.toEntity(dto))))
-        .build();
-  }
-
-  @GET
-  @Path("/archive/{id}")
-  public Response archiveById(@PathParam("id") Long id) {
-    quadrantService.archiveById(id);
-    return Response
-        .status(Response.Status.NO_CONTENT)
-        .build();
-  }
+//  @PUT
+//  @Path("/{id}")
+//  @Consumes(MediaType.APPLICATION_JSON)
+//  @Produces(MediaType.APPLICATION_JSON)
+//  public Response update(@PathParam("id") Long id, QuadrantDto dto) {
+//    return Response
+//        .ok(quadrantMapper.toDto(quadrantService.update(id, quadrantMapper.toEntity(dto))))
+//        .build();
+//  }
+//
+//  @GET
+//  @Path("/archive/{id}")
+//  public Response archiveById(@PathParam("id") Long id) {
+//    quadrantService.archiveById(id);
+//    return Response
+//        .status(Response.Status.NO_CONTENT)
+//        .build();
+//  }
 }

@@ -1,6 +1,5 @@
 package ru.hh.techradar.entity;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -8,11 +7,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.time.Instant;
 
 @Entity
 @Table(name = "blip")
@@ -26,20 +22,34 @@ public class Blip extends AuditableEntity<Long> {
   @Column(name = "description")
   private String description;
   @ManyToOne
+  @JoinColumn(name = "quadrant_id", nullable = false)
+  private Quadrant quadrant;
+  @ManyToOne
+  @JoinColumn(name = "ring_id", nullable = false)
+  private Ring ring;
+  @ManyToOne
   @JoinColumn(name = "radar_id", nullable = false)
   private Radar radar;
-  @OneToMany(mappedBy = "blip", cascade = CascadeType.ALL, orphanRemoval = true)
-  private List<BlipEvent> blipEvents = new ArrayList<>();
 
   public Blip() {
   }
 
-  public Blip(Long id, String name, String description, Radar radar, List<BlipEvent> blipEvents) {
+  public Blip(
+      Instant creationTime,
+      Instant lastChangeTime,
+      Long id,
+      String name,
+      String description,
+      Quadrant quadrant,
+      Ring ring,
+      Radar radar) {
+    super(creationTime, lastChangeTime);
     this.id = id;
     this.name = name;
     this.description = description;
+    this.quadrant = quadrant;
+    this.ring = ring;
     this.radar = radar;
-    this.blipEvents = blipEvents;
   }
 
   public Long getId() {
@@ -66,61 +76,27 @@ public class Blip extends AuditableEntity<Long> {
     this.description = description;
   }
 
+  public Quadrant getQuadrant() {
+    return quadrant;
+  }
+
+  public void setQuadrant(Quadrant quadrant) {
+    this.quadrant = quadrant;
+  }
+
+  public Ring getRing() {
+    return ring;
+  }
+
+  public void setRing(Ring ring) {
+    this.ring = ring;
+  }
+
   public Radar getRadar() {
     return radar;
   }
 
   public void setRadar(Radar radar) {
     this.radar = radar;
-  }
-
-  public Long getQuadrantId() {
-    return blipEvents.get(0).getQuadrant().getId();
-  }
-
-  public Long getRingId() {
-    return blipEvents.get(0).getRing().getId();
-  }
-
-  public List<BlipEvent> getBlipEvents() {
-    return blipEvents;
-  }
-
-  public void setBlipEvents(List<BlipEvent> blipEvents) {
-    this.blipEvents = blipEvents;
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (!(o instanceof Blip blip)) {
-      return false;
-    }
-
-    if (!id.equals(blip.id)) {
-      return false;
-    }
-    if (!name.equals(blip.name)) {
-      return false;
-    }
-    if (!Objects.equals(description, blip.description)) {
-      return false;
-    }
-    if (!radar.equals(blip.radar)) {
-      return false;
-    }
-    return Objects.equals(blipEvents, blip.blipEvents);
-  }
-
-  @Override
-  public int hashCode() {
-    int result = id.hashCode();
-    result = 31 * result + name.hashCode();
-    result = 31 * result + (description != null ? description.hashCode() : 0);
-    result = 31 * result + radar.hashCode();
-    result = 31 * result + (blipEvents != null ? blipEvents.hashCode() : 0);
-    return result;
   }
 }

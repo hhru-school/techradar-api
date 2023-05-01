@@ -33,14 +33,14 @@ public class Radar extends AuditableEntity<Long> {
   @ManyToOne
   @JoinColumn(name = "author_id", nullable = false)
   private User author;
-//
-  @OneToMany(mappedBy = "radar", fetch = FetchType.LAZY)
+
+  @OneToMany(mappedBy = "radar", fetch = FetchType.EAGER)
   private List<Blip> blips = new ArrayList<>();
 
-  @OneToMany(mappedBy = "radar", fetch = FetchType.LAZY)
+  @OneToMany(mappedBy = "radar", fetch = FetchType.EAGER)
   private List<Ring> rings = new ArrayList<>();
 
-  @OneToMany(mappedBy = "radar", fetch = FetchType.LAZY)
+  @OneToMany(mappedBy = "radar", fetch = FetchType.EAGER)
   private List<Quadrant> quadrants = new ArrayList<>();
 
   public Radar() {

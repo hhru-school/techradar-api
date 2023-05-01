@@ -32,7 +32,7 @@ public class RadarController {
       @QueryParam("actualDate") Instant actualDate,
       @QueryParam("blipEventId") Long blipEventId) {
     return Response
-        .ok(radarMapper.toDto(radarService.findByIdAndFilter(id, actualDate, blipEventId)))
+        .ok(radarMapper.toDto(radarService.findById(id)))
         .build();
   }
 

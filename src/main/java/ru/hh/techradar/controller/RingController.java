@@ -4,7 +4,6 @@ import jakarta.inject.Inject;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
-import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
@@ -65,22 +64,22 @@ public class RingController {
         .build();
   }
 
-  @PUT
-  @Path("/{id}")
-  @Consumes(MediaType.APPLICATION_JSON)
-  @Produces(MediaType.APPLICATION_JSON)
-  public Response update(@PathParam("id") Long id, RingDto dto) {
-    return Response
-        .ok(ringMapper.toDto(ringService.update(id, ringMapper.toEntity(dto))))
-        .build();
-  }
-
-  @GET
-  @Path("/archive/{id}")
-  public Response archiveById(@PathParam("id") Long id) {
-    ringService.archiveById(id);
-    return Response
-        .status(Response.Status.NO_CONTENT)
-        .build();
-  }
+//  @PUT
+//  @Path("/{id}")
+//  @Consumes(MediaType.APPLICATION_JSON)
+//  @Produces(MediaType.APPLICATION_JSON)
+//  public Response update(@PathParam("id") Long id, RingDto dto) {
+//    return Response
+//        .ok(ringMapper.toDto(ringService.update(id, ringMapper.toEntity(dto))))
+//        .build();
+//  }
+//
+//  @GET
+//  @Path("/archive/{id}")
+//  public Response archiveById(@PathParam("id") Long id) {
+//    ringService.archiveById(id);
+//    return Response
+//        .status(Response.Status.NO_CONTENT)
+//        .build();
+//  }
 }

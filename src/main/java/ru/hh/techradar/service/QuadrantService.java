@@ -6,7 +6,6 @@ import java.util.Objects;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.hh.techradar.entity.Quadrant;
-import ru.hh.techradar.entity.QuadrantSetting;
 import ru.hh.techradar.entity.Radar;
 import ru.hh.techradar.exception.NotFoundException;
 import ru.hh.techradar.repository.QuadrantRepository;
@@ -33,24 +32,24 @@ public class QuadrantService {
 
   }
 
-  @Transactional
-  public void archiveById(Long id) {
-    Quadrant found = quadrantRepository.findById(id).orElseThrow(() -> new NotFoundException(Quadrant.class, id));
-    if (Objects.isNull(found.getRemovedAt())) {
-      found.setRemovedAt(Instant.now());
-      quadrantRepository.update(found);
-    }
-  }
+//  @Transactional
+//  public void archiveById(Long id) {
+//    Quadrant found = quadrantRepository.findById(id).orElseThrow(() -> new NotFoundException(Quadrant.class, id));
+//    if (Objects.isNull(found.getRemovedAt())) {
+//      found.setRemovedAt(Instant.now());
+//      quadrantRepository.update(found);
+//    }
+//  }
 
-  @Transactional
-  public Quadrant update(Long id, Quadrant entity) {
-    Quadrant found = quadrantRepository.findById(id).orElseThrow(() -> new NotFoundException(Quadrant.class, id));
-    found.setLastChangeTime(Instant.now());
-    QuadrantSetting setting = entity.getCurrentSetting();
-    setting.setQuadrant(found);
-    found.getSettings().add(setting);
-    return quadrantRepository.update(found);
-  }
+//  @Transactional
+//  public Quadrant update(Long id, Quadrant entity) {
+//    Quadrant found = quadrantRepository.findById(id).orElseThrow(() -> new NotFoundException(Quadrant.class, id));
+//    found.setLastChangeTime(Instant.now());
+//    QuadrantSetting setting = entity.getCurrentSetting();
+//    setting.setQuadrant(found);
+//    found.getSettings().add(setting);
+//    return quadrantRepository.update(found);
+//  }
 
   @Transactional
   public Quadrant save(Radar radar, Quadrant entity) {

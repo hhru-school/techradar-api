@@ -3,6 +3,7 @@ package ru.hh.techradar.config;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import ru.hh.techradar.controller.BlipController;
 import ru.hh.techradar.controller.CompanyController;
 import ru.hh.techradar.controller.QuadrantController;
 import ru.hh.techradar.controller.RadarController;
@@ -25,6 +26,7 @@ public class ContextConfig {
     resourceConfig.register(PreRequestFilter.class);
     resourceConfig.register(RingController.class);
     resourceConfig.register(RadarController.class);
+    resourceConfig.register(BlipController.class);
     return resourceConfig;
   }
 }

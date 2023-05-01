@@ -11,31 +11,14 @@ import ru.hh.techradar.repository.RadarRepository;
 
 @Service
 public class RadarService {
-  private final BlipEventService blipEventService;
   private final RadarRepository radarRepository;
-  private final QuadrantService quadrantService;
-  private final RingService ringService;
-  private final BlipService blipService;
   private final CompanyService companyService;
 
   public RadarService(
-      BlipEventService blipEventService,
       RadarRepository radarRepository,
-      QuadrantService quadrantService,
-      RingService ringService,
-      BlipService blipService,
       CompanyService companyService) {
-    this.blipEventService = blipEventService;
     this.radarRepository = radarRepository;
-    this.quadrantService = quadrantService;
-    this.ringService = ringService;
-    this.blipService = blipService;
     this.companyService = companyService;
-  }
-
-
-  public Radar findById(Long id) {
-    return radarRepository.findById(id).orElseThrow(() -> new NotFoundException(Radar.class, id));
   }
 
   @Transactional(readOnly = true)
@@ -46,20 +29,7 @@ public class RadarService {
   }
 
   @Transactional(readOnly = true)
-  public Radar findByIdAndFilter(Long id, Instant actualDate, Long blipEventId) {
-    Instant date = getActualDate(actualDate, blipEventId);
-    Radar radar = radarRepository.findById(id).orElseThrow(() -> new NotFoundException(Radar.class, id));
-    radar.setQuadrants(quadrantService.findAllByFilter(radar.getId(), date));
-    radar.setRings(ringService.findAllByFilter(radar.getId(), date));
-    radar.setBlips(blipService.findAllByFilter(radar.getId(), date));
-    return radar;
-  }
-  private Instant getActualDate(Instant actualDate, Long blipEventId) {
-    if(actualDate != null) {
-      return actualDate;
-    } else if (blipEventId != null) {
-      return blipEventService.findById(blipEventId).getCreationTime();
-    }
-    return Instant.now();
+  public Radar findById(Long id) {
+    return radarRepository.findById(id).orElseThrow(() -> new NotFoundException(Radar.class, id));
   }
 }

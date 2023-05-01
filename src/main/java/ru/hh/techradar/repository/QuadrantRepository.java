@@ -18,14 +18,7 @@ public class QuadrantRepository extends BaseRepositoryImpl<Long, Quadrant> {
 
   public List<Quadrant> findAllByFilter(Long radarId, Instant actualDate) {
     return sessionFactory.getCurrentSession()
-        .createQuery("SELECT q FROM Quadrant q " +
-                "LEFT JOIN FETCH q.settings qs " +
-                "WHERE q.radar.id = :radarId " +
-                "AND q.creationTime <= :actualDate " +
-                "AND (q.removedAt IS NULL OR q.removedAt > :actualDate) " +
-                "AND qs.creationTime IN(SELECT max(qs2.creationTime) FROM QuadrantSetting qs2 WHERE qs2.quadrant.id = q.id AND qs2.creationTime <= :actualDate) " +
-                "ORDER BY qs.position"
-            , Quadrant.class)
+        .createQuery("SELECT q FROM Quadrant q WHERE q.radar.id = :radarId ", Quadrant.class)
         .setParameter("radarId", radarId)
         .setParameter("actualDate", actualDate)
         .getResultList();
@@ -33,7 +26,7 @@ public class QuadrantRepository extends BaseRepositoryImpl<Long, Quadrant> {
 
   public Optional<Quadrant> findById(Long id) {
     return sessionFactory.getCurrentSession()
-        .createQuery("SELECT q FROM Quadrant q LEFT JOIN FETCH q.settings s WHERE q.id = :id", Quadrant.class)
+        .createQuery("SELECT q FROM Quadrant q WHERE q.id = :id", Quadrant.class)
         .setParameter("id", id)
         .uniqueResultOptional();
   }

@@ -1,6 +1,5 @@
 package ru.hh.techradar.entity;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -9,13 +8,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Objects;
 
 @Entity
 @Table(name = "quadrant")
@@ -25,21 +19,23 @@ public class Quadrant extends AuditableEntity<Long> {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "quadrant_id", nullable = false)
   private Long id;
-
-  @Column(name = "removed_at")
-  private Instant removedAt;
+  @Column(name = "name")
+  private String name;
+  @Column(name = "position")
+  private Integer position;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "radar_id", nullable = false)
   private Radar radar;
 
-  @OneToMany(mappedBy = "quadrant", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-  private List<QuadrantSetting> settings = new ArrayList<>();
-
   public Quadrant() {
   }
 
-  public Quadrant(Radar radar) {
+  public Quadrant(Instant creationTime, Instant lastChangeTime, Long id, String name, Integer position, Radar radar) {
+    super(creationTime, lastChangeTime);
+    this.id = id;
+    this.name = name;
+    this.position = position;
     this.radar = radar;
   }
 
@@ -51,12 +47,20 @@ public class Quadrant extends AuditableEntity<Long> {
     this.id = id;
   }
 
-  public Instant getRemovedAt() {
-    return removedAt;
+  public String getName() {
+    return name;
   }
 
-  public void setRemovedAt(Instant removedAt) {
-    this.removedAt = removedAt;
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  public Integer getPosition() {
+    return position;
+  }
+
+  public void setPosition(Integer position) {
+    this.position = position;
   }
 
   public Radar getRadar() {
@@ -65,36 +69,5 @@ public class Quadrant extends AuditableEntity<Long> {
 
   public void setRadar(Radar radar) {
     this.radar = radar;
-  }
-
-  public List<QuadrantSetting> getSettings() {
-    return settings;
-  }
-
-  public void setSettings(List<QuadrantSetting> settings) {
-    this.settings = settings;
-  }
-
-  public QuadrantSetting getCurrentSetting() {
-    return settings.stream()
-        .sorted(Comparator.comparing(QuadrantSetting::getId).reversed())
-        .toList().get(0);
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
-    }
-    Quadrant quadrant = (Quadrant) o;
-    return Objects.equals(id, quadrant.id) && Objects.equals(removedAt, quadrant.removedAt);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(id, removedAt);
   }
 }

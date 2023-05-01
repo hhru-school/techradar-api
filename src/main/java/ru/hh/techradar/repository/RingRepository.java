@@ -20,22 +20,14 @@ public class RingRepository extends BaseRepositoryImpl<Long, Ring> {
 
   public List<Ring> findAllByFilter(Long radarId, Instant actualDate) {
     return sessionFactory.getCurrentSession()
-        .createQuery("SELECT r FROM Ring r " +
-                "LEFT JOIN FETCH r.settings rs " +
-                "WHERE r.radar.id = :radarId " +
-                "AND r.creationTime <= :actualDate " +
-                "AND (r.removedAt IS NULL OR r.removedAt > :actualDate) " +
-                "AND rs.creationTime IN(SELECT max(rs2.creationTime) FROM RingSetting rs2 WHERE rs2.ring.id = r.id AND rs2.creationTime <= :actualDate) " +
-                "ORDER BY rs.position"
-            , Ring.class)
+        .createQuery("SELECT r FROM Ring r WHERE r.radar.id = :radarId ", Ring.class)
         .setParameter("radarId", radarId)
-        .setParameter("actualDate", actualDate)
         .getResultList();
   }
 
   public Optional<Ring> findById(Long id) {
     return sessionFactory.getCurrentSession()
-        .createQuery("SELECT r FROM Ring r LEFT JOIN FETCH r.settings s WHERE r.id = :id", Ring.class)
+        .createQuery("SELECT r FROM Ring r WHERE r.id = :id", Ring.class)
         .setParameter("id", id)
         .uniqueResultOptional();
   }

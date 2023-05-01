@@ -1,7 +1,5 @@
 package ru.hh.techradar.mapper;
 
-import java.util.Collection;
-import java.util.List;
 import java.util.Objects;
 import org.springframework.stereotype.Component;
 import ru.hh.techradar.dto.CompanyDto;

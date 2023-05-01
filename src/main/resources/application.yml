@@ -3,6 +3,6 @@ db:
   username: postgres
   password: postgres
   show-sql: true
-  hbm2ddl-auto: validate
+  hbm2ddl-auto: create
   dialect: org.hibernate.dialect.PostgreSQLDialect
   default-batch-fetch-size: 10

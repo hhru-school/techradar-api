@@ -2,7 +2,6 @@ package ru.hh.techradar.mapper;
 
 import java.util.Collection;
 import java.util.List;
-import org.hibernate.proxy.HibernateProxy;
 import org.springframework.stereotype.Component;
 import ru.hh.techradar.dto.RadarDto;
 import ru.hh.techradar.dto.RadarShortDto;
@@ -31,15 +30,9 @@ public class RadarMapper extends AbstractMapper<Radar, RadarDto> {
     RadarDto radarDto = new RadarDto();
     radarDto.setId(entity.getId());
     radarDto.setName(entity.getName());
-    if (!(entity.getQuadrants() instanceof HibernateProxy)) {
-      radarDto.setQuadrants(quadrantMapper.toDtos(entity.getQuadrants()));
-    }
-    if (!(entity.getRings() instanceof HibernateProxy)) {
-      radarDto.setRings(ringMapper.toDtos(entity.getRings()));
-    }
-    if (!(entity.getBlips() instanceof HibernateProxy)) {
-      radarDto.setBlips(blipMapper.toDtos(entity.getBlips()));
-    }
+    radarDto.setQuadrants(quadrantMapper.toDtos(entity.getQuadrants()));
+    radarDto.setRings(ringMapper.toDtos(entity.getRings()));
+    radarDto.setBlips(blipMapper.toDtos(entity.getBlips()));
     return radarDto;
   }
 

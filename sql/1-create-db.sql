@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS company
     creation_time    TIMESTAMP    NOT NULL,
     last_change_time TIMESTAMP    NOT NULL,
     PRIMARY KEY (company_id)
-    );
+);
 
 
 -- -----------------------------------------------------
@@ -29,11 +29,11 @@ CREATE TABLE IF NOT EXISTS tr_user
     last_change_time TIMESTAMP    NOT NULL,
     PRIMARY KEY (user_id),
     CONSTRAINT fk_user_company1
-    FOREIGN KEY (company_id)
-    REFERENCES company (company_id)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION
-    );
+        FOREIGN KEY (company_id)
+            REFERENCES company (company_id)
+            ON DELETE NO ACTION
+            ON UPDATE NO ACTION
+);
 
 CREATE INDEX fk_user_company1_idx ON tr_user (company_id ASC);
 
@@ -53,16 +53,16 @@ CREATE TABLE IF NOT EXISTS radar
     last_change_time TIMESTAMP   NOT NULL,
     PRIMARY KEY (radar_id),
     CONSTRAINT fk_radar_company1
-    FOREIGN KEY (company_id)
-    REFERENCES company (company_id)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+        FOREIGN KEY (company_id)
+            REFERENCES company (company_id)
+            ON DELETE NO ACTION
+            ON UPDATE NO ACTION,
     CONSTRAINT fk_radar_user1
-    FOREIGN KEY (author_id)
-    REFERENCES tr_user (user_id)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION
-    );
+        FOREIGN KEY (author_id)
+            REFERENCES tr_user (user_id)
+            ON DELETE NO ACTION
+            ON UPDATE NO ACTION
+);
 
 CREATE INDEX fk_radar_company1_idx ON radar (company_id ASC);
 
@@ -74,18 +74,19 @@ CREATE INDEX fk_radar_user1_idx ON radar (author_id ASC);
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS ring
 (
-    ring_id          BIGSERIAL,
-    removed_at       TIMESTAMP NULL,
-    radar_id         BIGINT    NOT NULL,
-    creation_time    TIMESTAMP NOT NULL,
-    last_change_time TIMESTAMP NOT NULL,
+    ring_id          BIGSERIAL   NOT NULL,
+    name             VARCHAR(45) NOT NULL,
+    position         BIGINT      NOT NULL,
+    radar_id         BIGINT      NOT NULL,
+    creation_time    TIMESTAMP   NOT NULL,
+    last_change_time TIMESTAMP   NOT NULL,
     PRIMARY KEY (ring_id),
     CONSTRAINT fk_ring_radar1
-    FOREIGN KEY (radar_id)
-    REFERENCES radar (radar_id)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION
-    );
+        FOREIGN KEY (radar_id)
+            REFERENCES radar (radar_id)
+            ON DELETE NO ACTION
+            ON UPDATE NO ACTION
+);
 
 CREATE INDEX fk_ring_radar1_idx ON ring (radar_id ASC);
 
@@ -95,20 +96,22 @@ CREATE INDEX fk_ring_radar1_idx ON ring (radar_id ASC);
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS quadrant
 (
-    quadrant_id      BIGSERIAL,
-    removed_at       TIMESTAMP NULL,
-    radar_id         BIGINT    NOT NULL,
-    creation_time    TIMESTAMP NOT NULL,
-    last_change_time TIMESTAMP NOT NULL,
+    quadrant_id      BIGSERIAL   NOT NULL,
+    name             VARCHAR(45) NOT NULL,
+    position         BIGINT      NOT NULL,
+    radar_id         BIGINT      NOT NULL,
+    creation_time    TIMESTAMP   NOT NULL,
+    last_change_time TIMESTAMP   NOT NULL,
     PRIMARY KEY (quadrant_id),
     CONSTRAINT fk_sector_radar1
-    FOREIGN KEY (radar_id)
-    REFERENCES radar (radar_id)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION
-    );
+        FOREIGN KEY (radar_id)
+            REFERENCES radar (radar_id)
+            ON DELETE NO ACTION
+            ON UPDATE NO ACTION
+);
 
 CREATE INDEX fk_sector_radar1_idx ON quadrant (radar_id ASC);
+
 
 
 -- -----------------------------------------------------
@@ -116,108 +119,34 @@ CREATE INDEX fk_sector_radar1_idx ON quadrant (radar_id ASC);
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS blip
 (
-    blip_id          BIGSERIAL,
+    blip_id          BIGSERIAL    NOT NULL,
     name             VARCHAR(45)  NOT NULL,
     description      VARCHAR(500) NULL,
+    quadrant_id      BIGINT       NOT NULL,
+    ring_id          BIGINT       NOT NULL,
     radar_id         BIGINT       NOT NULL,
     creation_time    TIMESTAMP    NOT NULL,
     last_change_time TIMESTAMP    NOT NULL,
     PRIMARY KEY (blip_id),
-    CONSTRAINT fk_technology_radar1
-    FOREIGN KEY (radar_id)
-    REFERENCES radar (radar_id)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION
-    );
+    CONSTRAINT fk_blip_quadrant1
+        FOREIGN KEY (quadrant_id)
+            REFERENCES quadrant (quadrant_id)
+            ON DELETE NO ACTION
+            ON UPDATE NO ACTION,
+    CONSTRAINT fk_blip_ring1
+        FOREIGN KEY (ring_id)
+            REFERENCES ring (ring_id)
+            ON DELETE NO ACTION
+            ON UPDATE NO ACTION,
+    CONSTRAINT fk_blip_radar1
+        FOREIGN KEY (radar_id)
+            REFERENCES radar (radar_id)
+            ON DELETE NO ACTION
+            ON UPDATE NO ACTION
+);
 
-CREATE INDEX fk_technology_radar1_idx ON blip (radar_id ASC);
+CREATE INDEX fk_blip_quadrant1_idx ON blip (quadrant_id ASC);
 
+CREATE INDEX fk_blip_ring1_idx ON blip (ring_id ASC);
 
--- -----------------------------------------------------
--- Table blip_event
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS blip_event
-(
-    blip_event_id    BIGSERIAL,
-    comment          VARCHAR(500) NULL,
-    version_name     VARCHAR(128) NULL,
-    blip_id          BIGINT       NOT NULL,
-    quadrant_id      BIGINT       NOT NULL,
-    ring_id          BIGINT       NOT NULL,
-    author_id        BIGINT       NOT NULL,
-    creation_time    TIMESTAMP    NOT NULL,
-    last_change_time TIMESTAMP    NOT NULL,
-    PRIMARY KEY (blip_event_id),
-    CONSTRAINT fk_technology_log_technology1
-    FOREIGN KEY (blip_id)
-    REFERENCES blip (blip_id)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-    CONSTRAINT fk_technology_log_sector1
-    FOREIGN KEY (quadrant_id)
-    REFERENCES quadrant (quadrant_id)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-    CONSTRAINT fk_technology_log_ring1
-    FOREIGN KEY (ring_id)
-    REFERENCES ring (ring_id)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-    CONSTRAINT fk_technology_log_user1
-    FOREIGN KEY (author_id)
-    REFERENCES tr_user (user_id)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION
-    );
-
-CREATE INDEX fk_technology_log_technology1_idx ON blip_event (blip_id ASC);
-
-CREATE INDEX fk_technology_log_sector1_idx ON blip_event (quadrant_id ASC);
-
-CREATE INDEX fk_technology_log_ring1_idx ON blip_event (ring_id ASC);
-
-CREATE INDEX fk_technology_log_user1_idx ON blip_event (author_id ASC);
-
-
--- -----------------------------------------------------
--- Table ring_setting
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS ring_setting
-(
-    ring_setting_id  BIGSERIAL,
-    name             VARCHAR(45) NOT NULL,
-    position         INT         NOT NULL,
-    creation_time    TIMESTAMP   NOT NULL,
-    last_change_time TIMESTAMP   NOT NULL,
-    ring_id          BIGINT      NOT NULL,
-    PRIMARY KEY (ring_setting_id),
-    CONSTRAINT fk_ring_setting_ring1
-    FOREIGN KEY (ring_id)
-    REFERENCES ring (ring_id)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION
-    );
-
-CREATE INDEX fk_ring_setting_ring1_idx ON ring_setting (ring_id ASC);
-
-
--- -----------------------------------------------------
--- Table quadrant_setting
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS quadrant_setting
-(
-    quadrant_setting_id BIGSERIAL,
-    name                VARCHAR(45) NOT NULL,
-    position            INT         NOT NULL,
-    creation_time       TIMESTAMP   NOT NULL,
-    last_change_time    TIMESTAMP   NOT NULL,
-    quadrant_id         BIGINT      NOT NULL,
-    PRIMARY KEY (quadrant_setting_id),
-    CONSTRAINT fk_quadrant_setting_quadrant1
-    FOREIGN KEY (quadrant_id)
-    REFERENCES quadrant (quadrant_id)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION
-    );
-
-CREATE INDEX fk_quadrant_setting_quadrant1_idx ON quadrant_setting (quadrant_id ASC);
+CREATE INDEX fk_blip_radar1_idx ON blip (radar_id ASC);

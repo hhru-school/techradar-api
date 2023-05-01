@@ -2,32 +2,26 @@ package ru.hh.techradar.dto;
 
 import jakarta.validation.constraints.NotNull;
 
-public class BlipDto {
-  @NotNull
-  private Long id;
+public class BlipCreateDto {
   @NotNull
   private String name;
   private String description;
+  @NotNull
   private Long quadrantId;
+  @NotNull
   private Long ringId;
+  @NotNull
   private Long radarId;
 
-  public BlipDto() {
+  public BlipCreateDto() {
   }
 
-  public BlipDto(Long id, String name, String description, Long radarId) {
-    this.id = id;
+  public BlipCreateDto(String name, String description, Long quadrantId, Long ringId, Long radarId) {
     this.name = name;
     this.description = description;
+    this.quadrantId = quadrantId;
+    this.ringId = ringId;
     this.radarId = radarId;
-  }
-
-  public Long getId() {
-    return id;
-  }
-
-  public void setId(Long id) {
-    this.id = id;
   }
 
   public String getName() {
