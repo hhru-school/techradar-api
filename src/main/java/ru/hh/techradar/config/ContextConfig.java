@@ -8,6 +8,8 @@ import ru.hh.techradar.controller.CompanyController;
 import ru.hh.techradar.controller.QuadrantController;
 import ru.hh.techradar.controller.RadarController;
 import ru.hh.techradar.controller.RingController;
+import ru.hh.techradar.controller.UserController;
+import ru.hh.techradar.controller.VersionController;
 import ru.hh.techradar.exception.DateParseExceptionMapper;
 import ru.hh.techradar.exception.NotFoundExceptionMapper;
 import ru.hh.techradar.util.DateFormatParamConverterProvider;
@@ -27,6 +29,8 @@ public class ContextConfig {
     resourceConfig.register(RingController.class);
     resourceConfig.register(RadarController.class);
     resourceConfig.register(BlipController.class);
+    resourceConfig.register(UserController.class);
+    resourceConfig.register(VersionController.class);
     return resourceConfig;
   }
 }

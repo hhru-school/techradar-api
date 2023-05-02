@@ -8,7 +8,10 @@ import ru.hh.techradar.entity.Quadrant;
 public class QuadrantMapper extends AbstractMapper<Quadrant, QuadrantDto> {
   @Override
   public Quadrant toEntity(QuadrantDto dto) {
-    return null;
+    Quadrant quadrant = new Quadrant();
+    quadrant.setName(dto.getName());
+    quadrant.setPosition(dto.getPosition());
+    return quadrant;
   }
 
   @Override

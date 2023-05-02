@@ -52,8 +52,8 @@ public class QuadrantService {
 //  }
 
   @Transactional
-  public Quadrant save(Radar radar, Quadrant entity) {
-    entity.setRadar(radar);
-    return quadrantRepository.save(entity);
+  public Quadrant save(Radar radar, Quadrant quadrant) {
+    quadrant.setRadar(radar);
+    return quadrantRepository.save(quadrant);
   }
 }

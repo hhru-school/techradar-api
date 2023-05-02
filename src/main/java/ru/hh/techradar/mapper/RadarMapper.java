@@ -3,6 +3,7 @@ package ru.hh.techradar.mapper;
 import java.util.Collection;
 import java.util.List;
 import org.springframework.stereotype.Component;
+import ru.hh.techradar.dto.RadarCreateDto;
 import ru.hh.techradar.dto.RadarDto;
 import ru.hh.techradar.dto.RadarShortDto;
 import ru.hh.techradar.entity.Radar;
@@ -22,7 +23,9 @@ public class RadarMapper extends AbstractMapper<Radar, RadarDto> {
 
   @Override
   public Radar toEntity(RadarDto dto) {
-    return null;
+    Radar radar = new Radar();
+    radar.setName(dto.getName());
+    return radar;
   }
 
   @Override
@@ -30,10 +33,18 @@ public class RadarMapper extends AbstractMapper<Radar, RadarDto> {
     RadarDto radarDto = new RadarDto();
     radarDto.setId(entity.getId());
     radarDto.setName(entity.getName());
+    radarDto.setAuthorId(entity.getAuthor().getId());
+    radarDto.setCompanyId(entity.getCompany().getId());
     radarDto.setQuadrants(quadrantMapper.toDtos(entity.getQuadrants()));
     radarDto.setRings(ringMapper.toDtos(entity.getRings()));
     radarDto.setBlips(blipMapper.toDtos(entity.getBlips()));
     return radarDto;
+  }
+
+  public Radar toEntityFromCreateDto(RadarCreateDto dto) {
+    Radar radar = new Radar();
+    radar.setName(dto.getName());
+    return radar;
   }
 
   public RadarShortDto toShortDto(Radar entity) {

@@ -8,11 +8,10 @@ import ru.hh.techradar.entity.Ring;
 public class RingMapper extends AbstractMapper<Ring, RingDto> {
   @Override
   public Ring toEntity(RingDto dto) {
-//    Ring ring = new Ring();
-//    RingSetting setting = new RingSetting(dto.getName(), dto.getPosition(), ring);
-//    ring.setSettings(List.of(setting));
-//    return ring;
-    return null;
+    Ring ring = new Ring();
+    ring.setName(dto.getName());
+    ring.setPosition(dto.getPosition());
+    return ring;
   }
 
   @Override
@@ -23,7 +22,5 @@ public class RingMapper extends AbstractMapper<Ring, RingDto> {
     dto.setPosition(entity.getPosition());
     return dto;
   }
-
-
 
 }

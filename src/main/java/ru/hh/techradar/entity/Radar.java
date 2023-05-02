@@ -1,5 +1,6 @@
 package ru.hh.techradar.entity;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -13,7 +14,9 @@ import jakarta.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import org.hibernate.envers.Audited;
 
+@Audited
 @Entity
 @Table(name = "radar")
 public class Radar extends AuditableEntity<Long> {
@@ -34,14 +37,13 @@ public class Radar extends AuditableEntity<Long> {
   @JoinColumn(name = "author_id", nullable = false)
   private User author;
 
-  @OneToMany(mappedBy = "radar", fetch = FetchType.EAGER)
+  @OneToMany(mappedBy = "radar", fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+  private List<Quadrant> quadrants = new ArrayList<>();
+  @OneToMany(mappedBy = "radar", fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+  private List<Ring> rings = new ArrayList<>();
+  @OneToMany(mappedBy = "radar", fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
   private List<Blip> blips = new ArrayList<>();
 
-  @OneToMany(mappedBy = "radar", fetch = FetchType.EAGER)
-  private List<Ring> rings = new ArrayList<>();
-
-  @OneToMany(mappedBy = "radar", fetch = FetchType.EAGER)
-  private List<Quadrant> quadrants = new ArrayList<>();
 
   public Radar() {
   }
@@ -107,6 +109,7 @@ public class Radar extends AuditableEntity<Long> {
   public void setQuadrants(List<Quadrant> quadrants) {
     this.quadrants = quadrants;
   }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -123,5 +126,18 @@ public class Radar extends AuditableEntity<Long> {
   @Override
   public int hashCode() {
     return Objects.hash(id, name);
+  }
+
+  @Override
+  public String toString() {
+    return "Radar{" +
+        "id=" + id +
+        ", name='" + name + '\'' +
+        ", company=" + company +
+        ", author=" + author +
+        ", blips=" + blips +
+        ", rings=" + rings +
+        ", quadrants=" + quadrants +
+        '}';
   }
 }

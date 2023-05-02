@@ -4,6 +4,7 @@ import java.time.Instant;
 import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.hh.techradar.dto.BlipDto;
 import ru.hh.techradar.entity.Blip;
 import ru.hh.techradar.exception.NotFoundException;
 import ru.hh.techradar.mapper.BlipMapper;
@@ -47,11 +48,12 @@ public class BlipService {
   }
 
   @Transactional
-  public Blip save(Blip entity, Long quadrantId, Long ringId, Long radarId) {
-    entity.setQuadrant(quadrantService.findById(quadrantId));
-    entity.setRing(ringService.findById(ringId));
-    entity.setRadar(radarService.findById(radarId));
-    return blipRepository.save(entity);
+  public Blip save(BlipDto dto) {
+    Blip blip = blipMapper.toEntity(dto);
+    blip.setQuadrant(quadrantService.findById(dto.getQuadrantId()));
+    blip.setRing(ringService.findById(dto.getRingId()));
+    blip.setRadar(radarService.findById(dto.getRadarId()));
+    return blipRepository.save(blip);
   }
 
   @Transactional(readOnly = true)

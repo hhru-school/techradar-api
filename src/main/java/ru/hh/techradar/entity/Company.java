@@ -7,7 +7,9 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.util.Objects;
+import org.hibernate.envers.Audited;
 
+@Audited
 @Entity
 @Table(name = "company")
 public class Company extends AuditableEntity<Long> {

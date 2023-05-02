@@ -2,6 +2,7 @@ package ru.hh.techradar.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -9,7 +10,9 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.util.Objects;
+import org.hibernate.envers.Audited;
 
+@Audited
 @Entity
 @Table(name = "tr_user")
 public class User extends AuditableEntity<Long> {
@@ -25,17 +28,16 @@ public class User extends AuditableEntity<Long> {
   @Column(name = "password", nullable = false)
   private String password;
 
-  @ManyToOne
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "company_id", nullable = false)
   private Company company;
 
   public User() {
   }
 
-  public User(String username, String password, Company company) {
+  public User(String username, String password) {
     this.username = username;
     this.password = password;
-    this.company = company;
   }
 
   public Long getId() {
@@ -79,14 +81,11 @@ public class User extends AuditableEntity<Long> {
       return false;
     }
     User user = (User) o;
-    return Objects.equals(id, user.id) && Objects.equals(username, user.username) && Objects.equals(
-        password,
-        user.password
-    );
+    return Objects.equals(username, user.username);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, username, password);
+    return Objects.hash(username);
   }
 }

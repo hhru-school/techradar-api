@@ -5,6 +5,8 @@ import java.util.List;
 public class RadarDto {
   private Long id;
   private String name;
+  private Long authorId;
+  private Long companyId;
   private List<QuadrantDto> quadrants;
   private List<RingDto> rings;
   private List<BlipDto> blips;
@@ -12,9 +14,11 @@ public class RadarDto {
   public RadarDto() {
   }
 
-  public RadarDto(Long id, String name, List<QuadrantDto> quadrants, List<RingDto> rings, List<BlipDto> blips) {
+  public RadarDto(Long id, String name, Long authorId, Long companyId, List<QuadrantDto> quadrants, List<RingDto> rings, List<BlipDto> blips) {
     this.id = id;
     this.name = name;
+    this.authorId = authorId;
+    this.companyId = companyId;
     this.quadrants = quadrants;
     this.rings = rings;
     this.blips = blips;
@@ -58,5 +62,21 @@ public class RadarDto {
 
   public void setBlips(List<BlipDto> blips) {
     this.blips = blips;
+  }
+
+  public Long getAuthorId() {
+    return authorId;
+  }
+
+  public void setAuthorId(Long authorId) {
+    this.authorId = authorId;
+  }
+
+  public Long getCompanyId() {
+    return companyId;
+  }
+
+  public void setCompanyId(Long companyId) {
+    this.companyId = companyId;
   }
 }
