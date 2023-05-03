@@ -2,6 +2,8 @@ package ru.hh.techradar.dto;
 
 import jakarta.validation.constraints.NotNull;
 import java.util.Objects;
+import java.util.StringJoiner;
+import ru.hh.techradar.entity.Ring;
 
 public class BlipDto {
   @NotNull
@@ -66,17 +68,26 @@ public class BlipDto {
     if (this == o) {
       return true;
     }
-    if (!(o instanceof BlipDto blipDto)) {
+    if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    return Objects.equals(id, blipDto.id) && name.equals(blipDto.name) && Objects.equals(
-        description,
-        blipDto.description
-    ) && quadrantId.equals(blipDto.quadrantId) && ringId.equals(blipDto.ringId);
+    BlipDto blipDto = (BlipDto) o;
+    return id != null && id.equals(blipDto.id);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, name, description, quadrantId, ringId);
+    return 11;
+  }
+
+  @Override
+  public String toString() {
+    return new StringJoiner(", ", BlipDto.class.getSimpleName() + "[", "]")
+        .add("id=" + id)
+        .add("name='" + name + "'")
+        .add("description='" + description + "'")
+        .add("quadrantId=" + quadrantId)
+        .add("ringId=" + ringId)
+        .toString();
   }
 }

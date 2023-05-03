@@ -13,6 +13,8 @@ import jakarta.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.StringJoiner;
+import ru.hh.techradar.dto.RingDto;
 
 @Entity
 @Table(name = "blip")
@@ -95,17 +97,25 @@ public class Blip extends AuditableEntity<Long> {
     if (this == o) {
       return true;
     }
-    if (!(o instanceof Blip blip)) {
+    if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    return name.equals(blip.name) && Objects.equals(description, blip.description) && Objects.equals(
-        radar,
-        blip.radar
-    ) && Objects.equals(blipEvents, blip.blipEvents);
+    Blip blip = (Blip) o;
+    return id != null && id.equals(blip.id);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(name, description, radar, blipEvents);
+    return 11;
+  }
+
+  @Override
+  public String toString() {
+    return new StringJoiner(", ", Blip.class.getSimpleName() + "[", "]")
+        .add("id=" + id)
+        .add("name='" + name + "'")
+        .add("description='" + description + "'")
+        .add("radar=" + radar)
+        .toString();
   }
 }

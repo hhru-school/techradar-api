@@ -121,49 +121,16 @@ public class BlipEventDto {
     if (this == o) {
       return true;
     }
-    if (!(o instanceof BlipEventDto that)) {
+    if (o == null || getClass() != o.getClass()) {
       return false;
     }
-
-    if (!Objects.equals(id, that.id)) {
-      return false;
-    }
-    if (!Objects.equals(comment, that.comment)) {
-      return false;
-    }
-    if (!Objects.equals(versionName, that.versionName)) {
-      return false;
-    }
-    if (!blipId.equals(that.blipId)) {
-      return false;
-    }
-    if (!quadrantId.equals(that.quadrantId)) {
-      return false;
-    }
-    if (!ringId.equals(that.ringId)) {
-      return false;
-    }
-    if (!authorId.equals(that.authorId)) {
-      return false;
-    }
-    if (!Objects.equals(creationTime, that.creationTime)) {
-      return false;
-    }
-    return Objects.equals(lastChangeTime, that.lastChangeTime);
+    BlipEventDto blipEventDto = (BlipEventDto) o;
+    return id != null && id.equals(blipEventDto.id);
   }
 
   @Override
   public int hashCode() {
-    int result = id != null ? id.hashCode() : 0;
-    result = 31 * result + (comment != null ? comment.hashCode() : 0);
-    result = 31 * result + (versionName != null ? versionName.hashCode() : 0);
-    result = 31 * result + blipId.hashCode();
-    result = 31 * result + quadrantId.hashCode();
-    result = 31 * result + ringId.hashCode();
-    result = 31 * result + authorId.hashCode();
-    result = 31 * result + (creationTime != null ? creationTime.hashCode() : 0);
-    result = 31 * result + (lastChangeTime != null ? lastChangeTime.hashCode() : 0);
-    return result;
+    return 11;
   }
 
   @Override

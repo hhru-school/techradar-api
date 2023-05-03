@@ -9,6 +9,8 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.time.Instant;
+import java.util.Objects;
+import java.util.StringJoiner;
 
 @Entity
 @Table(name = "blip_event")
@@ -113,5 +115,33 @@ public class BlipEvent extends AuditableEntity<Long> {
     this.user = user;
   }
 
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    BlipEvent blipEvent = (BlipEvent) o;
+    return id != null && Objects.equals(id, blipEvent.id);
+  }
 
+  @Override
+  public int hashCode() {
+    return 11;
+  }
+
+  @Override
+  public String toString() {
+    return new StringJoiner(", ", BlipEvent.class.getSimpleName() + "[", "]")
+        .add("id=" + id)
+        .add("comment='" + comment + "'")
+        .add("versionName='" + versionName + "'")
+        .add("blip=" + blip)
+        .add("quadrant=" + quadrant)
+        .add("ring=" + ring)
+        .add("user=" + user)
+        .toString();
+  }
 }
