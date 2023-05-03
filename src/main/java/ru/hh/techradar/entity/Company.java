@@ -7,6 +7,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.util.Objects;
+import java.util.StringJoiner;
 
 @Entity
 @Table(name = "company")
@@ -53,19 +54,19 @@ public class Company extends AuditableEntity<Long> {
       return false;
     }
     Company company = (Company) o;
-    return id.equals(company.id) && name.equals(company.name);
+    return id != null && id.equals(company.id);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, name);
+    return 11;
   }
 
   @Override
   public String toString() {
-    return "Company{" +
-        "id=" + id +
-        ", name='" + name + '\'' +
-        '}';
+    return new StringJoiner(", ", Company.class.getSimpleName() + "[", "]")
+        .add("id=" + id)
+        .add("name='" + name + "'")
+        .toString();
   }
 }
