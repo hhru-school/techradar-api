@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+import java.util.StringJoiner;
 
 @Entity
 @Table(name = "quadrant")
@@ -90,11 +91,19 @@ public class Quadrant extends AuditableEntity<Long> {
       return false;
     }
     Quadrant quadrant = (Quadrant) o;
-    return Objects.equals(id, quadrant.id) && Objects.equals(removedAt, quadrant.removedAt);
+    return id != null && id.equals(quadrant.id);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, removedAt);
+    return 11;
+  }
+
+  @Override
+  public String toString() {
+    return new StringJoiner(", ", Quadrant.class.getSimpleName() + "[", "]")
+        .add("id=" + id)
+        .add("removedAt=" + removedAt)
+        .toString();
   }
 }

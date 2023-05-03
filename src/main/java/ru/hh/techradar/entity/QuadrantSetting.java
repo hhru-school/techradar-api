@@ -10,6 +10,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.util.Objects;
+import java.util.StringJoiner;
 
 @Entity
 @Table(name = "quadrant_setting")
@@ -78,14 +79,21 @@ public class QuadrantSetting extends AuditableEntity<Long> {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    QuadrantSetting that = (QuadrantSetting) o;
-    return Objects.equals(id, that.id)
-        && Objects.equals(name, that.name)
-        && Objects.equals(position, that.position);
+    QuadrantSetting setting = (QuadrantSetting) o;
+    return id != null && id.equals(setting.id);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, name, position);
+    return 11;
+  }
+
+  @Override
+  public String toString() {
+    return new StringJoiner(", ", QuadrantSetting.class.getSimpleName() + "[", "]")
+        .add("id=" + id)
+        .add("name='" + name + "'")
+        .add("position=" + position)
+        .toString();
   }
 }

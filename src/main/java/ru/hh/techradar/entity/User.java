@@ -9,6 +9,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.util.Objects;
+import java.util.StringJoiner;
 
 @Entity
 @Table(name = "tr_user")
@@ -79,14 +80,19 @@ public class User extends AuditableEntity<Long> {
       return false;
     }
     User user = (User) o;
-    return Objects.equals(id, user.id) && Objects.equals(username, user.username) && Objects.equals(
-        password,
-        user.password
-    );
+    return Objects.equals(username, user.username);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, username, password);
+    return Objects.hash(username);
+  }
+
+  @Override
+  public String toString() {
+    return new StringJoiner(", ", User.class.getSimpleName() + "[", "]")
+        .add("id=" + id)
+        .add("username='" + username + "'")
+        .toString();
   }
 }
