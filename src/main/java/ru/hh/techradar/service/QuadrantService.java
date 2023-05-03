@@ -9,7 +9,7 @@ import ru.hh.techradar.entity.Quadrant;
 import ru.hh.techradar.entity.QuadrantSetting;
 import ru.hh.techradar.entity.Radar;
 import ru.hh.techradar.exception.NotFoundException;
-import ru.hh.techradar.filter.QuadrantFilter;
+import ru.hh.techradar.filter.ComponentFilter;
 import ru.hh.techradar.repository.QuadrantRepository;
 import ru.hh.techradar.repository.RadarRepository;
 
@@ -26,7 +26,7 @@ public class QuadrantService {
   }
 
   @Transactional(readOnly = true)
-  public List<Quadrant> findAllByFilter(QuadrantFilter filter) {
+  public List<Quadrant> findAllByFilter(ComponentFilter filter) {
     return quadrantRepository.findAllByFilter(filter);
   }
 

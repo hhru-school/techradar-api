@@ -5,7 +5,7 @@ import jakarta.ws.rs.DefaultValue;
 import jakarta.ws.rs.QueryParam;
 import java.time.Instant;
 
-public class QuadrantFilter {
+public class ComponentFilter {
   @QueryParam("radarId")
   @NotNull(message = "Cannot be null property radarId")
   private Long radarId;
@@ -14,15 +14,15 @@ public class QuadrantFilter {
   @DefaultValue(value = "9999-01-01T00:00:00.000Z")
   private Instant actualDate;
 
-  public QuadrantFilter() {
+  public ComponentFilter() {
   }
 
-  public QuadrantFilter radarId(Long radarId) {
+  public ComponentFilter radarId(Long radarId) {
     this.setRadarId(radarId);
     return this;
   }
 
-  public QuadrantFilter actualDate(Instant actualDate) {
+  public ComponentFilter actualDate(Instant actualDate) {
     this.setActualDate(actualDate);
     return this;
   }
