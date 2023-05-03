@@ -1,7 +1,10 @@
 package ru.hh.techradar.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import java.util.List;
+import java.util.Objects;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class RadarDto {
   private Long id;
   private String name;
@@ -58,5 +61,24 @@ public class RadarDto {
 
   public void setBlips(List<BlipDto> blips) {
     this.blips = blips;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (!(o instanceof RadarDto radarDto)) {
+      return false;
+    }
+    return name.equals(radarDto.name) && Objects.equals(quadrants, radarDto.quadrants) && Objects.equals(
+        rings,
+        radarDto.rings
+    ) && Objects.equals(blips, radarDto.blips);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(name, quadrants, rings, blips);
   }
 }
