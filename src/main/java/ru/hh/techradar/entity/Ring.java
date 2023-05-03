@@ -15,7 +15,6 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Objects;
 
 @Entity
 @Table(name = "ring")
@@ -89,16 +88,12 @@ public class Ring extends AuditableEntity<Long> {
       return false;
     }
     Ring ring = (Ring) o;
-    return id.equals(ring.id)
-        && removedAt.equals(ring.removedAt)
-        && radar.equals(ring.radar)
-        && getCreationTime().equals(ring.getCreationTime())
-        && getLastChangeTime().equals(ring.getLastChangeTime());
+    return id != null && id.equals(ring.id);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, removedAt, radar, getCreationTime(), getLastChangeTime());
+    return 11;
   }
 
   @Override
