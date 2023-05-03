@@ -14,7 +14,7 @@ import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import ru.hh.techradar.dto.QuadrantDto;
-import ru.hh.techradar.filter.QuadrantFilter;
+import ru.hh.techradar.filter.ComponentFilter;
 import ru.hh.techradar.mapper.QuadrantMapper;
 import ru.hh.techradar.service.QuadrantService;
 
@@ -33,7 +33,7 @@ public class QuadrantController {
 
   @GET
   @Produces(MediaType.APPLICATION_JSON)
-  public Response findAllByFilter(@Valid @BeanParam QuadrantFilter filter) {
+  public Response findAllByFilter(@Valid @BeanParam ComponentFilter filter) {
     return Response
         .ok(quadrantMapper.toDtos(quadrantService.findAllByFilter(filter)))
         .build();
