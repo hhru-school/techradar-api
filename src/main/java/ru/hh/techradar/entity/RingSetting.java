@@ -9,7 +9,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import java.util.Objects;
 
 @Entity
 @Table(name = "ring_setting")
@@ -80,17 +79,12 @@ public class RingSetting extends AuditableEntity<Long> {
       return false;
     }
     RingSetting ringSetting = (RingSetting) o;
-    return id.equals(ringSetting.id)
-        && name.equals(ringSetting.name)
-        && position.equals(ringSetting.position)
-        && ring.equals(ringSetting.ring)
-        && getCreationTime().equals(ring.getCreationTime())
-        && getLastChangeTime().equals(ring.getLastChangeTime());
+    return id != null && id.equals(ringSetting.id);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, name, position, ring, getCreationTime(), getLastChangeTime());
+    return 11;
   }
 
   @Override
