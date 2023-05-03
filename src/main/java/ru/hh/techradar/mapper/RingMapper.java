@@ -24,7 +24,4 @@ public class RingMapper extends AbstractMapper<Ring, RingDto> {
     dto.setPosition(entity.getCurrentSetting().getPosition());
     return dto;
   }
-
-
-
 }
