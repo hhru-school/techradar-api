@@ -33,6 +33,7 @@ public class BlipMapper extends AbstractMapper<Blip, BlipDto> {
     blipDto.setQuadrantId(entity.getQuadrant().getId());
     blipDto.setRingId(entity.getRing().getId());
     blipDto.setRadarId(entity.getRadar().getId());
+    blipDto.setRevisionNumber(entity.getRevisionNumber());
     return blipDto;
   }
 

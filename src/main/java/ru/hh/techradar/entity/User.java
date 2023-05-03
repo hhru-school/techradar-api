@@ -31,6 +31,8 @@ public class User extends AuditableEntity<Long> {
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "company_id", nullable = false)
   private Company company;
+//  @Version
+//  private Long version;
 
   public User() {
   }

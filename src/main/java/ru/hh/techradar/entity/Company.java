@@ -6,7 +6,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import java.util.Objects;
 import org.hibernate.envers.Audited;
 
 @Audited
@@ -21,6 +20,8 @@ public class Company extends AuditableEntity<Long> {
 
   @Column(name = "name", nullable = false)
   private String name;
+//  @Version
+//  private Long version;
 
   public Company() {
   }
@@ -46,28 +47,11 @@ public class Company extends AuditableEntity<Long> {
     this.name = name;
   }
 
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
-    }
-    Company company = (Company) o;
-    return id.equals(company.id) && name.equals(company.name);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(id, name);
-  }
-
-  @Override
-  public String toString() {
-    return "Company{" +
-        "id=" + id +
-        ", name='" + name + '\'' +
-        '}';
-  }
+//  public Long getVersion() {
+//    return version;
+//  }
+//
+//  public void setVersion(Long version) {
+//    this.version = version;
+//  }
 }

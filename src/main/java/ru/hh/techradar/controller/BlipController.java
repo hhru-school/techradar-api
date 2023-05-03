@@ -10,6 +10,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.springframework.stereotype.Controller;
 import ru.hh.techradar.dto.BlipDto;
+import ru.hh.techradar.entity.Blip;
 import ru.hh.techradar.mapper.BlipMapper;
 import ru.hh.techradar.service.BlipService;
 
@@ -35,8 +36,10 @@ public class BlipController {
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   public Response save(BlipDto dto) {
+    Long id = blipService.save(dto).getId();
+    Blip blip = blipService.findById(id);
     return Response
-        .ok(blipMapper.toDto(blipService.save(dto)))
+        .ok(blipMapper.toDto(blip))
         .status(Response.Status.CREATED)
         .build();
   }

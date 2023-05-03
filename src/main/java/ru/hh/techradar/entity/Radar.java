@@ -44,6 +44,8 @@ public class Radar extends AuditableEntity<Long> {
   @OneToMany(mappedBy = "radar", fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
   private List<Blip> blips = new ArrayList<>();
 
+//  @Version
+//  private Long version;
 
   public Radar() {
   }

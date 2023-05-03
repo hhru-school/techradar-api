@@ -36,6 +36,8 @@ public class HibernateConfig {
   private String DEFAULT_BATCH_FETCH_SIZE;
   @Value("${org.hibernate.envers.audit_strategy}")
   private String AUDIT_STRATEGY;
+  @Value("false")
+  private String DO_NOT_AUDIT_OPTIMISTIC_LOCKING_FIELD;
 
   @Bean
   public DataSource dataSource() {
@@ -61,6 +63,7 @@ public class HibernateConfig {
     properties.put(Environment.HBM2DDL_AUTO, HBM2DDL_AUTO);
     properties.put(Environment.DEFAULT_BATCH_FETCH_SIZE, DEFAULT_BATCH_FETCH_SIZE);
     properties.put("org.hibernate.envers.audit_strategy", AUDIT_STRATEGY);
+    properties.put("org.hibernate.envers.do_not_audit_optimistic_locking_field", DO_NOT_AUDIT_OPTIMISTIC_LOCKING_FIELD);
 
     localSessionFactoryBean.setHibernateProperties(properties);
     return localSessionFactoryBean;

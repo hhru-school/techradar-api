@@ -15,6 +15,12 @@ public class BlipRepository extends BaseRepositoryImpl<Long, Blip> {
     this.sessionFactory = sessionFactory;
   }
 
+  @Override
+  public Blip save(Blip entity) {
+    sessionFactory.getCurrentSession().persist(entity);
+    return entity;
+  }
+
   public Blip findByIdAndActualDate(Long blipId, Instant actualDate) {
     Session session = sessionFactory.openSession();
     return session.createQuery("SELECT b FROM Blip b WHERE b.id = :blipId", Blip.class)

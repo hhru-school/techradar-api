@@ -8,8 +8,11 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.Version;
 import java.time.Instant;
+import org.hibernate.annotations.Formula;
 import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
 
 @Audited
 @Entity
@@ -32,6 +35,11 @@ public class Blip extends AuditableEntity<Long> {
   @ManyToOne
   @JoinColumn(name = "radar_id", nullable = false)
   private Radar radar;
+  @Version
+  private Long version;
+  @Formula("(SELECT e.rev FROM blip_aud e WHERE e.blip_id = blip_id AND e.version = version)")
+  @NotAudited
+  private Integer revisionNumber;
 
   public Blip() {
   }
@@ -100,5 +108,21 @@ public class Blip extends AuditableEntity<Long> {
 
   public void setRadar(Radar radar) {
     this.radar = radar;
+  }
+
+  public Long getVersion() {
+    return version;
+  }
+
+  public void setVersion(Long version) {
+    this.version = version;
+  }
+
+  public Integer getRevisionNumber() {
+    return revisionNumber;
+  }
+
+  public void setRevisionNumber(Integer revisionNumber) {
+    this.revisionNumber = revisionNumber;
   }
 }

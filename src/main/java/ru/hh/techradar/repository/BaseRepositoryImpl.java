@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import ru.hh.techradar.entity.AuditableEntity;
 
@@ -38,7 +39,10 @@ public abstract class BaseRepositoryImpl<K extends Serializable, E extends Audit
 
   @Override
   public E save(E entity) {
-    sessionFactory.getCurrentSession().persist(entity);
+    Session currentSession = sessionFactory.getCurrentSession();
+    currentSession.persist(entity);
+//    currentSession.flush();
+//    currentSession.refresh(entity);
     return entity;
   }
 

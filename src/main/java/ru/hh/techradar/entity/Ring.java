@@ -27,6 +27,8 @@ public class Ring extends AuditableEntity<Long> {
   private String name;
   @Column(name = "position")
   private Integer position;
+//  @Version
+//  private Long version;
 
   public Ring() {
   }

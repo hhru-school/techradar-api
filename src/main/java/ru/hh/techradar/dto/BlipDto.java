@@ -11,15 +11,17 @@ public class BlipDto {
   private Long quadrantId;
   private Long ringId;
   private Long radarId;
+  private Integer revisionNumber;
 
   public BlipDto() {
   }
 
-  public BlipDto(Long id, String name, String description, Long radarId) {
+  public BlipDto(Long id, String name, String description, Long radarId, Integer revisionNumber) {
     this.id = id;
     this.name = name;
     this.description = description;
     this.radarId = radarId;
+    this.revisionNumber = revisionNumber;
   }
 
   public Long getId() {
@@ -68,5 +70,13 @@ public class BlipDto {
 
   public void setRadarId(Long radarId) {
     this.radarId = radarId;
+  }
+
+  public Integer getRevisionNumber() {
+    return revisionNumber;
+  }
+
+  public void setRevisionNumber(Integer revisionNumber) {
+    this.revisionNumber = revisionNumber;
   }
 }

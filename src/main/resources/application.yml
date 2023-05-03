@@ -10,3 +10,4 @@ org:
   hibernate:
     envers:
       audit_strategy: org.hibernate.envers.strategy.internal.ValidityAuditStrategy
+      do_not_audit_optimistic_locking_field: false

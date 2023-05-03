@@ -1,19 +1,14 @@
 package ru.hh.techradar.entity;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
 import org.hibernate.envers.Audited;
 
 @Audited
@@ -33,8 +28,9 @@ public class Quadrant extends AuditableEntity<Long> {
   @ManyToOne
   @JoinColumn(name = "radar_id", nullable = false)
   private Radar radar;
-  @OneToMany(mappedBy = "quadrant", fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
-  private List<Blip> blips = new ArrayList<>();
+
+//  @Version
+//  private Long version;
 
 
   public Quadrant() {
@@ -80,11 +76,11 @@ public class Quadrant extends AuditableEntity<Long> {
     this.radar = radar;
   }
 
-  public List<Blip> getBlips() {
-    return blips;
-  }
-
-  public void setBlips(List<Blip> blips) {
-    this.blips = blips;
-  }
+//  public Long getVersion() {
+//    return version;
+//  }
+//
+//  public void setVersion(Long version) {
+//    this.version = version;
+//  }
 }
