@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.hh.techradar.entity.Radar;
 import ru.hh.techradar.exception.NotFoundException;
-import ru.hh.techradar.filter.QuadrantFilter;
+import ru.hh.techradar.filter.ComponentFilter;
 import ru.hh.techradar.repository.RadarRepository;
 
 @Service
@@ -50,8 +50,8 @@ public class RadarService {
   public Radar findByIdAndFilter(Long id, Instant actualDate, Long blipEventId) {
     Instant date = getActualDate(actualDate, blipEventId);
     Radar radar = radarRepository.findById(id).orElseThrow(() -> new NotFoundException(Radar.class, id));
-    radar.setQuadrants(quadrantService.findAllByFilter(new QuadrantFilter().radarId(id).actualDate(date)));
-    radar.setRings(ringService.findAllByFilter(radar.getId(), date));
+    radar.setQuadrants(quadrantService.findAllByFilter(new ComponentFilter().radarId(id).actualDate(date)));
+    radar.setRings(ringService.findAllByFilter(new ComponentFilter().radarId(id).actualDate(date)));
     radar.setBlips(blipService.findAllByFilter(radar.getId(), date));
     return radar;
   }

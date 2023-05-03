@@ -1,6 +1,8 @@
 package ru.hh.techradar.controller;
 
 import jakarta.inject.Inject;
+import jakarta.validation.Valid;
+import jakarta.ws.rs.BeanParam;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
@@ -11,9 +13,9 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import java.time.Instant;
 import ru.hh.techradar.dto.RingDto;
 import ru.hh.techradar.entity.Radar;
+import ru.hh.techradar.filter.ComponentFilter;
 import ru.hh.techradar.mapper.RingMapper;
 import ru.hh.techradar.service.RadarService;
 import ru.hh.techradar.service.RingService;
@@ -37,11 +39,10 @@ public class RingController {
   @GET
   @Produces(MediaType.APPLICATION_JSON)
   public Response findAllByFilter(
-      @QueryParam("radarId") Long radarId,
-      @QueryParam("actualDate") Instant actualDate
+      @BeanParam @Valid ComponentFilter filter
   ) {
     return Response
-        .ok(ringMapper.toDtos(ringService.findAllByFilter(radarId, actualDate)))
+        .ok(ringMapper.toDtos(ringService.findAllByFilter(filter)))
         .build();
   }
 
