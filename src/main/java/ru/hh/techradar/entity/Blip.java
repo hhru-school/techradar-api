@@ -98,29 +98,14 @@ public class Blip extends AuditableEntity<Long> {
     if (!(o instanceof Blip blip)) {
       return false;
     }
-
-    if (!id.equals(blip.id)) {
-      return false;
-    }
-    if (!name.equals(blip.name)) {
-      return false;
-    }
-    if (!Objects.equals(description, blip.description)) {
-      return false;
-    }
-    if (!radar.equals(blip.radar)) {
-      return false;
-    }
-    return Objects.equals(blipEvents, blip.blipEvents);
+    return name.equals(blip.name) && Objects.equals(description, blip.description) && Objects.equals(
+        radar,
+        blip.radar
+    ) && Objects.equals(blipEvents, blip.blipEvents);
   }
 
   @Override
   public int hashCode() {
-    int result = id.hashCode();
-    result = 31 * result + name.hashCode();
-    result = 31 * result + (description != null ? description.hashCode() : 0);
-    result = 31 * result + radar.hashCode();
-    result = 31 * result + (blipEvents != null ? blipEvents.hashCode() : 0);
-    return result;
+    return Objects.hash(name, description, radar, blipEvents);
   }
 }
