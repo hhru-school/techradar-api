@@ -1,7 +1,5 @@
 package ru.hh.techradar.dto;
 
-import java.util.Objects;
-
 public class RingDto {
   private Long id;
   private String name;
@@ -49,14 +47,12 @@ public class RingDto {
       return false;
     }
     RingDto ringDto = (RingDto) o;
-    return Objects.equals(id, ringDto.id)
-        && Objects.equals(name, ringDto.name)
-        && Objects.equals(position, ringDto.position);
+    return id != null && id.equals(ringDto.id);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, name, position);
+    return 11;
   }
 
   @Override
