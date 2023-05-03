@@ -9,6 +9,7 @@ import ru.hh.techradar.entity.Radar;
 import ru.hh.techradar.entity.Ring;
 import ru.hh.techradar.entity.RingSetting;
 import ru.hh.techradar.exception.NotFoundException;
+import ru.hh.techradar.filter.ComponentFilter;
 import ru.hh.techradar.repository.RingRepository;
 
 @Service
@@ -20,17 +21,13 @@ public class RingService {
   }
 
   @Transactional(readOnly = true)
-  public List<Ring> findAllByFilter(Long radarId, Instant actualDate) {
-    if (Objects.isNull(actualDate)) {
-      actualDate = Instant.now();
-    }
-    return ringRepository.findAllByFilter(radarId, actualDate);
+  public List<Ring> findAllByFilter(ComponentFilter filter) {
+    return ringRepository.findAllByFilter(filter);
   }
 
   @Transactional(readOnly = true)
   public Ring findById(Long id) {
     return ringRepository.findById(id).orElseThrow(() -> new NotFoundException(Ring.class, id));
-
   }
 
   @Transactional
