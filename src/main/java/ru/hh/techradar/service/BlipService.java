@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.hh.techradar.entity.Blip;
 import ru.hh.techradar.exception.NotFoundException;
-import ru.hh.techradar.filter.BlipComponentFilter;
+import ru.hh.techradar.filter.BlipFilter;
 import ru.hh.techradar.filter.ComponentFilter;
 import ru.hh.techradar.mapper.BlipMapper;
 import ru.hh.techradar.repository.BlipRepository;
@@ -58,7 +58,7 @@ public class BlipService implements BaseService<Long, Blip> {
   }
 
   @Transactional(readOnly = true)
-  public Blip findByIdAndFilter(BlipComponentFilter filter) {
+  public Blip findByIdAndFilter(BlipFilter filter) {
     return blipRepository.findByIdAndFilter(filter);
   }
 

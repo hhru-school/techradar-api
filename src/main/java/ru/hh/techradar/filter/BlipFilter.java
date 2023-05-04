@@ -5,7 +5,7 @@ import jakarta.ws.rs.DefaultValue;
 import jakarta.ws.rs.QueryParam;
 import java.time.Instant;
 
-public class BlipComponentFilter {
+public class BlipFilter {
   @QueryParam("blipId")
   @NotNull(message = "Cannot be null property blipId")
   private Long blipId;
@@ -14,15 +14,15 @@ public class BlipComponentFilter {
   @DefaultValue(value = "9999-01-01T00:00:00.000Z")
   private Instant actualDate;
 
-  public BlipComponentFilter() {
+  public BlipFilter() {
   }
 
-  public BlipComponentFilter blipId(Long radarId) {
+  public BlipFilter blipId(Long radarId) {
     this.setBlipId(radarId);
     return this;
   }
 
-  public BlipComponentFilter actualDate(Instant actualDate) {
+  public BlipFilter actualDate(Instant actualDate) {
     this.setActualDate(actualDate);
     return this;
   }

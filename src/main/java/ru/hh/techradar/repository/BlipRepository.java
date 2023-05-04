@@ -5,7 +5,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
 import ru.hh.techradar.entity.Blip;
-import ru.hh.techradar.filter.BlipComponentFilter;
+import ru.hh.techradar.filter.BlipFilter;
 import ru.hh.techradar.filter.ComponentFilter;
 
 @Repository
@@ -17,7 +17,7 @@ public class BlipRepository extends BaseRepositoryImpl<Long, Blip> {
     this.sessionFactory = sessionFactory;
   }
 
-  public Blip findByIdAndFilter(BlipComponentFilter filter) {
+  public Blip findByIdAndFilter(BlipFilter filter) {
     Session session = sessionFactory.openSession();
     return session.createQuery("SELECT b FROM Blip b " +
             "LEFT JOIN FETCH b.blipEvents s " +

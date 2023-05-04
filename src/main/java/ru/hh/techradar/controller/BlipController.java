@@ -8,7 +8,7 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.springframework.stereotype.Controller;
-import ru.hh.techradar.filter.BlipComponentFilter;
+import ru.hh.techradar.filter.BlipFilter;
 import ru.hh.techradar.mapper.BlipMapper;
 import ru.hh.techradar.service.BlipService;
 
@@ -26,7 +26,7 @@ public class BlipController {
   @GET
   @Produces(MediaType.APPLICATION_JSON)
   public Response findByIdAndFilter(
-      @Valid @BeanParam BlipComponentFilter filter
+      @Valid @BeanParam BlipFilter filter
      ) {
     return Response.ok(blipMapper.toDto(blipService.findByIdAndFilter(filter))).build();
   }

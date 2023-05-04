@@ -5,7 +5,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
 import ru.hh.techradar.entity.BlipEvent;
-import ru.hh.techradar.filter.BlipComponentFilter;
+import ru.hh.techradar.filter.BlipFilter;
 
 @Repository
 public class BlipEventRepository extends BaseRepositoryImpl<Long, BlipEvent> {
@@ -16,7 +16,7 @@ public class BlipEventRepository extends BaseRepositoryImpl<Long, BlipEvent> {
     this.sessionFactory = sessionFactory;
   }
 
-  public Optional<BlipEvent> findActualBlipEventByFilter(BlipComponentFilter filter) {
+  public Optional<BlipEvent> findActualBlipEventByFilter(BlipFilter filter) {
     Session session = sessionFactory.openSession();
     return Optional.ofNullable(session.createQuery(
             "SELECT e FROM BlipEvent e " +
