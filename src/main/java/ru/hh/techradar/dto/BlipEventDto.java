@@ -2,7 +2,6 @@ package ru.hh.techradar.dto;
 
 import jakarta.validation.constraints.NotNull;
 import java.time.Instant;
-import java.util.Objects;
 
 public class BlipEventDto {
   private Long id;

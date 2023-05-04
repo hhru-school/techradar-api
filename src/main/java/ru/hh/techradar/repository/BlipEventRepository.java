@@ -1,11 +1,11 @@
 package ru.hh.techradar.repository;
 
-import java.time.Instant;
 import java.util.Optional;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
 import ru.hh.techradar.entity.BlipEvent;
+import ru.hh.techradar.filter.BlipComponentFilter;
 
 @Repository
 public class BlipEventRepository extends BaseRepositoryImpl<Long, BlipEvent> {
@@ -16,15 +16,15 @@ public class BlipEventRepository extends BaseRepositoryImpl<Long, BlipEvent> {
     this.sessionFactory = sessionFactory;
   }
 
-  public Optional<BlipEvent> findActualBlipEventByBlipIdAndActualDate(Long blipId, Instant actualDate) {
+  public Optional<BlipEvent> findActualBlipEventByFilter(BlipComponentFilter filter) {
     Session session = sessionFactory.openSession();
     return Optional.ofNullable(session.createQuery(
             "SELECT e FROM BlipEvent e " +
                 "WHERE e.blip.id = :blipId AND e.creationTime <= :actualDate " +
                 "ORDER BY e.creationTime DESC", BlipEvent.class)
         .setMaxResults(1)
-        .setParameter("blipId", blipId)
-        .setParameter("actualDate", actualDate)
+        .setParameter("blipId", filter.getBlipId())
+        .setParameter("actualDate", filter.getActualDate())
         .getSingleResult());
   }
 }

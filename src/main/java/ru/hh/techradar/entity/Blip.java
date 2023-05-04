@@ -12,9 +12,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.StringJoiner;
-import ru.hh.techradar.dto.RingDto;
 
 @Entity
 @Table(name = "blip")

@@ -5,27 +5,24 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.hh.techradar.entity.Blip;
-import ru.hh.techradar.entity.BlipEvent;
 import ru.hh.techradar.exception.NotFoundException;
+import ru.hh.techradar.filter.BlipComponentFilter;
+import ru.hh.techradar.filter.ComponentFilter;
 import ru.hh.techradar.mapper.BlipMapper;
-import ru.hh.techradar.repository.BlipEventRepository;
 import ru.hh.techradar.repository.BlipRepository;
 
 @Service
 public class BlipService implements BaseService<Long, Blip> {
   private final BlipMapper blipMapper;
   private final BlipRepository blipRepository;
-  private final BlipEventRepository blipEventRepository;
 
 
   public BlipService(
       BlipMapper blipMapper,
-      BlipRepository blipRepository,
-      BlipEventRepository blipEventRepository
+      BlipRepository blipRepository
   ) {
     this.blipMapper = blipMapper;
     this.blipRepository = blipRepository;
-    this.blipEventRepository = blipEventRepository;
   }
 
   @Override
@@ -61,18 +58,12 @@ public class BlipService implements BaseService<Long, Blip> {
   }
 
   @Transactional(readOnly = true)
-  public Blip findByIdAndActualDate(Long blipId, Instant actualDate) {
-    return blipRepository.findByIdAndActualDate(blipId, actualDate);
+  public Blip findByIdAndFilter(BlipComponentFilter filter) {
+    return blipRepository.findByIdAndFilter(filter);
   }
 
   @Transactional(readOnly = true)
-  public Blip findByIdAndBlipEventId(Long blipId, Long blipEventId) {
-    BlipEvent blipEvent = blipEventRepository.findById(blipEventId).orElseThrow(() -> new NotFoundException(BlipEvent.class, blipEventId));
-    return findByIdAndActualDate(blipId, blipEvent.getCreationTime());
-  }
-
-  @Transactional(readOnly = true)
-  public List<Blip> findAllByFilter(Long radarId, Instant actualDate) {
-    return blipRepository.findActualBlipsByRadarIdAndActualDate(radarId, actualDate);
+  public List<Blip> findAllByFilter(ComponentFilter filter) {
+    return blipRepository.findActualBlipsByFilter(filter);
   }
 }

@@ -1,12 +1,14 @@
 package ru.hh.techradar.controller;
 
+import jakarta.validation.Valid;
+import jakarta.ws.rs.BeanParam;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
-import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.springframework.stereotype.Controller;
+import ru.hh.techradar.filter.BlipComponentFilter;
 import ru.hh.techradar.mapper.BlipMapper;
 import ru.hh.techradar.service.BlipService;
 
@@ -24,7 +26,8 @@ public class BlipController {
   @GET
   @Produces(MediaType.APPLICATION_JSON)
   public Response findByIdAndFilter(
-      @QueryParam("blipId") Long blipId, @QueryParam("blipEventId") Long blipEventId) {
-    return Response.ok(blipMapper.toDto(blipService.findByIdAndBlipEventId(blipId, blipEventId))).build();
+      @Valid @BeanParam BlipComponentFilter filter
+     ) {
+    return Response.ok(blipMapper.toDto(blipService.findByIdAndFilter(filter))).build();
   }
 }

@@ -52,7 +52,7 @@ public class RadarService {
     Radar radar = radarRepository.findById(id).orElseThrow(() -> new NotFoundException(Radar.class, id));
     radar.setQuadrants(quadrantService.findAllByFilter(new ComponentFilter().radarId(id).actualDate(date)));
     radar.setRings(ringService.findAllByFilter(new ComponentFilter().radarId(id).actualDate(date)));
-    radar.setBlips(blipService.findAllByFilter(radar.getId(), date));
+    radar.setBlips(blipService.findAllByFilter(new ComponentFilter().radarId(id).actualDate(date)));
     return radar;
   }
 

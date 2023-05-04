@@ -1,9 +1,7 @@
 package ru.hh.techradar.dto;
 
 import jakarta.validation.constraints.NotNull;
-import java.util.Objects;
 import java.util.StringJoiner;
-import ru.hh.techradar.entity.Ring;
 
 public class BlipDto {
   @NotNull

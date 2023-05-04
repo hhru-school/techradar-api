@@ -1,11 +1,12 @@
 package ru.hh.techradar.repository;
 
-import java.time.Instant;
 import java.util.List;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
 import ru.hh.techradar.entity.Blip;
+import ru.hh.techradar.filter.BlipComponentFilter;
+import ru.hh.techradar.filter.ComponentFilter;
 
 @Repository
 public class BlipRepository extends BaseRepositoryImpl<Long, Blip> {
@@ -16,18 +17,18 @@ public class BlipRepository extends BaseRepositoryImpl<Long, Blip> {
     this.sessionFactory = sessionFactory;
   }
 
-  public Blip findByIdAndActualDate(Long blipId, Instant actualDate) {
+  public Blip findByIdAndFilter(BlipComponentFilter filter) {
     Session session = sessionFactory.openSession();
     return session.createQuery("SELECT b FROM Blip b " +
             "LEFT JOIN FETCH b.blipEvents s " +
             "WHERE b.id = :blipId AND s.creationTime <= :actualDate " +
             "ORDER BY s.creationTime DESC", Blip.class)
-        .setParameter("blipId", blipId)
-        .setParameter("actualDate", actualDate)
+        .setParameter("blipId", filter.getBlipId())
+        .setParameter("actualDate", filter.getActualDate())
         .getSingleResult();
   }
 
-  public List<Blip> findActualBlipsByRadarIdAndActualDate(Long radarId, Instant actualDate) {
+  public List<Blip> findActualBlipsByFilter(ComponentFilter filter) {
     Session session = sessionFactory.openSession();
     return session.createQuery("SELECT b FROM Blip b " +
                 "LEFT JOIN FETCH b.blipEvents be " +
@@ -35,12 +36,8 @@ public class BlipRepository extends BaseRepositoryImpl<Long, Blip> {
                 "WHERE c.blip.id = b.id AND c.creationTime <= :actualDate)" +
                 "ORDER BY b.name"
             , Blip.class)
-        .setParameter("radarId", radarId)
-        .setParameter("actualDate", actualDate)
+        .setParameter("radarId", filter.getRadarId())
+        .setParameter("actualDate", filter.getActualDate())
         .getResultList();
-  }
-
-  public List<Blip> findActualBlipsByRadarId(Long radarId) {
-    return findActualBlipsByRadarIdAndActualDate(radarId, Instant.now());
   }
 }
