@@ -1,5 +1,5 @@
 db:
-  url: jdbc:postgresql://${POSTGRES_HOST:postgres}:${POSTGRES_PORT:5432}/${POSTGRES_DB:tech_radar}
+  url: jdbc:postgresql://${POSTGRES_HOST:localhost}:${POSTGRES_PORT:5433}/${POSTGRES_DB:tech_radar}
   username: ${POSTGRES_USER:postgres}
   password: ${POSTGRES_PASSWORD:postgres}
   show-sql: ${DB_SHOW_SQL:true}

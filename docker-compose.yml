@@ -1,7 +1,7 @@
 version: "3.9"
 services:
   postgres:
-    container_name: postgres_container
+    container_name: postgres
     image: postgres:15.2
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-postgres}
@@ -10,3 +10,22 @@ services:
       - ./sql:/docker-entrypoint-initdb.d
     ports:
       - "5433:5432"
+    networks:
+      - radar
+  techradar-api:
+    container_name: techradar-api
+    image: techradarapi/techradar-api:1.0
+    command: [
+      "bash -c 'touch /app.jar'"
+    ]
+    ports:
+      - "8080:8080"
+    depends_on:
+      - "postgres"
+    networks:
+      - radar
+
+networks:
+  radar:
+    name: radar
+    driver: bridge
