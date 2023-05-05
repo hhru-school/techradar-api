@@ -3,17 +3,18 @@ package ru.hh.techradar.dto;
 import java.util.Objects;
 import java.util.StringJoiner;
 
-public class CompanyDto {
-
+public class QuadrantDto {
   private Long id;
   private String name;
+  private Integer position;
 
-  public CompanyDto() {
+  public QuadrantDto() {
   }
 
-  public CompanyDto(Long id, String name) {
+  public QuadrantDto(Long id, String name, Integer position) {
     this.id = id;
     this.name = name;
+    this.position = position;
   }
 
   public Long getId() {
@@ -32,6 +33,14 @@ public class CompanyDto {
     this.name = name;
   }
 
+  public Integer getPosition() {
+    return position;
+  }
+
+  public void setPosition(Integer position) {
+    this.position = position;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -40,20 +49,21 @@ public class CompanyDto {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    CompanyDto that = (CompanyDto) o;
-    return Objects.equals(id, that.id) && Objects.equals(name, that.name);
+    QuadrantDto dto = (QuadrantDto) o;
+    return Objects.equals(id, dto.id) && Objects.equals(name, dto.name) && Objects.equals(position, dto.position);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, name);
+    return Objects.hash(id, name, position);
   }
 
   @Override
   public String toString() {
-    return new StringJoiner(", ", CompanyDto.class.getSimpleName() + "[", "]")
+    return new StringJoiner(", ", QuadrantDto.class.getSimpleName() + "[", "]")
         .add("id=" + id)
         .add("name='" + name + "'")
+        .add("position=" + position)
         .toString();
   }
 }

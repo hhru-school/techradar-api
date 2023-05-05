@@ -9,7 +9,6 @@ import ru.hh.techradar.filter.UserFilter;
 
 @Repository
 public class UserRepository extends BaseRepositoryImpl<Long, User> {
-
   private final SessionFactory sessionFactory;
 
   public UserRepository(SessionFactory sessionFactory) {

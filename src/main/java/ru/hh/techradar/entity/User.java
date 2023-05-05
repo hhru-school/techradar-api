@@ -10,6 +10,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.util.Objects;
+import java.util.StringJoiner;
 
 @Entity
 @Table(name = "tr_user")
@@ -33,9 +34,10 @@ public class User extends AuditableEntity<Long> {
   public User() {
   }
 
-  public User(String username, String password) {
+  public User(String username, String password, Company company) {
     this.username = username;
     this.password = password;
+    this.company = company;
   }
 
   public Long getId() {
@@ -85,5 +87,13 @@ public class User extends AuditableEntity<Long> {
   @Override
   public int hashCode() {
     return Objects.hash(username);
+  }
+
+  @Override
+  public String toString() {
+    return new StringJoiner(", ", User.class.getSimpleName() + "[", "]")
+        .add("id=" + id)
+        .add("username='" + username + "'")
+        .toString();
   }
 }
