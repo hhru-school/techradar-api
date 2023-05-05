@@ -35,7 +35,6 @@ public class UserMapper implements BaseMapper<User, UserDto> {
     return dtos.stream().map(this::toEntity).toList();
   }
 
-  @Override
   public User toUpdate(User target, User source) {
     if (Objects.nonNull(source.getUsername())) {
       target.setUsername(source.getUsername());
