@@ -1,6 +1,7 @@
 package ru.hh.techradar.dto;
 
 import java.util.Objects;
+import java.util.StringJoiner;
 
 public class QuadrantDto {
   private Long id;
@@ -48,12 +49,21 @@ public class QuadrantDto {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    QuadrantDto that = (QuadrantDto) o;
-    return Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(position, that.position);
+    QuadrantDto dto = (QuadrantDto) o;
+    return Objects.equals(id, dto.id) && Objects.equals(name, dto.name) && Objects.equals(position, dto.position);
   }
 
   @Override
   public int hashCode() {
     return Objects.hash(id, name, position);
+  }
+
+  @Override
+  public String toString() {
+    return new StringJoiner(", ", QuadrantDto.class.getSimpleName() + "[", "]")
+        .add("id=" + id)
+        .add("name='" + name + "'")
+        .add("position=" + position)
+        .toString();
   }
 }

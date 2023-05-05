@@ -1,8 +1,9 @@
 package ru.hh.techradar.controller;
 
 import jakarta.inject.Inject;
+import jakarta.validation.Valid;
+import jakarta.ws.rs.BeanParam;
 import jakarta.ws.rs.Consumes;
-import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.PUT;
@@ -12,8 +13,8 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import java.time.Instant;
 import ru.hh.techradar.dto.QuadrantDto;
+import ru.hh.techradar.filter.ComponentFilter;
 import ru.hh.techradar.mapper.QuadrantMapper;
 import ru.hh.techradar.service.QuadrantService;
 
@@ -32,12 +33,9 @@ public class QuadrantController {
 
   @GET
   @Produces(MediaType.APPLICATION_JSON)
-  public Response findAllByFilter(
-      @QueryParam("radarId") Long radarId,
-      @QueryParam("actualDate") Instant actualDate
-  ) {
+  public Response findAllByFilter(@Valid @BeanParam ComponentFilter filter) {
     return Response
-        .ok(quadrantMapper.toDtos(quadrantService.findAllByFilter(radarId, actualDate)))
+        .ok(quadrantMapper.toDtos(quadrantService.findAllByFilter(filter)))
         .build();
   }
 
@@ -75,7 +73,7 @@ public class QuadrantController {
   public Response archiveById(@PathParam("id") Long id) {
     quadrantService.archiveById(id);
     return Response
-        .status(Response.Status.NO_CONTENT)
+        .ok(quadrantService.archiveById(id))
         .build();
   }
 }

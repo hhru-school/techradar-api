@@ -15,15 +15,13 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.StringJoiner;
 
 @Entity
-@Table(name = "quadrant")
-public class Quadrant extends AuditableEntity<Long> {
-
+@Table(name = "ring")
+public class Ring extends AuditableEntity<Long> {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "quadrant_id", nullable = false)
+  @Column(name = "ring_id", nullable = false)
   private Long id;
 
   @Column(name = "removed_at")
@@ -33,14 +31,28 @@ public class Quadrant extends AuditableEntity<Long> {
   @JoinColumn(name = "radar_id", nullable = false)
   private Radar radar;
 
-  @OneToMany(mappedBy = "quadrant", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-  private List<QuadrantSetting> settings = new ArrayList<>();
+  @OneToMany(mappedBy = "ring", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+  private List<RingSetting> settings = new ArrayList<>();
 
-  public Quadrant() {
+  public Ring(Radar radar) {
+    this.radar = radar;
   }
 
-  public Quadrant(Radar radar) {
-    this.radar = radar;
+  public Ring() {
+  }
+
+  public RingSetting getCurrentSetting() {
+    return settings.stream()
+        .sorted(Comparator.comparing(RingSetting::getId).reversed())
+        .toList().get(0);
+  }
+
+  public List<RingSetting> getSettings() {
+    return settings;
+  }
+
+  public void setSettings(List<RingSetting> settings) {
+    this.settings = settings;
   }
 
   public Long getId() {
@@ -67,20 +79,6 @@ public class Quadrant extends AuditableEntity<Long> {
     this.radar = radar;
   }
 
-  public List<QuadrantSetting> getSettings() {
-    return settings;
-  }
-
-  public void setSettings(List<QuadrantSetting> settings) {
-    this.settings = settings;
-  }
-
-  public QuadrantSetting getCurrentSetting() {
-    return settings.stream()
-        .sorted(Comparator.comparing(QuadrantSetting::getId).reversed())
-        .toList().get(0);
-  }
-
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -89,8 +87,8 @@ public class Quadrant extends AuditableEntity<Long> {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    Quadrant quadrant = (Quadrant) o;
-    return id != null && id.equals(quadrant.id);
+    Ring ring = (Ring) o;
+    return id != null && id.equals(ring.id);
   }
 
   @Override
@@ -100,9 +98,12 @@ public class Quadrant extends AuditableEntity<Long> {
 
   @Override
   public String toString() {
-    return new StringJoiner(", ", Quadrant.class.getSimpleName() + "[", "]")
-        .add("id=" + id)
-        .add("removedAt=" + removedAt)
-        .toString();
+    return "Ring {" +
+        "id=" + id +
+        ", removedAt=" + removedAt +
+        ", radarId=" + radar.getId() +
+        ", creationTime=" + getCreationTime() +
+        ", lastChangeTime=" + getLastChangeTime()
+        + '\n' + '}';
   }
 }

@@ -1,6 +1,7 @@
 package ru.hh.techradar.dto;
 
 import java.util.Objects;
+import java.util.StringJoiner;
 
 public class CompanyDto {
 
@@ -46,5 +47,13 @@ public class CompanyDto {
   @Override
   public int hashCode() {
     return Objects.hash(id, name);
+  }
+
+  @Override
+  public String toString() {
+    return new StringJoiner(", ", CompanyDto.class.getSimpleName() + "[", "]")
+        .add("id=" + id)
+        .add("name='" + name + "'")
+        .toString();
   }
 }

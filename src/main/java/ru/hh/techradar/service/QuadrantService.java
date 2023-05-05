@@ -7,27 +7,27 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.hh.techradar.entity.Quadrant;
 import ru.hh.techradar.entity.QuadrantSetting;
+import ru.hh.techradar.entity.Radar;
 import ru.hh.techradar.exception.NotFoundException;
+import ru.hh.techradar.filter.ComponentFilter;
 import ru.hh.techradar.repository.QuadrantRepository;
+import ru.hh.techradar.repository.RadarRepository;
 
 @Service
 public class QuadrantService {
   private final QuadrantRepository quadrantRepository;
-  private final RadarService radarService;
+  private final RadarRepository radarRepository;
 
   public QuadrantService(
       QuadrantRepository quadrantRepository,
-      RadarService radarService) {
+      RadarRepository radarRepository) {
     this.quadrantRepository = quadrantRepository;
-    this.radarService = radarService;
+    this.radarRepository = radarRepository;
   }
 
   @Transactional(readOnly = true)
-  public List<Quadrant> findAllByFilter(Long radarId, Instant actualDate) {
-    if (Objects.isNull(actualDate)) {
-      actualDate = Instant.now();
-    }
-    return quadrantRepository.findAllByFilter(radarId, actualDate);
+  public List<Quadrant> findAllByFilter(ComponentFilter filter) {
+    return quadrantRepository.findAllByFilter(filter);
   }
 
   @Transactional(readOnly = true)
@@ -37,12 +37,13 @@ public class QuadrantService {
   }
 
   @Transactional
-  public void archiveById(Long id) {
+  public Quadrant archiveById(Long id) {
     Quadrant found = quadrantRepository.findById(id).orElseThrow(() -> new NotFoundException(Quadrant.class, id));
     if (Objects.isNull(found.getRemovedAt())) {
       found.setRemovedAt(Instant.now());
-      quadrantRepository.update(found);
+      return quadrantRepository.update(found);
     }
+    return found;
   }
 
   @Transactional
@@ -57,7 +58,9 @@ public class QuadrantService {
 
   @Transactional
   public Quadrant save(Long radarId, Quadrant entity) {
-    entity.setRadar(radarService.findById(radarId));
+    entity.setRadar(radarRepository
+        .findById(radarId)
+        .orElseThrow(() -> new NotFoundException(Radar.class, radarId)));
     return quadrantRepository.save(entity);
   }
 }

@@ -82,7 +82,8 @@ VALUES (1, 'adopt', 1, now(), now(), 1),
        (27, 'Оценка', 4, now(), now(), 27),
        (28, 'Используется', 1, now(), now(), 28),
        (29, 'Устарело', 3, now(), now(), 29),
-       (30, 'Оценка', 4, now(), now(), 30);
+       (30, 'Оценка', 4, now(), now(), 30),
+       (31, 'MY_COOL_RING_NAME', 1, '2024-04-11 22:21:08.188751', '2024-04-11 22:21:08.188751', 1);
 SELECT setval('ring_setting_ring_setting_id_seq', (SELECT max(ring_setting_id) FROM ring_setting));
 
 INSERT INTO quadrant (quadrant_id, radar_id, creation_time, last_change_time)
@@ -152,7 +153,8 @@ VALUES (1, 'Data Management', 1, now(), now(), 1),
        (29, 'Языки и инструменты', 1, now(), now(), 29),
        (30, 'Библиотека', 2, now(), now(), 30),
        (31, 'Сервис', 3, now(), now(), 31),
-       (32, 'Подход', 1, now(), now(), 32);
+       (32, 'Подход', 1, now(), now(), 32),
+       (33, 'MY_COOL_QUADRANT_NAME', 1, '2024-04-11 22:21:08.188751', '2024-04-11 22:21:08.188751', 1);
 SELECT setval('quadrant_setting_quadrant_setting_id_seq', (SELECT max(quadrant_setting_id) FROM quadrant_setting));
 
 INSERT INTO blip (blip_id, name, description, radar_id, creation_time, last_change_time)
@@ -804,7 +806,8 @@ VALUES (1, 'PostgreSQL', '', 1, now(), now()),
        (644, 'Unit-тестирование', '', 8, now(), now()),
        (645, 'VIPER', 'Архитектура presentation-слоя', 8, now(), now()),
        (646, 'Аналитика времени сборки', '', 8, now(), now()),
-       (648, 'Микрофичевая архитектура', 'Разделение кодовой базы на независимые модули', 8, now(), now());
+       (648, 'Микрофичевая архитектура', 'Разделение кодовой базы на независимые модули', 8, now(), now()),
+       (649, 'MY_COOL_BLIP', '', 1, '2024-04-11 22:21:08.188751', '2024-04-11 22:21:08.188751');
 SELECT setval('blip_blip_id_seq', (SELECT max(blip_id) FROM blip));
 
 INSERT INTO blip_event (blip_event_id, version_name, blip_id, quadrant_id, ring_id, author_id, creation_time, last_change_time)
@@ -1455,5 +1458,7 @@ VALUES (1, '2022Q4', 1, 1, 1, 1, now(), now()),
        (645, 'iOS 2022 Q4', 645, 32, 29, 1, now(), now()),
        (646, 'iOS 2022 Q4', 646, 32, 28, 1, now(), now()),
        (647, 'iOS 2022 Q4', 647, 32, 28, 1, now(), now()),
-       (648, 'iOS 2022 Q4', 648, 32, 28, 1, now(), now());
+       (648, 'iOS 2022 Q4', 648, 32, 28, 1, now(), now()),
+       (649, 'iOS 2022 Q4', 649, 1, 1, 1, '2024-04-11 22:21:08.188752', '2024-04-11 22:21:08.188752'),
+       (650, 'iOS 2022 Q4', 649, 2, 2, 1, '2024-04-11 22:21:08.188753', '2024-04-11 22:21:08.188753');
 SELECT setval('blip_event_blip_event_id_seq', (SELECT max(blip_event_id) FROM blip_event));

@@ -9,14 +9,14 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import java.util.StringJoiner;
 
 @Entity
-@Table(name = "quadrant_setting")
-public class QuadrantSetting extends AuditableEntity<Long> {
+@Table(name = "ring_setting")
+public class RingSetting extends AuditableEntity<Long> {
+
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "quadrant_setting_id", nullable = false)
+  @Column(name = "ring_setting_id", nullable = false)
   private Long id;
 
   @Column(name = "name", nullable = false)
@@ -26,16 +26,16 @@ public class QuadrantSetting extends AuditableEntity<Long> {
   private Integer position;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "quadrant_id", nullable = false)
-  private Quadrant quadrant;
+  @JoinColumn(name = "ring_id", nullable = false)
+  private Ring ring;
 
-  public QuadrantSetting() {
+  public RingSetting() {
   }
 
-  public QuadrantSetting(String name, Integer position, Quadrant quadrant) {
+  public RingSetting(String name, Integer position, Ring ring) {
     this.name = name;
     this.position = position;
-    this.quadrant = quadrant;
+    this.ring = ring;
   }
 
   public Long getId() {
@@ -62,12 +62,12 @@ public class QuadrantSetting extends AuditableEntity<Long> {
     this.position = position;
   }
 
-  public Quadrant getQuadrant() {
-    return quadrant;
+  public Ring getRing() {
+    return ring;
   }
 
-  public void setQuadrant(Quadrant quadrant) {
-    this.quadrant = quadrant;
+  public void setRing(Ring ring) {
+    this.ring = ring;
   }
 
   @Override
@@ -78,8 +78,8 @@ public class QuadrantSetting extends AuditableEntity<Long> {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    QuadrantSetting setting = (QuadrantSetting) o;
-    return id != null && id.equals(setting.id);
+    RingSetting ringSetting = (RingSetting) o;
+    return id != null && id.equals(ringSetting.id);
   }
 
   @Override
@@ -89,10 +89,14 @@ public class QuadrantSetting extends AuditableEntity<Long> {
 
   @Override
   public String toString() {
-    return new StringJoiner(", ", QuadrantSetting.class.getSimpleName() + "[", "]")
-        .add("id=" + id)
-        .add("name='" + name + "'")
-        .add("position=" + position)
-        .toString();
+    return "RingSetting {" +
+        "id=" + id +
+        ", name=" + name +
+        ", position=" + position +
+        ", ring=" + ring +
+        ", creationTime=" + getCreationTime() +
+        ", lastChangeTime=" + getLastChangeTime()
+        + '\n' + '}';
   }
 }
+
