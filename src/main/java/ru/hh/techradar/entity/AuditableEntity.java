@@ -8,9 +8,17 @@ import java.time.Instant;
 @MappedSuperclass
 public abstract class AuditableEntity<T extends Serializable> {
   @Column(name = "creation_time", nullable = false)
-  private Instant creationTime;
+  private Instant creationTime = Instant.now();
   @Column(name = "last_change_time", nullable = false)
-  private Instant lastChangeTime;
+  private Instant lastChangeTime = Instant.now();
+
+  public AuditableEntity() {
+  }
+
+  public AuditableEntity(Instant creationTime, Instant lastChangeTime) {
+    this.creationTime = creationTime;
+    this.lastChangeTime = lastChangeTime;
+  }
 
   public Instant getCreationTime() {
     return creationTime;

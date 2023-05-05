@@ -10,7 +10,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
-import ru.hh.techradar.entity.Company;
 
 @Configuration
 public class HibernateConfig {
@@ -27,6 +26,8 @@ public class HibernateConfig {
   private String DIALECT;
   @Value("${db.hbm2ddl-auto}")
   private String HBM2DDL_AUTO;
+  @Value("${db.default-batch-fetch-size}")
+  private String DEFAULT_BATCH_FETCH_SIZE;
 
   @Bean
   public DataSource dataSource() {
@@ -37,14 +38,15 @@ public class HibernateConfig {
   public LocalSessionFactoryBean localSessionFactoryBean(DataSource dataSource) {
     LocalSessionFactoryBean localSessionFactoryBean = new LocalSessionFactoryBean();
     localSessionFactoryBean.setDataSource(dataSource);
-    localSessionFactoryBean.setAnnotatedClasses(Company.class);
+    localSessionFactoryBean.setPackagesToScan("ru.hh.techradar.entity");
 
     Properties properties = new Properties();
     properties.put(Environment.DIALECT, DIALECT);
     properties.put(Environment.SHOW_SQL, SHOW_SQL);
     properties.put(Environment.HBM2DDL_AUTO, HBM2DDL_AUTO);
-
+    properties.put(Environment.DEFAULT_BATCH_FETCH_SIZE, DEFAULT_BATCH_FETCH_SIZE);
     localSessionFactoryBean.setHibernateProperties(properties);
+
     return localSessionFactoryBean;
   }
 

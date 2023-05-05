@@ -1,10 +1,10 @@
 package ru.hh.techradar.service;
 
 import jakarta.inject.Inject;
-import jakarta.transaction.Transactional;
 import java.time.Instant;
 import java.util.List;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.hh.techradar.entity.Company;
 import ru.hh.techradar.exception.NotFoundException;
 import ru.hh.techradar.mapper.CompanyMapper;
@@ -26,7 +26,7 @@ public class CompanyService implements BaseService<Long, Company> {
   }
 
   @Override
-  @Transactional
+  @Transactional(readOnly = true)
   public Company findById(Long id) {
     return companyRepository.findById(id).orElseThrow(() -> new NotFoundException(Company.class, id));
   }
@@ -36,7 +36,6 @@ public class CompanyService implements BaseService<Long, Company> {
   public void deleteById(Long id) {
     companyRepository.deleteById(id);
   }
-
 
   @Override
   @Transactional
@@ -53,7 +52,7 @@ public class CompanyService implements BaseService<Long, Company> {
   }
 
   @Override
-  @Transactional
+  @Transactional(readOnly = true)
   public List<Company> findAll() {
     return companyRepository.findAll();
   }
