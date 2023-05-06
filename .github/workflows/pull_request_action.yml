@@ -15,11 +15,11 @@ jobs:
       postgres:
         image: postgres:${{ vars.POSTGRES_VERSION }}
         env:
-          POSTGRES_USER: '${{ secrets.POSTGRES_DB_USERNAME }}'
-          POSTGRES_PASSWORD: '${{ secrets.POSTGRES_DB_PASSWORD }}'
-          POSTGRES_DB: '${{ vars.POSTGRES_DB }}'
+          POSTGRES_USER: ${{ secrets.POSTGRES_DB_USERNAME }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_DB_PASSWORD }}
+          POSTGRES_DB: 'tech_radar'
         ports:
-          - "5433:5432"
+          - "5432:5432"
     steps:
       - uses: actions/checkout@v3
       - name: Set up JDK ${{ vars.JAVA_VERSION }}
@@ -28,7 +28,7 @@ jobs:
           java-version: '${{ vars.JAVA_VERSION }}'
           distribution: 'oracle'
       - name: Run tests with Maven
-        run: mvn -B -Dspring.profiles.active=local clean test
+        run: mvn -B clean test
   build:
     needs: "test"
     runs-on: ubuntu-latest
@@ -40,4 +40,4 @@ jobs:
           java-version: '${{ vars.JAVA_VERSION }}'
           distribution: 'oracle'
       - name: Build with Maven
-        run: mvn -B -Dmaven.test.skip -Dspring.profiles.active=local package
+        run: mvn -B -Dmaven.test.skip package
