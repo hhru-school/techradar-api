@@ -15,9 +15,9 @@ jobs:
       postgres:
         image: postgres:${{ vars.POSTGRES_VERSION }}
         env:
-          POSTGRES_USER: ${{ secrets.POSTGRES_DB_USERNAME }}
-          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_DB_PASSWORD }}
-          POSTGRES_DB: 'tech_radar'
+          POSTGRES_USER: '${{ secrets.POSTGRES_DB_USERNAME }}'
+          POSTGRES_PASSWORD: '${{ secrets.POSTGRES_DB_PASSWORD }}'
+          POSTGRES_DB: '${{ vars.POSTGRES_DB }}'
         ports:
           - "5432:5432"
     steps:
