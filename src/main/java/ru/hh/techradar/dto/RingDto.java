@@ -4,14 +4,16 @@ public class RingDto {
   private Long id;
   private String name;
   private Integer position;
+  private Long radarId;
 
   public RingDto() {
   }
 
-  public RingDto(Long id, String name, Integer position) {
+  public RingDto(Long id, String name, Integer position, Long radarId) {
     this.id = id;
     this.name = name;
     this.position = position;
+    this.radarId = radarId;
   }
 
   public Integer getPosition() {
@@ -36,6 +38,14 @@ public class RingDto {
 
   public void setId(Long id) {
     this.id = id;
+  }
+
+  public Long getRadarId() {
+    return radarId;
+  }
+
+  public void setRadarId(Long radarId) {
+    this.radarId = radarId;
   }
 
   @Override

@@ -1,5 +1,6 @@
 package ru.hh.techradar.entity;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -10,6 +11,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringJoiner;
@@ -30,6 +32,10 @@ public class Blip extends AuditableEntity<Long> {
   private Radar radar;
   @OneToMany(mappedBy = "blip", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<BlipEvent> blipEvents = new ArrayList<>();
+  @Column(name = "quadrant_id")
+  private Long quadrantId;
+  @Column(name = "ring_id")
+  private Long ringId;
 
   public Blip() {
   }
@@ -75,11 +81,11 @@ public class Blip extends AuditableEntity<Long> {
   }
 
   public Long getQuadrantId() {
-    return blipEvents.get(0).getQuadrant().getId();
+    return quadrantId;
   }
 
   public Long getRingId() {
-    return blipEvents.get(0).getRing().getId();
+    return ringId;
   }
 
   public List<BlipEvent> getBlipEvents() {

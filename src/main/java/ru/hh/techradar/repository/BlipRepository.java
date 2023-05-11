@@ -40,4 +40,24 @@ public class BlipRepository extends BaseRepositoryImpl<Long, Blip> {
         .setParameter("actualDate", filter.getActualDate())
         .getResultList();
   }
+
+  public List<Blip> findActualBlipsByBlipEventId(Long blipEventId) {
+    Session session = sessionFactory.openSession();
+    return session.createNativeQuery("WITH RECURSIVE r AS (\n" +
+                "    SELECT blip_event_id, parent_id, blip_id, quadrant_id, ring_id, 1 AS level\n" +
+                "    FROM blip_event\n" +
+                "    WHERE blip_event_id = :blipEventId\n" +
+                "    UNION\n" +
+                "    SELECT e.blip_event_id, e.parent_id,\n" +
+                "           e.blip_id, e.quadrant_id, e.ring_id, r.level + 1 AS level\n" +
+                "    FROM blip_event e\n" +
+                "             JOIN r ON (r.parent_id = e.blip_event_id)\n" +
+                ")\n" +
+                "SELECT DISTINCT ON (r.blip_id) b.blip_id, b.name, b.description, b.radar_id, b.creation_time, b.last_change_time, r.quadrant_id, " +
+                "r.ring_id FROM r LEFT JOIN blip b ON r.blip_id = b.blip_id\n" +
+                "ORDER BY r.blip_id, r.level;"
+            , Blip.class)
+        .setParameter("blipEventId", blipEventId)
+        .getResultList();
+  }
 }

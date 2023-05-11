@@ -11,9 +11,8 @@ public class BlipEventMapper extends AbstractMapper<BlipEvent, BlipEventDto> {
   @Override
   public BlipEvent toEntity(BlipEventDto dto) {
     BlipEvent blipEvent = new BlipEvent();
-    blipEvent.setId(dto.getId());
-    blipEvent.setComment(dto.getComment());
-    blipEvent.setVersionName(dto.getVersionName());
+    Optional.ofNullable(dto.getId()).ifPresent(blipEvent::setId);
+    Optional.ofNullable(dto.getComment()).ifPresent(blipEvent::setComment);
     return blipEvent;
   }
 
@@ -22,7 +21,7 @@ public class BlipEventMapper extends AbstractMapper<BlipEvent, BlipEventDto> {
     BlipEventDto blipEventDto = new BlipEventDto();
     blipEventDto.setId(entity.getId());
     blipEventDto.setComment(entity.getComment());
-    blipEventDto.setVersionName(entity.getVersionName());
+    blipEventDto.setParentId(entity.getParentId());
     blipEventDto.setCreationTime(entity.getCreationTime());
     blipEventDto.setLastChangeTime(entity.getLastChangeTime());
     return blipEventDto;
@@ -30,7 +29,7 @@ public class BlipEventMapper extends AbstractMapper<BlipEvent, BlipEventDto> {
 
   public BlipEvent toUpdate(BlipEvent target, BlipEvent source) {
     Optional.ofNullable(source.getComment()).ifPresent(target::setComment);
-    Optional.ofNullable(source.getVersionName()).ifPresent(target::setVersionName);
+    Optional.ofNullable(source.getParentId()).ifPresent(target::setParentId);
     Optional.ofNullable(source.getBlip()).ifPresent(target::setBlip);
     Optional.ofNullable(source.getQuadrant()).ifPresent(target::setQuadrant);
     Optional.ofNullable(source.getRing()).ifPresent(target::setRing);

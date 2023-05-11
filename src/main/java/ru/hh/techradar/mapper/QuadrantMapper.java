@@ -22,6 +22,7 @@ public class QuadrantMapper extends AbstractMapper<Quadrant, QuadrantDto> {
     dto.setId(entity.getId());
     dto.setName(entity.getCurrentSetting().getName());
     dto.setPosition(entity.getCurrentSetting().getPosition());
+    dto.setRadarId(entity.getRadar().getId());
     return dto;
   }
 }

@@ -4,7 +4,10 @@ import java.time.Instant;
 import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.hh.techradar.dto.BlipDto;
+import ru.hh.techradar.dto.BlipEventDto;
 import ru.hh.techradar.entity.Blip;
+import ru.hh.techradar.entity.BlipEvent;
 import ru.hh.techradar.exception.NotFoundException;
 import ru.hh.techradar.filter.BlipFilter;
 import ru.hh.techradar.filter.ComponentFilter;
@@ -12,32 +15,37 @@ import ru.hh.techradar.mapper.BlipMapper;
 import ru.hh.techradar.repository.BlipRepository;
 
 @Service
-public class BlipService implements BaseService<Long, Blip> {
+public class BlipService {
   private final BlipMapper blipMapper;
   private final BlipRepository blipRepository;
+//  private final BlipEventService blipEventService;
+  private final QuadrantService quadrantService;
+  private final RingService ringService;
 
 
   public BlipService(
       BlipMapper blipMapper,
-      BlipRepository blipRepository
-  ) {
+      BlipRepository blipRepository,
+//      BlipEventService blipEventService,
+      QuadrantService quadrantService,
+      RingService ringService) {
     this.blipMapper = blipMapper;
     this.blipRepository = blipRepository;
+//    this.blipEventService = blipEventService;
+    this.quadrantService = quadrantService;
+    this.ringService = ringService;
   }
 
-  @Override
   @Transactional(readOnly = true)
   public Blip findById(Long id) {
     return blipRepository.findById(id).orElseThrow(() -> new NotFoundException(Blip.class, id));
   }
 
-  @Override
   @Transactional
   public void deleteById(Long id) {
     blipRepository.deleteById(id);
   }
 
-  @Override
   @Transactional
   public Blip update(Long id, Blip entity) {
     Blip found = blipRepository.findById(id).orElseThrow(() -> new NotFoundException(Blip.class, id));
@@ -45,13 +53,11 @@ public class BlipService implements BaseService<Long, Blip> {
     return blipRepository.update(blipMapper.toUpdate(found, entity));
   }
 
-  @Override
   @Transactional
-  public Blip save(Blip entity) {
-    return blipRepository.save(entity);
+  public Blip save(Blip blip) {
+    return blipRepository.save(blip);
   }
 
-  @Override
   @Transactional(readOnly = true)
   public List<Blip> findAll() {
     return blipRepository.findAll();
@@ -65,5 +71,9 @@ public class BlipService implements BaseService<Long, Blip> {
   @Transactional(readOnly = true)
   public List<Blip> findAllByFilter(ComponentFilter filter) {
     return blipRepository.findActualBlipsByFilter(filter);
+  }
+  @Transactional(readOnly = true)
+  public List<Blip> findAllByBlipEventId(Long blipEventId) {
+    return blipRepository.findActualBlipsByBlipEventId(blipEventId);
   }
 }

@@ -1,16 +1,17 @@
 package ru.hh.techradar.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.validation.constraints.NotNull;
 import java.util.StringJoiner;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class BlipDto {
-  @NotNull
   private Long id;
-  @NotNull
   private String name;
   private String description;
   private Long quadrantId;
   private Long ringId;
+  private Long radarId;
 
   public BlipDto() {
   }
@@ -59,6 +60,14 @@ public class BlipDto {
 
   public void setRingId(Long ringId) {
     this.ringId = ringId;
+  }
+
+  public Long getRadarId() {
+    return radarId;
+  }
+
+  public void setRadarId(Long radarId) {
+    this.radarId = radarId;
   }
 
   @Override
