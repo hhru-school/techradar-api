@@ -4,6 +4,7 @@ import jakarta.inject.Inject;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.BeanParam;
 import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.PUT;
@@ -27,10 +28,7 @@ public class RingController {
   private final RadarService radarService;
 
   @Inject
-  public RingController(
-      RingService ringService,
-      RingMapper ringMapper,
-      RadarService radarService) {
+  public RingController(RingService ringService, RingMapper ringMapper, RadarService radarService) {
     this.ringService = ringService;
     this.ringMapper = ringMapper;
     this.radarService = radarService;
@@ -76,12 +74,36 @@ public class RingController {
         .build();
   }
 
-  @GET
+  @PUT
   @Path("/archive/{id}")
   public Response archiveById(@PathParam("id") Long id) {
-    ringService.archiveById(id);
     return Response
-        .status(Response.Status.NO_CONTENT)
+        .status(ringService.archiveById(id) ? Response.Status.OK : Response.Status.BAD_REQUEST)
         .build();
+  }
+
+  @DELETE
+  @Path("/remove/{id}")
+  public Response removeById(@PathParam("id") Long id) {
+    return Response
+        .status(ringService.removeById(id) ? Response.Status.NO_CONTENT : Response.Status.BAD_REQUEST)
+        .build();
+  }
+
+  @DELETE
+  @Path("/force-remove/{id}")
+  public Response forceRemoveById(@PathParam("id") Long id) {
+    ringService.forceRemoveById(id);
+    return Response
+        .status(Response.Status.OK)
+        .build();
+  }
+
+  @GET
+  @Path("/contain-blips/{id}")
+  public Response isContainBlipsById(@PathParam("id") Long id) {
+    return Response.status(
+        ringService.isContainBlipsById(id) ? Response.Status.PRECONDITION_FAILED : Response.Status.NO_CONTENT
+    ).build();
   }
 }
