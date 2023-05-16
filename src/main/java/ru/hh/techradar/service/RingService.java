@@ -16,8 +16,6 @@ import ru.hh.techradar.repository.RingRepository;
 
 @Service
 public class RingService {
-  private final static Integer MAX_RING_POSITION = 8;
-  private final static Integer MIN_RING_POSITION = 1;
   private final RingRepository ringRepository;
 
   public RingService(RingRepository ringRepository) {
@@ -65,9 +63,8 @@ public class RingService {
         ringSetting -> {
           var currentSetting = found.getCurrentSetting();
           ringSetting.setName(Optional.ofNullable(ringSetting.getName()).orElseGet(currentSetting::getName));
-          Integer newPosition = Optional.ofNullable(ringSetting.getPosition()).orElseGet(currentSetting::getPosition);
           ringSetting.setPosition(
-              (newPosition < MIN_RING_POSITION || newPosition > MAX_RING_POSITION) ? currentSetting.getPosition() : newPosition
+              Optional.ofNullable(ringSetting.getPosition()).orElseGet(currentSetting::getPosition)
           );
           ringSetting.setRing(found);
           if (Objects.equals(ringSetting.getName(), currentSetting.getName())

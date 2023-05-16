@@ -23,7 +23,6 @@ public class Ring extends AuditableEntity<Long> {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "ring_id", nullable = false)
   private Long id;
-
   @Column(name = "removed_at")
   private Instant removedAt;
 

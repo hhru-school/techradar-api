@@ -9,6 +9,9 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.DecimalMax;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "ring_setting")
@@ -19,9 +22,13 @@ public class RingSetting extends AuditableEntity<Long> {
   @Column(name = "ring_setting_id", nullable = false)
   private Long id;
 
+  @NotNull
   @Column(name = "name", nullable = false)
   private String name;
 
+  @NotNull
+  @DecimalMax(message = "Position must be less than 8", value = "8")
+  @DecimalMin(message = "Position must be bigger than 0", value = "1")
   @Column(name = "position", nullable = false)
   private Integer position;
 

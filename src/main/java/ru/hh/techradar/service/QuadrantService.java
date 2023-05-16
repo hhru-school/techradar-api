@@ -17,8 +17,6 @@ import ru.hh.techradar.repository.RadarRepository;
 
 @Service
 public class QuadrantService {
-  private final static Integer MAX_QUADRANT_POSITION = 8;
-  private final static Integer MIN_QUADRANT_POSITION = 1;
   private final QuadrantRepository quadrantRepository;
   private final RadarRepository radarRepository;
 
@@ -49,9 +47,8 @@ public class QuadrantService {
         quadrantSetting -> {
           var currentSetting = found.getCurrentSetting();
           quadrantSetting.setName(Optional.ofNullable(quadrantSetting.getName()).orElseGet(currentSetting::getName));
-          Integer newPosition = Optional.ofNullable(quadrantSetting.getPosition()).orElseGet(currentSetting::getPosition);
           quadrantSetting.setPosition(
-              (newPosition < MIN_QUADRANT_POSITION || newPosition > MAX_QUADRANT_POSITION) ? currentSetting.getPosition() : newPosition
+              Optional.ofNullable(quadrantSetting.getPosition()).orElseGet(currentSetting::getPosition)
           );
           quadrantSetting.setQuadrant(found);
           if (Objects.equals(quadrantSetting.getName(), currentSetting.getName())

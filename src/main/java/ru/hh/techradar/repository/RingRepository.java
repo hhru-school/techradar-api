@@ -45,15 +45,6 @@ public class RingRepository extends BaseRepositoryImpl<Long, Ring> {
   }
 
   public Boolean isContainBlipsById(Long id) {
-//    var session = sessionFactory.openSession();
-//    session.createQuery(
-//            "SELECT b FROM Blip b " +
-//                "LEFT JOIN b.blipEvents be " +
-//                "INNER JOIN be.ring r " +
-//                "WHERE be.creationTime IN (SELECT MAX(c.creationTime) FROM BlipEvent c " +
-//                "WHERE c.blip.id = b.id) AND r.id = :ringId", Blip.class)
-//        .setParameter("ringId", id)
-//        .getResultStream().forEach(System.out::println);
     return sessionFactory.getCurrentSession().createQuery(
             "SELECT COUNT(b) FROM Blip b " +
                 "LEFT JOIN b.blipEvents be " +
