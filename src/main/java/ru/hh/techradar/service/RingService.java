@@ -3,17 +3,21 @@ package ru.hh.techradar.service;
 import java.time.Instant;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.hh.techradar.entity.Radar;
 import ru.hh.techradar.entity.Ring;
 import ru.hh.techradar.entity.RingSetting;
+import ru.hh.techradar.exception.EntityExistsException;
 import ru.hh.techradar.exception.NotFoundException;
 import ru.hh.techradar.filter.ComponentFilter;
 import ru.hh.techradar.repository.RingRepository;
 
 @Service
 public class RingService {
+  private final static Integer MAX_RING_POSITION = 8;
+  private final static Integer MIN_RING_POSITION = 1;
   private final RingRepository ringRepository;
 
   public RingService(RingRepository ringRepository) {
@@ -43,14 +47,29 @@ public class RingService {
   public Ring update(Long id, Ring entity) {
     Ring found = ringRepository.findById(id).orElseThrow(() -> new NotFoundException(Ring.class, id));
     found.setLastChangeTime(Instant.now());
-    RingSetting setting = entity.getCurrentSetting();
-    setting.setRing(found);
-    found.getSettings().add(setting);
+    Optional.ofNullable(entity.getCurrentSetting()).ifPresent(
+        ringSetting -> {
+          var currentSetting = found.getCurrentSetting();
+          ringSetting.setName(Optional.ofNullable(ringSetting.getName()).orElseGet(currentSetting::getName));
+          Integer newPosition = Optional.ofNullable(ringSetting.getPosition()).orElseGet(currentSetting::getPosition);
+          ringSetting.setPosition(
+              (newPosition < MIN_RING_POSITION || newPosition > MAX_RING_POSITION) ? currentSetting.getPosition() : newPosition
+          );
+          ringSetting.setRing(found);
+          if (Objects.equals(ringSetting.getName(), currentSetting.getName())
+              && Objects.equals(ringSetting.getPosition(), currentSetting.getPosition())) {
+            throw new EntityExistsException(RingSetting.class, currentSetting.getId());
+          }
+          found.getSettings().add(ringSetting);
+        }
+    );
     return ringRepository.update(found);
   }
 
   @Transactional
   public Ring save(Radar radar, Ring entity) {
+    Objects.requireNonNull(radar);
+    Objects.requireNonNull(entity);
     entity.setRadar(radar);
     return ringRepository.save(entity);
   }
