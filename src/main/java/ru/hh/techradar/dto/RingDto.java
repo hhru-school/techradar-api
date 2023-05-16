@@ -1,8 +1,17 @@
 package ru.hh.techradar.dto;
 
+import jakarta.validation.constraints.DecimalMax;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.NotNull;
+
 public class RingDto {
+  @NotNull
   private Long id;
+  @NotNull
   private String name;
+  @NotNull
+  @DecimalMax(message = "Position must be less than 8", value = "8")
+  @DecimalMin(message = "Position must be bigger than 0", value = "1")
   private Integer position;
 
   public RingDto() {

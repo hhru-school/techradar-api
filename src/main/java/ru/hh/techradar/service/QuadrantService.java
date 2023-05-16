@@ -70,34 +70,19 @@ public class QuadrantService {
   }
 
   @Transactional(readOnly = true)
-  public Boolean isContainBlipsById(Long id) {
-    return quadrantRepository.isContainBlipsById(id);
+  public Boolean isContainBlipsByIdAndFilter(Long id, ComponentFilter filter) {
+    return quadrantRepository.isContainBlipsByIdAndFilter(id, filter);
   }
 
   @Transactional
-  public void forceRemoveById(Long id) {
-    quadrantRepository.forceRemoveById(id);
-  }
-
-  @Transactional
-  public Boolean archiveById(Long id) {
-    if (isContainBlipsById(id) == Boolean.FALSE) {
+  public Boolean archiveByIdAndFilter(Long id, ComponentFilter filter) {
+    if (isContainBlipsByIdAndFilter(id, filter) == Boolean.FALSE) {
       Quadrant found = quadrantRepository.findById(id).orElseThrow(() -> new NotFoundException(Quadrant.class, id));
       if (Objects.isNull(found.getRemovedAt())) {
         found.setRemovedAt(Instant.now());
         quadrantRepository.update(found);
         return Boolean.TRUE;
       }
-    }
-    return Boolean.FALSE;
-  }
-
-  @Transactional
-  public Boolean removeById(Long id) {
-    if (isContainBlipsById(id) == Boolean.FALSE) {
-      Quadrant found = quadrantRepository.findById(id).orElseThrow(() -> new NotFoundException(Quadrant.class, id));
-      quadrantRepository.delete(found);
-      return Boolean.TRUE;
     }
     return Boolean.FALSE;
   }

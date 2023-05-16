@@ -33,24 +33,14 @@ public class RingService {
   }
 
   @Transactional
-  public Boolean archiveById(Long id) {
-    if (isContainBlipsById(id) == Boolean.FALSE) {
+  public Boolean archiveByIdAndFilter(Long id, ComponentFilter filter) {
+    if (isContainBlipsByIdAndFilter(id, filter) == Boolean.FALSE) {
       Ring found = ringRepository.findById(id).orElseThrow(() -> new NotFoundException(Ring.class, id));
       if (Objects.isNull(found.getRemovedAt())) {
         found.setRemovedAt(Instant.now());
         ringRepository.update(found);
         return Boolean.TRUE;
       }
-    }
-    return Boolean.FALSE;
-  }
-
-  @Transactional
-  public Boolean removeById(Long id) {
-    if (isContainBlipsById(id) == Boolean.FALSE) {
-      Ring found = ringRepository.findById(id).orElseThrow(() -> new NotFoundException(Ring.class, id));
-      ringRepository.delete(found);
-      return Boolean.TRUE;
     }
     return Boolean.FALSE;
   }
@@ -86,12 +76,7 @@ public class RingService {
   }
 
   @Transactional(readOnly = true)
-  public Boolean isContainBlipsById(Long id) {
-    return ringRepository.isContainBlipsById(id);
-  }
-
-  @Transactional
-  public void forceRemoveById(Long id) {
-    ringRepository.forceRemoveById(id);
+  public Boolean isContainBlipsByIdAndFilter(Long id, ComponentFilter filter) {
+    return ringRepository.isContainBlipsByIdAndFilter(id, filter);
   }
 }

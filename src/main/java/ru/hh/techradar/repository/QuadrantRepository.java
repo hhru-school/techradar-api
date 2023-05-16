@@ -4,20 +4,16 @@ import java.util.List;
 import java.util.Optional;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
-import ru.hh.techradar.entity.Blip;
 import ru.hh.techradar.entity.Quadrant;
 import ru.hh.techradar.filter.ComponentFilter;
 
 @Repository
 public class QuadrantRepository extends BaseRepositoryImpl<Long, Quadrant> {
   private final SessionFactory sessionFactory;
-  private final BlipRepository blipRepository;
 
-  public QuadrantRepository(SessionFactory sessionFactory, BlipRepository blipRepository) {
+  public QuadrantRepository(SessionFactory sessionFactory) {
     super(sessionFactory, Quadrant.class);
     this.sessionFactory = sessionFactory;
-    this.blipRepository = blipRepository;
-
   }
 
   public List<Quadrant> findAllByFilter(ComponentFilter filter) {
@@ -43,24 +39,16 @@ public class QuadrantRepository extends BaseRepositoryImpl<Long, Quadrant> {
         .uniqueResultOptional();
   }
 
-  public Boolean isContainBlipsById(Long id) {
+  public Boolean isContainBlipsByIdAndFilter(Long id, ComponentFilter filter) {
     return sessionFactory.getCurrentSession().createQuery(
             "SELECT COUNT(b) FROM Blip b " +
                 "LEFT JOIN b.blipEvents be " +
                 "INNER JOIN be.quadrant q " +
-                "WHERE be.blip.id = b.id AND q.id = :quadrantId", Long.class)
+                "WHERE b.radar.id = :radarId AND be.blip.id = b.id AND q.id = :quadrantId AND be.creationTime <= :actualDate "
+            , Long.class)
         .setParameter("quadrantId", id)
+        .setParameter("actualDate", filter.getActualDate())
+        .setParameter("radarId", filter.getRadarId())
         .getSingleResult() > 0;
-  }
-
-  public void forceRemoveById(Long id) {
-    sessionFactory.getCurrentSession().createQuery(
-            "SELECT b FROM Blip b " +
-                "LEFT JOIN b.blipEvents be " +
-                "INNER JOIN be.quadrant q " +
-                "WHERE be.blip.id = b.id AND q.id = :quadrantId", Blip.class)
-        .setParameter("quadrantId", id)
-        .getResultStream().forEach(blipRepository::delete);
-    deleteById(id);
   }
 }
