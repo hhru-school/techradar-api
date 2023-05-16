@@ -4,6 +4,7 @@ import jakarta.inject.Inject;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.BeanParam;
 import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.PUT;
@@ -75,5 +76,30 @@ public class QuadrantController {
     return Response
         .ok(quadrantService.archiveById(id))
         .build();
+  }
+
+  @DELETE
+  @Path("/remove/{id}")
+  public Response removeById(@PathParam("id") Long id) {
+    return Response
+        .status(quadrantService.removeById(id) ? Response.Status.NO_CONTENT : Response.Status.BAD_REQUEST)
+        .build();
+  }
+
+  @DELETE
+  @Path("/force-remove/{id}")
+  public Response forceRemoveById(@PathParam("id") Long id) {
+    quadrantService.forceRemoveById(id);
+    return Response
+        .status(Response.Status.OK)
+        .build();
+  }
+
+  @GET
+  @Path("/contain-blips/{id}")
+  public Response isContainBlipsById(@PathParam("id") Long id) {
+    return Response.status(
+        quadrantService.isContainBlipsById(id) ? Response.Status.PRECONDITION_FAILED : Response.Status.NO_CONTENT
+    ).build();
   }
 }

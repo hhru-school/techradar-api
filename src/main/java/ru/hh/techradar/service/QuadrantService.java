@@ -42,16 +42,6 @@ public class QuadrantService {
   }
 
   @Transactional
-  public Quadrant archiveById(Long id) {
-    Quadrant found = quadrantRepository.findById(id).orElseThrow(() -> new NotFoundException(Quadrant.class, id));
-    if (Objects.isNull(found.getRemovedAt())) {
-      found.setRemovedAt(Instant.now());
-      return quadrantRepository.update(found);
-    }
-    return found;
-  }
-
-  @Transactional
   public Quadrant update(Long id, Quadrant entity) {
     Quadrant found = quadrantRepository.findById(id).orElseThrow(() -> new NotFoundException(Quadrant.class, id));
     found.setLastChangeTime(Instant.now());
@@ -80,5 +70,38 @@ public class QuadrantService {
         .findById(radarId)
         .orElseThrow(() -> new NotFoundException(Radar.class, radarId)));
     return quadrantRepository.save(entity);
+  }
+
+  @Transactional(readOnly = true)
+  public Boolean isContainBlipsById(Long id) {
+    return quadrantRepository.isContainBlipsById(id);
+  }
+
+  @Transactional
+  public void forceRemoveById(Long id) {
+    quadrantRepository.forceRemoveById(id);
+  }
+
+  @Transactional
+  public Boolean archiveById(Long id) {
+    if (isContainBlipsById(id) == Boolean.FALSE) {
+      Quadrant found = quadrantRepository.findById(id).orElseThrow(() -> new NotFoundException(Quadrant.class, id));
+      if (Objects.isNull(found.getRemovedAt())) {
+        found.setRemovedAt(Instant.now());
+        quadrantRepository.update(found);
+        return Boolean.TRUE;
+      }
+    }
+    return Boolean.FALSE;
+  }
+
+  @Transactional
+  public Boolean removeById(Long id) {
+    if (isContainBlipsById(id) == Boolean.FALSE) {
+      Quadrant found = quadrantRepository.findById(id).orElseThrow(() -> new NotFoundException(Quadrant.class, id));
+      quadrantRepository.delete(found);
+      return Boolean.TRUE;
+    }
+    return Boolean.FALSE;
   }
 }
