@@ -1,0 +1,85 @@
+name: On merge action
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+env:
+  POSTGRES_USER: ${{ secrets.POSTGRES_DB_USERNAME }}
+  POSTGRES_PASSWORD: ${{ secrets.POSTGRES_DB_PASSWORD }}
+  POSTGRES_VERSION: ${{ vars.POSTGRES_VERSION }}
+  JAVA_VERSION: ${{ vars.JAVA_VERSION }}
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:${{ vars.POSTGRES_VERSION }}
+        env:
+          POSTGRES_USER: '${{ vars.POSTGRES_USER }}'
+          POSTGRES_PASSWORD: '${{ vars.POSTGRES_PASSWORD }}'
+          POSTGRES_DB: '${{ vars.POSTGRES_DB }}'
+        ports:
+          - "5433:5432"
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up JDK ${{ vars.JAVA_VERSION }}
+        uses: actions/setup-java@v3
+        with:
+          java-version: '${{ vars.JAVA_VERSION }}'
+          distribution: 'oracle'
+      - name: Run tests with Maven
+        run: mvn -B -Dspring.profiles.active=local clean test
+  build:
+    needs: "test"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up JDK ${{ vars.JAVA_VERSION }}
+        uses: actions/setup-java@v3
+        with:
+          java-version: '${{ vars.JAVA_VERSION }}'
+          distribution: 'oracle'
+      - name: Build with Maven
+        run: mvn -B -Dmaven.test.skip -Dspring.profiles.active=local package
+  deploy:
+    needs: "build"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up JDK ${{ vars.JAVA_VERSION }}
+        uses: actions/setup-java@v3
+        with:
+          java-version: '${{ vars.JAVA_VERSION }}'
+          distribution: 'oracle'
+          cache: maven
+      - name: Build with Maven
+        run: mvn -B -Dmaven.test.skip -Dspring.profiles.active=local package
+      - name: Docker login
+        run: echo "$PASSWORD" | docker login -u "$USER" --password-stdin
+        env:
+          USER: ${{ secrets.DOCKER_USERNAME }}
+          PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      - name: Update date info
+        run: echo TAG=$(date --iso-8601=seconds) | tr ':' . | cut -c -23 > .env
+      - name: Docker compose build
+        run: |
+          POSTGRES_USER=$POSTGRES_USER \
+          POSTGRES_PASSWORD=$POSTGRES_PASSWORD \
+          POSTGRES_VERSION=$POSTGRES_VERSION \
+          OPENJDK_VERSION=$JAVA_VERSION \
+          docker compose build --no-cache
+      - name: Docker compose push by date
+        run: docker compose push
+      - name: Docker compose push latest
+        run: |
+          echo TAG=latest > .env &&
+          POSTGRES_USER=$POSTGRES_USER \
+          POSTGRES_PASSWORD=$POSTGRES_PASSWORD \
+          POSTGRES_VERSION=$POSTGRES_VERSION \
+          OPENJDK_VERSION=$JAVA_VERSION \
+          docker compose build --push --no-cache
+                   
