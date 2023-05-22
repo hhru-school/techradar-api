@@ -1,15 +1,10 @@
 package ru.hh.techradar.security.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import java.io.Serializable;
 
 public class AuthenticationResponse implements Serializable {
-
-  @JsonProperty("type_token")
   private String typeToken = "Bearer";
-  @JsonProperty("access_token")
   private String accessToken;
-  @JsonProperty("refresh_token")
   private String refreshToken;
 
   public AuthenticationResponse() {

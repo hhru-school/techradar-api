@@ -2,7 +2,6 @@ package ru.hh.techradar.security.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import static org.springframework.http.HttpMethod.GET;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -20,13 +19,17 @@ public class SecurityConfig {
 
   private final AuthenticationFilter authenticationFilter;
   private final AuthenticationProvider authenticationProvider;
+  private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
   private final LogoutService logoutService;
 
   public SecurityConfig(
       AuthenticationFilter authenticationFilter,
-      AuthenticationProvider authenticationProvider, LogoutService logoutService) {
+      AuthenticationProvider authenticationProvider,
+      CustomAuthenticationEntryPoint customAuthenticationEntryPoint,
+      LogoutService logoutService) {
     this.authenticationFilter = authenticationFilter;
     this.authenticationProvider = authenticationProvider;
+    this.customAuthenticationEntryPoint = customAuthenticationEntryPoint;
     this.logoutService = logoutService;
   }
 
@@ -38,8 +41,6 @@ public class SecurityConfig {
         .authorizeHttpRequests()
         .requestMatchers("/api/auth/**")
         .permitAll()
-        .requestMatchers(GET, "/api/tests/security/admin").hasAnyAuthority("ADMIN")
-        .requestMatchers(GET, "/api/tests/security/user").hasAnyAuthority("USER")
         .anyRequest()
         .authenticated()
         .and()
@@ -52,6 +53,9 @@ public class SecurityConfig {
         .logoutUrl("/api/auth/logout")
         .addLogoutHandler(logoutService)
         .logoutSuccessHandler((request, response, authentication) -> SecurityContextHolder.clearContext());
+    http
+        .exceptionHandling()
+        .authenticationEntryPoint(customAuthenticationEntryPoint);
     return http.build();
   }
 

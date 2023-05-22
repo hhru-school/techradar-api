@@ -7,9 +7,10 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import ru.hh.techradar.entity.User;
+import ru.hh.techradar.entity.exception.NotFoundException;
 import ru.hh.techradar.security.model.CustomUserDetails;
 import ru.hh.techradar.service.UserService;
 
@@ -23,8 +24,9 @@ public class AuthenticationConfig {
 
   @Bean
   public UserDetailsService userDetailsService() {
-    return username -> CustomUserDetails.toCustomUserDetails(userService.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException(
-        "User not found")));
+    return username -> CustomUserDetails.toCustomUserDetails(userService
+        .findByUsername(username)
+        .orElseThrow(() -> new NotFoundException(User.class, username)));
   }
 
   @Bean

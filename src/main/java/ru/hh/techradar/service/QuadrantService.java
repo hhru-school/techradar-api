@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.hh.techradar.entity.Quadrant;
 import ru.hh.techradar.entity.QuadrantSetting;
 import ru.hh.techradar.entity.Radar;
-import ru.hh.techradar.exception.NotFoundException;
+import ru.hh.techradar.entity.exception.NotFoundException;
 import ru.hh.techradar.filter.ComponentFilter;
 import ru.hh.techradar.repository.QuadrantRepository;
 import ru.hh.techradar.repository.RadarRepository;

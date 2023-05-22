@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.hh.techradar.entity.Radar;
 import ru.hh.techradar.entity.Ring;
 import ru.hh.techradar.entity.RingSetting;
-import ru.hh.techradar.exception.NotFoundException;
+import ru.hh.techradar.entity.exception.NotFoundException;
 import ru.hh.techradar.filter.ComponentFilter;
 import ru.hh.techradar.repository.RingRepository;
 

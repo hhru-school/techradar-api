@@ -1,4 +1,4 @@
-package ru.hh.techradar.exception;
+package ru.hh.techradar.entity.exception;
 
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;

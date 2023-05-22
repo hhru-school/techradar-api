@@ -6,11 +6,11 @@ import org.hibernate.validator.constraints.Length;
 
 public class RegisterDto {
 
-  @Email(message = "Not valid e-mail: '${validatedValue}'")
+  @Email(message = "Не валидный e-mail: '${validatedValue}'")
   @Length(min = 5, max = 45, message = "E-mail contains from 5 to 45 symbols")
   private String username;
   @Pattern(
-      message = "Not valid password: '${validatedValue}'. Password can contains: numbers(0-9), latin letters(a-z,A-Z) and symbols(!@#$%^&*)",
+      message = "Не валидный пароль. Пароль может содержать: цифры(0-9), буквы латинского алфавита(a-z,A-Z), символы (!@#$%^&*) и длинна не менее трех символов",
       regexp = "[0-9a-zA-Z!@#$%^&*]{3,}")
   private String password;
   private String confirmPassword;

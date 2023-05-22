@@ -11,3 +11,6 @@ token:
   expired:
     access: ${TOKEN_EXPIRED_ACCESS:60000}    #1 * 60 * 1000
     refresh: ${TOKEN_EXPIRED_REFRESH:120000} #2 * 60 * 1000
+spring:
+  liquibase:
+    change-log: ${LIQUIBASE_CHANGE_LOG:classpath:/changelog/master.xml}

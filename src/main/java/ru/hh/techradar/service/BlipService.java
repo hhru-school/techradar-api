@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.hh.techradar.entity.Blip;
-import ru.hh.techradar.exception.NotFoundException;
+import ru.hh.techradar.entity.exception.NotFoundException;
 import ru.hh.techradar.filter.BlipFilter;
 import ru.hh.techradar.filter.ComponentFilter;
 import ru.hh.techradar.mapper.BlipMapper;

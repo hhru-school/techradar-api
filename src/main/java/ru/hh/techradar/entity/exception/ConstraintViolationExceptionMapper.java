@@ -1,4 +1,4 @@
-package ru.hh.techradar.exception;
+package ru.hh.techradar.entity.exception;
 
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;

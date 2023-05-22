@@ -1,4 +1,4 @@
-package ru.hh.techradar.exception;
+package ru.hh.techradar.entity.exception;
 
 public class EntityExistsException extends RuntimeException {
 

@@ -1,8 +1,3 @@
-CREATE DATABASE tech_radar;
-GRANT ALL PRIVILEGES ON DATABASE tech_radar TO postgres;
-
-\c tech_radar;
-
 -- -----------------------------------------------------
 -- Table company
 -- -----------------------------------------------------
