@@ -13,8 +13,10 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import java.util.Optional;
 import ru.hh.techradar.dto.QuadrantDto;
 import ru.hh.techradar.filter.ComponentFilter;
+import ru.hh.techradar.filter.DateIdFilter;
 import ru.hh.techradar.mapper.QuadrantMapper;
 import ru.hh.techradar.service.QuadrantService;
 
@@ -51,9 +53,9 @@ public class QuadrantController {
   @POST
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
-  public Response save(@QueryParam("radarId") Long radarId, QuadrantDto dto) {
+  public Response save(@QueryParam("radar-id") Long radarId, @Valid QuadrantDto dto) {
     return Response
-        .ok(quadrantMapper.toDto(quadrantService.save(radarId, quadrantMapper.toEntity(dto))))
+        .ok(quadrantMapper.toDto(quadrantService.save(radarId, quadrantMapper.toEntity(dto), Optional.empty())))
         .status(Response.Status.CREATED)
         .build();
   }
@@ -62,18 +64,33 @@ public class QuadrantController {
   @Path("/{id}")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
-  public Response update(@PathParam("id") Long id, QuadrantDto dto) {
+  public Response update(@PathParam("id") Long id, @Valid QuadrantDto dto) {
     return Response
-        .ok(quadrantMapper.toDto(quadrantService.update(id, quadrantMapper.toEntity(dto))))
+        .ok(quadrantMapper.toDto(quadrantService.update(id, quadrantMapper.toEntity(dto), Optional.empty())))
         .build();
   }
 
-  @GET
+  @PUT
   @Path("/archive/{id}")
-  public Response archiveById(@PathParam("id") Long id) {
-    quadrantService.archiveById(id);
-    return Response
-        .ok(quadrantService.archiveById(id))
-        .build();
+  public Response archiveByFilter(@Valid @BeanParam DateIdFilter filter) {
+    Response.Status responseStatus;
+    if (quadrantService.archiveByFilter(filter)) {
+      responseStatus = Response.Status.OK;
+    } else {
+      responseStatus = Response.Status.BAD_REQUEST;
+    }
+    return Response.status(responseStatus).build();
+  }
+
+  @GET
+  @Path("/contain-blips/{id}")
+  public Response isContainBlipsById(@Valid @BeanParam DateIdFilter filter) {
+    Response.Status responseStatus;
+    if (quadrantService.isContainBlipsByFilter(filter)) {
+      responseStatus = Response.Status.PRECONDITION_FAILED;
+    } else {
+      responseStatus = Response.Status.NO_CONTENT;
+    }
+    return Response.status(responseStatus).build();
   }
 }

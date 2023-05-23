@@ -18,6 +18,7 @@ import ru.hh.techradar.controller.UserController;
 import ru.hh.techradar.exception.BadCredentialsExceptionMapper;
 import ru.hh.techradar.exception.BaseExceptionMapper;
 import ru.hh.techradar.exception.ConstraintViolationExceptionMapper;
+import ru.hh.techradar.exception.EntityExistsExceptionMapper;
 import ru.hh.techradar.exception.NotFoundExceptionMapper;
 import ru.hh.techradar.exception.ParamExceptionMapper;
 import ru.hh.techradar.security.controller.AuthenticationController;
@@ -57,6 +58,7 @@ public class ContextConfig {
     resourceConfig.register(BaseExceptionMapper.class);
     resourceConfig.register(ParamExceptionMapper.class);
     resourceConfig.register(ConstraintViolationExceptionMapper.class);
+    resourceConfig.register(EntityExistsExceptionMapper.class);
   }
 
   private void converterProviderConfig(ResourceConfig resourceConfig) {

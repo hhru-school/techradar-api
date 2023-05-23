@@ -35,6 +35,7 @@ public class RadarService {
   }
 
 
+  @Transactional(readOnly = true)
   public Radar findById(Long id) {
     return radarRepository.findById(id).orElseThrow(() -> new NotFoundException(Radar.class, id));
   }
