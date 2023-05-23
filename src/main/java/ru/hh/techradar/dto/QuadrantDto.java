@@ -1,19 +1,19 @@
 package ru.hh.techradar.dto;
 
-import jakarta.validation.constraints.DecimalMax;
-import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.util.Objects;
 import java.util.StringJoiner;
 
 public class QuadrantDto {
-  @NotNull
   private Long id;
-  @NotNull
+  @NotBlank
   private String name;
   @NotNull
-  @DecimalMax(message = "Position must be less than 8", value = "8")
-  @DecimalMin(message = "Position must be bigger than 0", value = "1")
+  @Max(message = "Position must be less than 8", value = 8)
+  @Min(message = "Position must be bigger than 0", value = 1)
   private Integer position;
 
   public QuadrantDto() {

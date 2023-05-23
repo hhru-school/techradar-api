@@ -13,24 +13,22 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import java.util.Optional;
 import ru.hh.techradar.dto.RingDto;
-import ru.hh.techradar.entity.Radar;
 import ru.hh.techradar.filter.ComponentFilter;
+import ru.hh.techradar.filter.DateIdFilter;
 import ru.hh.techradar.mapper.RingMapper;
-import ru.hh.techradar.service.RadarService;
 import ru.hh.techradar.service.RingService;
 
 @Path("/api/rings")
 public class RingController {
   private final RingService ringService;
   private final RingMapper ringMapper;
-  private final RadarService radarService;
 
   @Inject
-  public RingController(RingService ringService, RingMapper ringMapper, RadarService radarService) {
+  public RingController(RingService ringService, RingMapper ringMapper) {
     this.ringService = ringService;
     this.ringMapper = ringMapper;
-    this.radarService = radarService;
   }
 
   @GET
@@ -55,10 +53,9 @@ public class RingController {
   @POST
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
-  public Response save(@QueryParam("radarId") Long radarId, RingDto dto) {
-    Radar radar = radarService.findById(radarId);
+  public Response save(@QueryParam("radar-id") Long radarId, @Valid RingDto dto) {
     return Response
-        .ok(ringMapper.toDto(ringService.save(radar, ringMapper.toEntity(dto))))
+        .ok(ringMapper.toDto(ringService.save(radarId, ringMapper.toEntity(dto), Optional.empty())))
         .status(Response.Status.CREATED)
         .build();
   }
@@ -67,25 +64,33 @@ public class RingController {
   @Path("/{id}")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
-  public Response update(@PathParam("id") Long id, RingDto dto) {
+  public Response update(@PathParam("id") Long id, @Valid RingDto dto) {
     return Response
-        .ok(ringMapper.toDto(ringService.update(id, ringMapper.toEntity(dto))))
+        .ok(ringMapper.toDto(ringService.update(id, ringMapper.toEntity(dto), Optional.empty())))
         .build();
   }
 
   @PUT
   @Path("/archive/{id}")
-  public Response archiveByIdAndFilter(@PathParam("id") Long id, @Valid @BeanParam ComponentFilter filter) {
-    return Response
-        .status(ringService.archiveByIdAndFilter(id, filter) ? Response.Status.OK : Response.Status.BAD_REQUEST)
-        .build();
+  public Response archiveByFilter(@Valid @BeanParam DateIdFilter filter) {
+    Response.Status responseStatus;
+    if (ringService.archiveByFilter(filter)) {
+      responseStatus = Response.Status.OK;
+    } else {
+      responseStatus = Response.Status.BAD_REQUEST;
+    }
+    return Response.status(responseStatus).build();
   }
 
   @GET
   @Path("/contain-blips/{id}")
-  public Response isContainBlipsById(@PathParam("id") Long id, @Valid @BeanParam ComponentFilter filter) {
-    return Response.status(
-        ringService.isContainBlipsByIdAndFilter(id, filter) ? Response.Status.PRECONDITION_FAILED : Response.Status.NO_CONTENT
-    ).build();
+  public Response isContainBlipsByFilter(@Valid @BeanParam DateIdFilter filter) {
+    Response.Status responseStatus;
+    if (ringService.isContainBlipsByFilter(filter)) {
+      responseStatus = Response.Status.PRECONDITION_FAILED;
+    } else {
+      responseStatus = Response.Status.NO_CONTENT;
+    }
+    return Response.status(responseStatus).build();
   }
 }
