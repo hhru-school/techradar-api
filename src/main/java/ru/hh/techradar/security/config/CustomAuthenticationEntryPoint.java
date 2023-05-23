@@ -9,7 +9,7 @@ import java.io.IOException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
-import ru.hh.techradar.entity.exception.Error;
+import ru.hh.techradar.exception.Error;
 
 @Component
 public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint {

@@ -10,7 +10,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import ru.hh.techradar.entity.User;
-import ru.hh.techradar.entity.exception.NotFoundException;
+import ru.hh.techradar.exception.NotFoundException;
 import ru.hh.techradar.security.model.CustomUserDetails;
 import ru.hh.techradar.service.UserService;
 

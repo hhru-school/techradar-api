@@ -1,4 +1,4 @@
-package ru.hh.techradar.entity.exception;
+package ru.hh.techradar.exception;
 
 import jakarta.ws.rs.core.Response;
 import java.time.Instant;

@@ -17,8 +17,8 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import ru.hh.techradar.entity.User;
-import ru.hh.techradar.entity.exception.Error;
-import ru.hh.techradar.entity.exception.NotFoundException;
+import ru.hh.techradar.exception.Error;
+import ru.hh.techradar.exception.NotFoundException;
 import static ru.hh.techradar.security.dto.Constants.AUTHORIZATION;
 import static ru.hh.techradar.security.dto.Constants.TOKEN_TYPE;
 import static ru.hh.techradar.security.dto.Constants.TOKEN_TYPE_LENGTH;

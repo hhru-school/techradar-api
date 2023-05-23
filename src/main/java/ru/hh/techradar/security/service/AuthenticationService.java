@@ -9,7 +9,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.hh.techradar.entity.User;
 import ru.hh.techradar.enumeration.Role;
-import ru.hh.techradar.entity.exception.NotFoundException;
+import ru.hh.techradar.exception.NotFoundException;
 import ru.hh.techradar.security.dto.AuthenticationDto;
 import ru.hh.techradar.security.dto.AuthenticationResponse;
 import static ru.hh.techradar.security.dto.Constants.AUTHORIZATION;

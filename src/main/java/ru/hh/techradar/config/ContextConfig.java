@@ -15,11 +15,11 @@ import ru.hh.techradar.controller.QuadrantController;
 import ru.hh.techradar.controller.RadarController;
 import ru.hh.techradar.controller.RingController;
 import ru.hh.techradar.controller.UserController;
-import ru.hh.techradar.entity.exception.BadCredentialsExceptionMapper;
-import ru.hh.techradar.entity.exception.BaseExceptionMapper;
-import ru.hh.techradar.entity.exception.ConstraintViolationExceptionMapper;
-import ru.hh.techradar.entity.exception.NotFoundExceptionMapper;
-import ru.hh.techradar.entity.exception.ParamExceptionMapper;
+import ru.hh.techradar.exception.BadCredentialsExceptionMapper;
+import ru.hh.techradar.exception.BaseExceptionMapper;
+import ru.hh.techradar.exception.ConstraintViolationExceptionMapper;
+import ru.hh.techradar.exception.NotFoundExceptionMapper;
+import ru.hh.techradar.exception.ParamExceptionMapper;
 import ru.hh.techradar.security.controller.AuthenticationController;
 import ru.hh.techradar.util.DateFormatParamConverterProvider;
 

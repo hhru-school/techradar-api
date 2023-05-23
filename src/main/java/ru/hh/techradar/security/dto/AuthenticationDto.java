@@ -2,7 +2,7 @@ package ru.hh.techradar.security.dto;
 
 public class AuthenticationDto {
   private String username;
-  private String Password;
+  private String password;
 
   public AuthenticationDto() {
   }
@@ -16,10 +16,10 @@ public class AuthenticationDto {
   }
 
   public String getPassword() {
-    return Password;
+    return password;
   }
 
   public void setPassword(String password) {
-    Password = password;
+    this.password = password;
   }
 }
