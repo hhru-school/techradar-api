@@ -1,8 +1,3 @@
-CREATE DATABASE tech_radar;
-GRANT ALL PRIVILEGES ON DATABASE tech_radar TO postgres;
-
-\c tech_radar;
-
 -- -----------------------------------------------------
 -- Table company
 -- -----------------------------------------------------
@@ -27,6 +22,7 @@ CREATE TABLE IF NOT EXISTS tr_user
     company_id       BIGINT       NULL,
     creation_time    TIMESTAMP    NOT NULL,
     last_change_time TIMESTAMP    NOT NULL,
+    role           VARCHAR(45)  NOT NULL,
     PRIMARY KEY (user_id),
     CONSTRAINT fk_user_company1
     FOREIGN KEY (company_id)

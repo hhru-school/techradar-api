@@ -4,10 +4,9 @@ services:
     container_name: postgres
     image: postgres:15.2
     environment:
+      POSTGRES_DB: ${POSTGRES_DB:-tech_radar}
       POSTGRES_USER: ${POSTGRES_USER:-postgres}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
-    volumes:
-      - ./sql:/docker-entrypoint-initdb.d
     ports:
       - "5433:5432"
     networks:

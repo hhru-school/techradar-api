@@ -2,6 +2,8 @@ package ru.hh.techradar.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -11,6 +13,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.util.Objects;
 import java.util.StringJoiner;
+import ru.hh.techradar.enumeration.Role;
 
 @Entity
 @Table(name = "tr_user")
@@ -26,18 +29,15 @@ public class User extends AuditableEntity<Long> {
 
   @Column(name = "password", nullable = false)
   private String password;
+  @Enumerated(EnumType.STRING)
+  @Column(name = "role")
+  private Role role;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "company_id", nullable = false)
   private Company company;
 
   public User() {
-  }
-
-  public User(String username, String password, Company company) {
-    this.username = username;
-    this.password = password;
-    this.company = company;
   }
 
   public Long getId() {
@@ -62,6 +62,14 @@ public class User extends AuditableEntity<Long> {
 
   public void setPassword(String password) {
     this.password = password;
+  }
+
+  public Role getRole() {
+    return role;
+  }
+
+  public void setRole(Role role) {
+    this.role = role;
   }
 
   public Company getCompany() {

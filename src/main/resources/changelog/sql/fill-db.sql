@@ -1,11 +1,11 @@
-\c tech_radar;
 
 INSERT INTO company (company_id, name, creation_time, last_change_time)
 VALUES (1, 'HeadHunter', now(), now());
 SELECT setval('company_company_id_seq', (SELECT max(company_id) FROM company));
 
-INSERT INTO tr_user (user_id, username, password, company_id, creation_time, last_change_time)
-VALUES (1, 'hh.user', 'password', 1, now(), now());
+INSERT INTO tr_user (user_id, username, password, company_id, creation_time, last_change_time, role)
+VALUES (1, 'user@hh.ru', '$2a$10$buXPe7kc5Ffk.5mXjzv.D.km/naLTyOYhkTPsrgtaA720onbeXBs.', 1, now(), now(), 'USER'),
+       (2, 'admin@hh.ru', '$2a$10$buXPe7kc5Ffk.5mXjzv.D.km/naLTyOYhkTPsrgtaA720onbeXBs.', 1, now(), now(), 'ADMIN');
 SELECT setval('tr_user_user_id_seq', (SELECT max(user_id) FROM tr_user));
 
 INSERT INTO radar (radar_id, name, company_id, author_id, creation_time, last_change_time)
