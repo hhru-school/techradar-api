@@ -7,6 +7,7 @@ import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
 import ru.hh.techradar.entity.Ring;
 import ru.hh.techradar.filter.ComponentFilter;
+import ru.hh.techradar.filter.DateIdFilter;
 
 @Repository
 public class RingRepository extends BaseRepositoryImpl<Long, Ring> {
@@ -41,16 +42,31 @@ public class RingRepository extends BaseRepositoryImpl<Long, Ring> {
         .uniqueResultOptional();
   }
 
-  public Boolean isContainBlipsByIdAndFilter(Long id, ComponentFilter filter) {
+  public Boolean isContainBlipsByFilter(DateIdFilter filter) {
     return sessionFactory.getCurrentSession().createQuery(
-            "SELECT COUNT(b) FROM Blip b " +
-                "LEFT JOIN b.blipEvents be " +
-                "INNER JOIN be.ring r " +
-                "WHERE b.radar.id = :radarId AND be.blip.id = b.id AND r.id = :ringId AND be.creationTime <= :actualDate "
+            "SELECT COUNT(be) FROM BlipEvent be " +
+                "JOIN be.ring r " +
+                "WHERE r.id = :ringId AND be.creationTime <= :actualDate " +
+                "AND (r.removedAt IS NULL OR r.removedAt > :actualDate) "
             , Long.class)
-        .setParameter("ringId", id)
-        .setParameter("actualDate", filter.getActualDate())
-        .setParameter("radarId", filter.getRadarId())
+        .setParameter("ringId", filter.getId())
+        .setParameter("actualDate", filter.getDate())
+        .getSingleResult() > 0;
+  }
+
+  public Boolean isAnotherSuchRingExistByFilter(Ring ring, DateIdFilter filter) {
+    return sessionFactory.getCurrentSession().createQuery(
+            "SELECT COUNT(rs) FROM RingSetting rs " +
+                "JOIN rs.ring r " +
+                "WHERE r.radar.id = :radarId AND rs.name = :supposedName " +
+                "AND (r.removedAt IS NULL OR r.removedAt > :actualDate) " +
+                "AND r.creationTime <= :actualDate " +
+                "AND rs.creationTime IN(SELECT max(_rs.creationTime) FROM RingSetting _rs WHERE _rs.ring.id = r.id " +
+                "AND _rs.creationTime <= :actualDate) "
+            , Long.class)
+        .setParameter("radarId", filter.getId())
+        .setParameter("actualDate", filter.getDate())
+        .setParameter("supposedName", ring.getCurrentSetting().getName())
         .getSingleResult() > 0;
   }
 }

@@ -8,18 +8,21 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.hh.techradar.entity.Radar;
 import ru.hh.techradar.entity.Ring;
-import ru.hh.techradar.entity.RingSetting;
 import ru.hh.techradar.exception.EntityExistsException;
 import ru.hh.techradar.exception.NotFoundException;
 import ru.hh.techradar.filter.ComponentFilter;
+import ru.hh.techradar.filter.DateIdFilter;
+import ru.hh.techradar.repository.RadarRepository;
 import ru.hh.techradar.repository.RingRepository;
 
 @Service
 public class RingService {
   private final RingRepository ringRepository;
+  private final RadarRepository radarRepository;
 
-  public RingService(RingRepository ringRepository) {
+  public RingService(RingRepository ringRepository, RadarRepository radarRepository) {
     this.ringRepository = ringRepository;
+    this.radarRepository = radarRepository;
   }
 
   @Transactional(readOnly = true)
@@ -33,50 +36,51 @@ public class RingService {
   }
 
   @Transactional
-  public Boolean archiveByIdAndFilter(Long id, ComponentFilter filter) {
-    if (isContainBlipsByIdAndFilter(id, filter) == Boolean.FALSE) {
-      Ring found = ringRepository.findById(id).orElseThrow(() -> new NotFoundException(Ring.class, id));
-      if (Objects.isNull(found.getRemovedAt())) {
-        found.setRemovedAt(Instant.now());
-        ringRepository.update(found);
-        return Boolean.TRUE;
-      }
+  public Boolean archiveByFilter(DateIdFilter filter) {
+    if (!Boolean.TRUE.equals(isContainBlipsByFilter(filter))) {
+      return Boolean.FALSE;
     }
-    return Boolean.FALSE;
+    Ring found = ringRepository.findById(filter.getId()).orElseThrow(() -> new NotFoundException(Ring.class, filter.getId()));
+    if (Objects.isNull(found.getRemovedAt())) {
+      found.setRemovedAt(Instant.now());
+      ringRepository.update(found);
+    }
+    return Boolean.TRUE;
   }
 
   @Transactional
-  public Ring update(Long id, Ring entity) {
+  public Ring update(Long id, Ring entity, Optional<DateIdFilter> filter) {
     Ring found = ringRepository.findById(id).orElseThrow(() -> new NotFoundException(Ring.class, id));
+    if (ringRepository.isAnotherSuchRingExistByFilter(entity, filter.orElse(new DateIdFilter(found.getRadar().getId(), Instant.now())))) {
+      throw new EntityExistsException(Ring.class, found.getCurrentSetting().getName());
+    }
     found.setLastChangeTime(Instant.now());
     Optional.ofNullable(entity.getCurrentSetting()).ifPresent(
         ringSetting -> {
           var currentSetting = found.getCurrentSetting();
-          ringSetting.setName(Optional.ofNullable(ringSetting.getName()).orElseGet(currentSetting::getName));
-          ringSetting.setPosition(
-              Optional.ofNullable(ringSetting.getPosition()).orElseGet(currentSetting::getPosition)
-          );
           ringSetting.setRing(found);
-          if (Objects.equals(ringSetting.getName(), currentSetting.getName())
-              && Objects.equals(ringSetting.getPosition(), currentSetting.getPosition())) {
-            throw new EntityExistsException(RingSetting.class, currentSetting.getId());
+          if (!Objects.equals(ringSetting.getName(), currentSetting.getName())
+              || !Objects.equals(ringSetting.getPosition(), currentSetting.getPosition())) {
+            found.getSettings().add(ringSetting);
           }
-          found.getSettings().add(ringSetting);
         }
     );
     return ringRepository.update(found);
   }
 
   @Transactional
-  public Ring save(Radar radar, Ring entity) {
-    Objects.requireNonNull(radar);
-    Objects.requireNonNull(entity);
-    entity.setRadar(radar);
+  public Ring save(Long radarId, Ring entity, Optional<DateIdFilter> filter) {
+    entity.setRadar(radarRepository
+        .findById(radarId)
+        .orElseThrow(() -> new NotFoundException(Radar.class, radarId)));
+    if (ringRepository.isAnotherSuchRingExistByFilter(entity, filter.orElse(new DateIdFilter(radarId, Instant.now())))) {
+      throw new EntityExistsException(Ring.class, entity.getCurrentSetting().getName());
+    }
     return ringRepository.save(entity);
   }
 
   @Transactional(readOnly = true)
-  public Boolean isContainBlipsByIdAndFilter(Long id, ComponentFilter filter) {
-    return ringRepository.isContainBlipsByIdAndFilter(id, filter);
+  public Boolean isContainBlipsByFilter(DateIdFilter filter) {
+    return ringRepository.isContainBlipsByFilter(filter);
   }
 }

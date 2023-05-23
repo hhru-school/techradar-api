@@ -12,6 +12,7 @@ import ru.hh.techradar.entity.Radar;
 import ru.hh.techradar.exception.EntityExistsException;
 import ru.hh.techradar.exception.NotFoundException;
 import ru.hh.techradar.filter.ComponentFilter;
+import ru.hh.techradar.filter.DateIdFilter;
 import ru.hh.techradar.repository.QuadrantRepository;
 import ru.hh.techradar.repository.RadarRepository;
 
@@ -22,8 +23,7 @@ public class QuadrantService {
 
   public QuadrantService(
       QuadrantRepository quadrantRepository,
-      RadarRepository radarRepository
-  ) {
+      RadarRepository radarRepository) {
     this.quadrantRepository = quadrantRepository;
     this.radarRepository = radarRepository;
   }
@@ -36,54 +36,54 @@ public class QuadrantService {
   @Transactional(readOnly = true)
   public Quadrant findById(Long id) {
     return quadrantRepository.findById(id).orElseThrow(() -> new NotFoundException(Quadrant.class, id));
-
   }
 
   @Transactional
-  public Quadrant update(Long id, Quadrant entity) {
+  public Quadrant update(Long id, Quadrant entity, Optional<DateIdFilter> filter) {
     Quadrant found = quadrantRepository.findById(id).orElseThrow(() -> new NotFoundException(Quadrant.class, id));
+    if (quadrantRepository.isAnotherSuchQuadrantExistByFilter(entity, filter.orElse(new DateIdFilter(found.getRadar().getId(), Instant.now())))) {
+      throw new EntityExistsException(Quadrant.class, found.getCurrentSetting().getName());
+    }
     found.setLastChangeTime(Instant.now());
     Optional.ofNullable(entity.getCurrentSetting()).ifPresent(
         quadrantSetting -> {
-          var currentSetting = found.getCurrentSetting();
-          quadrantSetting.setName(Optional.ofNullable(quadrantSetting.getName()).orElseGet(currentSetting::getName));
-          quadrantSetting.setPosition(
-              Optional.ofNullable(quadrantSetting.getPosition()).orElseGet(currentSetting::getPosition)
-          );
+          var currentSetting = Optional.ofNullable(found.getCurrentSetting()).orElseThrow(() -> new NotFoundException(QuadrantSetting.class, 1));
           quadrantSetting.setQuadrant(found);
-          if (Objects.equals(quadrantSetting.getName(), currentSetting.getName())
-              && Objects.equals(quadrantSetting.getPosition(), currentSetting.getPosition())) {
-            throw new EntityExistsException(QuadrantSetting.class, currentSetting.getId());
+          if (!Objects.equals(quadrantSetting.getPosition(), currentSetting.getPosition())
+              || !Objects.equals(quadrantSetting.getName(), currentSetting.getName())) {
+            found.getSettings().add(quadrantSetting);
           }
-          found.getSettings().add(quadrantSetting);
         }
     );
     return quadrantRepository.update(found);
   }
 
   @Transactional
-  public Quadrant save(Long radarId, Quadrant entity) {
+  public Quadrant save(Long radarId, Quadrant entity, Optional<DateIdFilter> filter) {
     entity.setRadar(radarRepository
         .findById(radarId)
         .orElseThrow(() -> new NotFoundException(Radar.class, radarId)));
+    if (quadrantRepository.isAnotherSuchQuadrantExistByFilter(entity, filter.orElse(new DateIdFilter(radarId, Instant.now())))) {
+      throw new EntityExistsException(Quadrant.class, entity.getCurrentSetting().getName());
+    }
     return quadrantRepository.save(entity);
   }
 
   @Transactional(readOnly = true)
-  public Boolean isContainBlipsByIdAndFilter(Long id, ComponentFilter filter) {
-    return quadrantRepository.isContainBlipsByIdAndFilter(id, filter);
+  public Boolean isContainBlipsByFilter(DateIdFilter filter) {
+    return quadrantRepository.isContainBlipsByFilter(filter);
   }
 
   @Transactional
-  public Boolean archiveByIdAndFilter(Long id, ComponentFilter filter) {
-    if (isContainBlipsByIdAndFilter(id, filter) == Boolean.FALSE) {
-      Quadrant found = quadrantRepository.findById(id).orElseThrow(() -> new NotFoundException(Quadrant.class, id));
-      if (Objects.isNull(found.getRemovedAt())) {
-        found.setRemovedAt(Instant.now());
-        quadrantRepository.update(found);
-        return Boolean.TRUE;
-      }
+  public Boolean archiveByFilter(DateIdFilter filter) {
+    if (!Boolean.TRUE.equals(isContainBlipsByFilter(filter))) {
+      return Boolean.FALSE;
     }
-    return Boolean.FALSE;
+    Quadrant found = quadrantRepository.findById(filter.getId()).orElseThrow(() -> new NotFoundException(Quadrant.class, filter.getId()));
+    if (Objects.isNull(found.getRemovedAt())) {
+      found.setRemovedAt(Instant.now());
+      quadrantRepository.update(found);
+    }
+    return Boolean.TRUE;
   }
 }
