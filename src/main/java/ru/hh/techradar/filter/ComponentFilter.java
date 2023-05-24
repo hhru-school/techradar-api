@@ -6,11 +6,11 @@ import jakarta.ws.rs.QueryParam;
 import java.time.Instant;
 
 public class ComponentFilter {
-  @QueryParam("radarId")
+  @QueryParam("radar-id")
   @NotNull(message = "Cannot be null property radarId")
   private Long radarId;
 
-  @QueryParam(value = "actualDate")
+  @QueryParam(value = "actual-date")
   @DefaultValue(value = "9999-01-01T00:00:00.000Z")
   private Instant actualDate;
 
