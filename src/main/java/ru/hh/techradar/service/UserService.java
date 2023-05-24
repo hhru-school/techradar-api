@@ -3,7 +3,6 @@ package ru.hh.techradar.service;
 import java.time.Instant;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.hh.techradar.entity.User;
@@ -40,8 +39,8 @@ public class UserService {
   }
 
   @Transactional(readOnly = true)
-  public Optional<User> findByUsername(String username) {
-    return userRepository.findByUsername(username);
+  public User findByUsername(String username) {
+    return userRepository.findByUsername(username).orElseThrow(() -> new NotFoundException(User.class, username));
   }
 
   @Transactional

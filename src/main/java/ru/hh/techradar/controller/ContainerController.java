@@ -3,6 +3,7 @@ package ru.hh.techradar.controller;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.BeanParam;
 import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.CookieParam;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
@@ -29,9 +30,12 @@ public class ContainerController {
   @POST
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
-  public Response save(ContainerCreateDto dto) {
+  public Response save(
+      ContainerCreateDto dto,
+      @CookieParam("username") String username
+      ) {
     return Response
-        .ok(containerMapper.toDto(containerService.save(dto)))
+        .ok(containerMapper.toDto(containerService.save(dto, username)))
         .status(Response.Status.CREATED)
         .build();
   }

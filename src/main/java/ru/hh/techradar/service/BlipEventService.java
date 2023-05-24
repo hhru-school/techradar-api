@@ -61,6 +61,7 @@ public class BlipEventService {
   }
 
 
+  @Transactional(readOnly = true)
   public Collection<BlipEvent> find(Long blipEventId, Long blipId) {
     if(blipEventId == null || blipId == null) return findAll();
     return findBlipEventsOfTheBlip(blipId, blipEventId);

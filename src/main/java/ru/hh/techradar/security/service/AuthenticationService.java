@@ -9,7 +9,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.hh.techradar.entity.User;
 import ru.hh.techradar.enumeration.Role;
-import ru.hh.techradar.exception.NotFoundException;
 import ru.hh.techradar.security.dto.AuthenticationDto;
 import ru.hh.techradar.security.dto.AuthenticationResponse;
 import static ru.hh.techradar.security.dto.Constants.AUTHORIZATION;
@@ -52,8 +51,7 @@ public class AuthenticationService {
   public AuthenticationResponse authenticate(AuthenticationDto auth) {
     authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(auth.getUsername(), auth.getPassword()));
     User user = userService
-        .findByUsername(auth.getUsername())
-        .orElseThrow(() -> new NotFoundException(User.class, auth.getUsername()));
+        .findByUsername(auth.getUsername());
     CustomUserDetails userDetails = CustomUserDetails.toCustomUserDetails(user);
     return new AuthenticationResponse(
         tokenService.generateAccessToken(userDetails),
@@ -65,8 +63,7 @@ public class AuthenticationService {
     String refreshToken = authHeader.substring(TOKEN_TYPE_LENGTH);
     String username = tokenService.extractUsername(refreshToken);
     User user = userService
-        .findByUsername(username)
-        .orElseThrow(() -> new NotFoundException(User.class, username));
+        .findByUsername(username);
     UserDetails userDetails = CustomUserDetails.toCustomUserDetails(user);
     return new AuthenticationResponse(
         tokenService.generateAccessToken(userDetails),

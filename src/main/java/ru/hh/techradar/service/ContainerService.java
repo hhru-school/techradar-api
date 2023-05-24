@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.hh.techradar.dto.ContainerCreateDto;
@@ -13,6 +14,7 @@ import ru.hh.techradar.entity.Container;
 import ru.hh.techradar.entity.Quadrant;
 import ru.hh.techradar.entity.Radar;
 import ru.hh.techradar.entity.Ring;
+import ru.hh.techradar.entity.User;
 import ru.hh.techradar.filter.ComponentFilter;
 import ru.hh.techradar.filter.RevisionFilter;
 import ru.hh.techradar.mapper.BlipCreateMapper;
@@ -30,6 +32,7 @@ public class ContainerService {
   private final RadarService radarService;
   private final BlipCreateMapper blipCreateMapper;
   private final RadarVersionService radarVersionService;
+  private final UserService userService;
 
   public ContainerService(
       BlipEventService blipEventService,
@@ -39,7 +42,7 @@ public class ContainerService {
       QuadrantMapper quadrantMapper,
       RingMapper ringMapper,
       RadarService radarService,
-      BlipCreateMapper blipCreateMapper, RadarVersionService radarVersionService) {
+      BlipCreateMapper blipCreateMapper, RadarVersionService radarVersionService, UserService userService) {
     this.blipEventService = blipEventService;
     this.quadrantService = quadrantService;
     this.ringService = ringService;
@@ -49,6 +52,7 @@ public class ContainerService {
     this.radarService = radarService;
     this.blipCreateMapper = blipCreateMapper;
     this.radarVersionService = radarVersionService;
+    this.userService = userService;
   }
 
   @Transactional(readOnly = true)
@@ -69,20 +73,17 @@ public class ContainerService {
     return findByBlipEventId(radarVersionService.findById(radarVersionId).getBlipEvent().getId());
   }
 
-  //TODO: think of how to refactor this
   @Transactional(readOnly = true)
   public Container findByFilter(RevisionFilter filter) {
-    Container container;
     if (filter.getBlipEventId() == null) {
-      container = findByRadarVersionId(filter.getRadarVersionId());
-    } else {
-      container = findByBlipEventId(filter.getBlipEventId());
+      return findByRadarVersionId(filter.getRadarVersionId());
     }
-    return container;
+    return findByBlipEventId(filter.getBlipEventId());
   }
 
   @Transactional
-  public Container save(ContainerCreateDto dto) {
+  public Container save(ContainerCreateDto dto, String username) {
+    User user = userService.findByUsername(username);
     Container container = new Container();
     Radar radar = radarService.save(dto.getRadar());
     container.setRadar(radar);
@@ -106,7 +107,7 @@ public class ContainerService {
       blipEvent.setQuadrant(nameToQuadrant.get(quadrantName));
       String ringName = dto.getBlips().get(i).getRing().getName();
       blipEvent.setRing(nameToRing.get(ringName));
-      blipEvent.setUser(radar.getAuthor());//TODO: insert correct user
+      blipEvent.setUser(user);
       blipEvents.add(blipEvent);
     }
     if (blipEvents.size() > 0) {
@@ -121,7 +122,7 @@ public class ContainerService {
       }
     }
     container.setBlips(blips);
-    if(blipEvents.size() > 0) {
+    if (blipEvents.size() > 0) {
       container.setBlipEvent(blipEvents.get(blipEvents.size() - 1));
     }
     return container;
@@ -132,7 +133,7 @@ public class ContainerService {
     quadrants.forEach(q ->
     {
       String quadrantName = q.getCurrentSetting().getName();
-      Quadrant quadrant = quadrantService.save(container.getRadar().getId(), q);
+      Quadrant quadrant = quadrantService.save(container.getRadar().getId(), q, Optional.empty());
       nameToQuadrant.put(quadrantName, quadrant);
     });
     container.setQuadrants(quadrants);
@@ -142,11 +143,9 @@ public class ContainerService {
     List<Ring> rings = ringMapper.toEntities(dto.getRings());
     rings.forEach(r -> {
       String ringName = r.getCurrentSetting().getName();
-      Ring ring = ringService.save(container.getRadar(), r);
+      Ring ring = ringService.save(container.getRadar().getId(), r, Optional.empty());
       nameToRing.put(ringName, ring);
     });
     container.setRings(rings);
   }
-
-
 }
