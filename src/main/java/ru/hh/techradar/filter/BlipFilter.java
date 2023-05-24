@@ -6,11 +6,11 @@ import jakarta.ws.rs.QueryParam;
 import java.time.Instant;
 
 public class BlipFilter {
-  @QueryParam("blipId")
+  @QueryParam("blip-id")
   @NotNull(message = "Cannot be null property blipId")
   private Long blipId;
 
-  @QueryParam(value = "actualDate")
+  @QueryParam(value = "actual-date")
   @DefaultValue(value = "9999-01-01T00:00:00.000Z")
   private Instant actualDate;
 
