@@ -67,6 +67,7 @@ jobs:
         run: echo TAG=$(date --iso-8601=seconds) | tr ':' . | cut -c -23 > .env
       - name: Docker compose build
         run: |
+          POSTGRES_NAME=${{ vars.POSTGRES_DB }} \
           POSTGRES_USER=$POSTGRES_USER \
           POSTGRES_PASSWORD=$POSTGRES_PASSWORD \
           POSTGRES_VERSION=$POSTGRES_VERSION \
@@ -77,6 +78,7 @@ jobs:
       - name: Docker compose push latest
         run: |
           echo TAG=latest > .env &&
+          POSTGRES_NAME=${{ vars.POSTGRES_DB }} \
           POSTGRES_USER=$POSTGRES_USER \
           POSTGRES_PASSWORD=$POSTGRES_PASSWORD \
           POSTGRES_VERSION=$POSTGRES_VERSION \
