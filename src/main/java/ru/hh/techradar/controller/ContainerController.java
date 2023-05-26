@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import jakarta.ws.rs.BeanParam;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.CookieParam;
+import jakarta.ws.rs.DefaultValue;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
@@ -32,7 +33,7 @@ public class ContainerController {
   @Produces(MediaType.APPLICATION_JSON)
   public Response save(
       ContainerCreateDto dto,
-      @CookieParam("username") String username
+      @CookieParam("username") @DefaultValue(value = "user@hh.ru") String username
       ) {
     return Response
         .ok(containerMapper.toDto(containerService.save(dto, username)))

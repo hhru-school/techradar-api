@@ -9,8 +9,8 @@ db:
 token:
   secret-key: ${TOKEN_SECRET_KEY:7234753778214125442A472D4B6150645367566B59703273357638792F423F45}
   expired:
-    access: ${TOKEN_EXPIRED_ACCESS:36000000}    #1 * 60 * 1000
-    refresh: ${TOKEN_EXPIRED_REFRESH:36000000} #10 * 60 * 1000
+    access: ${TOKEN_EXPIRED_ACCESS:36000000}
+    refresh: ${TOKEN_EXPIRED_REFRESH:36000000}
 spring:
   liquibase:
     change-log: ${LIQUIBASE_CHANGE_LOG:classpath:/changelog/master.xml}

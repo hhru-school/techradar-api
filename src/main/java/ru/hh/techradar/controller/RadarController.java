@@ -3,6 +3,7 @@ package ru.hh.techradar.controller;
 import jakarta.validation.constraints.NotNull;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
+import jakarta.ws.rs.DefaultValue;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.PUT;
@@ -54,10 +55,12 @@ public class RadarController {
   @Produces(MediaType.APPLICATION_JSON)
   public Response findAllByFilter(
       @QueryParam("company-id") @NotNull Long companyId,
-      @QueryParam("actual-date") Instant actualDate
+      @QueryParam("actual-date") @DefaultValue(value = "9999-01-01T00:00:00.000Z") Instant actualDate
   ) {
     return Response
-        .ok(radarMapper.toShortDtos(radarService.findAllByFilter(companyId, actualDate)))
+        .ok(radarMapper
+            .toShortDtos(radarService
+            .findAllByFilter(companyId, actualDate)))
         .build();
   }
 

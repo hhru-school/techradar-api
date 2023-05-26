@@ -48,7 +48,7 @@
     <changeSet id="5" author="Nedomets">
         <sql>
             INSERT INTO blip_event (blip_event_id, comment, blip_id, parent_id, quadrant_id, ring_id, author_id, creation_time, last_change_time)
-            VALUES (651, 'комментарий 1', 19, 650, 1, 1, 1, now() + '1 day', now() + '1 day'),
+            VALUES (651, 'комментарий 1', 19, 76, 1, 1, 1, now() + '1 day', now() + '1 day'),
                    (652, 'комментарий 2', 19, 651, 1, 1, 1, now() + '2 day', now() + '2 day'),
                    (653, 'комментарий 3', 19, 652, 1, 1, 1, now() + '3 day', now() + '3 day'),
                    (654, 'комментарий 4', 19, 653, 1, 1, 1, now() + '4 day', now() + '4 day'),
@@ -58,7 +58,8 @@
                    (658, 'комментарий 8', 19, 657, 1, 1, 1, now() + '8 day', now() + '8 day'),
                    (659, 'комментарий 9', 19, 658, 1, 1, 1, now() + '9 day', now() + '9 day'),
                    (660, 'комментарий 10', 19, 659, 1, 1, 1, now() + '10 day', now() + '10 day'),
-                   (661, 'комментарий 11', 19, 660, 1, 1, 1, now() + '11 day', now() + '11 day');
+                   (661, 'комментарий 11', 19, 660, 2, 2, 1, now() + '11 day', now() + '11 day');
+            SELECT setval('blip_event_blip_event_id_seq', (SELECT max(blip_event_id) FROM blip_event));
         </sql>
     </changeSet>
 
