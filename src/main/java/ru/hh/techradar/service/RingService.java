@@ -1,17 +1,15 @@
 package ru.hh.techradar.service;
 
-import java.time.Instant;
+import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.hh.techradar.entity.Radar;
 import ru.hh.techradar.entity.Ring;
 import ru.hh.techradar.exception.EntityExistsException;
 import ru.hh.techradar.exception.NotFoundException;
+import ru.hh.techradar.exception.UniqueException;
 import ru.hh.techradar.filter.ComponentFilter;
-import ru.hh.techradar.filter.DateIdFilter;
 import ru.hh.techradar.repository.RadarRepository;
 import ru.hh.techradar.repository.RingRepository;
 
@@ -20,7 +18,9 @@ public class RingService {
   private final RingRepository ringRepository;
   private final RadarRepository radarRepository;
 
-  public RingService(RingRepository ringRepository, RadarRepository radarRepository) {
+  public RingService(
+      RingRepository ringRepository,
+      RadarRepository radarRepository) {
     this.ringRepository = ringRepository;
     this.radarRepository = radarRepository;
   }
@@ -36,51 +36,47 @@ public class RingService {
   }
 
   @Transactional
-  public Boolean archiveByFilter(DateIdFilter filter) {
-    if (!Boolean.TRUE.equals(isContainBlipsByFilter(filter))) {
-      return Boolean.FALSE;
-    }
-    Ring found = ringRepository.findById(filter.getId()).orElseThrow(() -> new NotFoundException(Ring.class, filter.getId()));
-    if (Objects.isNull(found.getRemovedAt())) {
-      found.setRemovedAt(Instant.now());
-      ringRepository.update(found);
-    }
-    return Boolean.TRUE;
-  }
-
-  @Transactional
-  public Ring update(Long id, Ring entity, Optional<DateIdFilter> filter) {
+  public Ring update(Long id, Ring entity) {
     Ring found = ringRepository.findById(id).orElseThrow(() -> new NotFoundException(Ring.class, id));
-    if (ringRepository.isAnotherSuchRingExistByFilter(entity, filter.orElse(new DateIdFilter(found.getRadar().getId(), Instant.now())))) {
-      throw new EntityExistsException(Ring.class, found.getCurrentSetting().getName());
+    if (found.getName().equals(entity.getName())) {
+      return found;
     }
-    found.setLastChangeTime(Instant.now());
-    Optional.ofNullable(entity.getCurrentSetting()).ifPresent(
-        ringSetting -> {
-          var currentSetting = found.getCurrentSetting();
-          ringSetting.setRing(found);
-          if (!Objects.equals(ringSetting.getName(), currentSetting.getName())
-              || !Objects.equals(ringSetting.getPosition(), currentSetting.getPosition())) {
-            found.getSettings().add(ringSetting);
-          }
-        }
-    );
+    isRingValid(found.getRadar().getId(), entity);
+    found.setName(entity.getName());
     return ringRepository.update(found);
   }
 
   @Transactional
-  public Ring save(Long radarId, Ring entity, Optional<DateIdFilter> filter) {
-    entity.setRadar(radarRepository
-        .findById(radarId)
-        .orElseThrow(() -> new NotFoundException(Radar.class, radarId)));
-    if (ringRepository.isAnotherSuchRingExistByFilter(entity, filter.orElse(new DateIdFilter(radarId, Instant.now())))) {
-      throw new EntityExistsException(Ring.class, entity.getCurrentSetting().getName());
+  public Ring save(Long radarId, Ring entity) {
+    Radar radar = radarRepository.findById(radarId).orElseThrow(() -> new NotFoundException(Radar.class, radarId));
+    return save(radar, entity);
+  }
+
+  @Transactional
+  public List<Ring> save(Long radarId, Collection<Ring> rings) {
+    isRingsValid(rings);
+    Radar radar = radarRepository.findById(radarId).orElseThrow(() -> new NotFoundException(Radar.class, radarId));
+    return rings.stream().map(ring -> save(radar, ring)).toList();
+  }
+
+  private void isRingsValid(Collection<Ring> rings) {
+    if (rings.size() != rings.stream().map(Ring::getName).distinct().count()) {
+      throw new UniqueException("Ring collection contains not unique names!");
     }
+    if (rings.size() != rings.stream().map(Ring::getPosition).distinct().count()) {
+      throw new UniqueException("Ring collection contains not unique positions!");
+    }
+  }
+
+  private Ring save(Radar radar, Ring entity) {
+    entity.setRadar(radar);
     return ringRepository.save(entity);
   }
 
-  @Transactional(readOnly = true)
-  public Boolean isContainBlipsByFilter(DateIdFilter filter) {
-    return ringRepository.isContainBlipsByFilter(filter);
+  private void isRingValid(Long radarId, Ring entity) {
+    List<Ring> rings = ringRepository.findAllByFilter(new ComponentFilter().radarId(radarId));
+    if (rings.stream().anyMatch(ring -> ring.getName().equals(entity.getName()))) {
+      throw new EntityExistsException(Ring.class, entity.getName());
+    }
   }
 }

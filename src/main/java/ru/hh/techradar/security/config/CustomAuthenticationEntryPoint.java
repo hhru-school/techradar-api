@@ -9,6 +9,7 @@ import java.io.IOException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
+import ru.hh.techradar.enumeration.ExceptionType;
 import ru.hh.techradar.exception.Error;
 
 @Component
@@ -25,8 +26,7 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
       HttpServletRequest request,
       HttpServletResponse response,
       AuthenticationException exception) throws IOException {
-    //todo заменить на exception.getMessage()
-    Error error = new Error("Нет прав доступа!", Response.Status.UNAUTHORIZED);
+    Error error = new Error(exception.getMessage(), Response.Status.UNAUTHORIZED, ExceptionType.UNAUTHORIZED);
     response.setStatus(Response.Status.UNAUTHORIZED.getStatusCode());
     response.setContentType(MediaType.APPLICATION_JSON);
     response.getWriter().write(objectMapper.writeValueAsString(error));

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+    <changeSet id="1" author="Porfenov">
+        <sqlFile path="../sql/create-db.sql"
+                 endDelimiter="\nGO"
+                 relativeToChangelogFile="true"/>
+    </changeSet>
+
+    <changeSet id="2" author="Nedomets">
+        <sqlFile path="../sql/fill-db.sql"
+                 endDelimiter="\nGO"
+                 relativeToChangelogFile="true"/>
+    </changeSet>
+
+    <changeSet id="TR-33-1" author="Nedomets">
+        <addColumn tableName="ring">
+            <column name="position" type="INT"/>
+            <column name="name" type="VARCHAR(45)"/>
+        </addColumn>
+        <sql>
+            UPDATE ring AS r
+            SET position = rs.position, name = rs.name
+            FROM ring_setting AS rs
+            WHERE r.ring_id = rs.ring_id
+        </sql>
+        <addColumn tableName="quadrant">
+            <column name="position" type="INT"/>
+            <column name="name" type="VARCHAR(45)"/>
+        </addColumn>
+        <sql>
+            UPDATE quadrant AS q
+            SET position = qs.position, name = qs.name
+            FROM quadrant_setting AS qs
+            WHERE q.quadrant_id = qs.quadrant_id
+        </sql>
+    </changeSet>
+
+    <changeSet id="TR-33-2" author="Nedomets">
+        <dropColumn tableName="ring" columnName="removed_at"/>
+        <dropColumn tableName="quadrant" columnName="removed_at"/>
+        <dropTable tableName="ring_setting"/>
+        <dropTable tableName="quadrant_setting"/>
+    </changeSet>
+
+</databaseChangeLog>

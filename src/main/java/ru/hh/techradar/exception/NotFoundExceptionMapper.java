@@ -3,6 +3,7 @@ package ru.hh.techradar.exception;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.ExceptionMapper;
+import ru.hh.techradar.enumeration.ExceptionType;
 
 public class NotFoundExceptionMapper implements ExceptionMapper<NotFoundException> {
 
@@ -10,7 +11,7 @@ public class NotFoundExceptionMapper implements ExceptionMapper<NotFoundExceptio
   public Response toResponse(NotFoundException exception) {
     return Response
         .status(Response.Status.NOT_FOUND)
-        .entity(new Error(exception.getMessage(), Response.Status.NOT_FOUND))
+        .entity(new Error(exception.getMessage(), Response.Status.NOT_FOUND, ExceptionType.NOT_FOUND))
         .type(MediaType.APPLICATION_JSON)
         .build();
   }

@@ -5,6 +5,7 @@ import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.ExceptionMapper;
 import java.util.Optional;
 import org.glassfish.jersey.server.ParamException;
+import ru.hh.techradar.enumeration.ExceptionType;
 
 public class ParamExceptionMapper implements ExceptionMapper<ParamException> {
 
@@ -16,7 +17,7 @@ public class ParamExceptionMapper implements ExceptionMapper<ParamException> {
         .orElse(exception.getMessage());
     return Response
         .status(Response.Status.BAD_REQUEST)
-        .entity(new Error(message, Response.Status.BAD_REQUEST))
+        .entity(new Error(message, Response.Status.BAD_REQUEST, ExceptionType.PARAM))
         .type(MediaType.APPLICATION_JSON)
         .build();
   }

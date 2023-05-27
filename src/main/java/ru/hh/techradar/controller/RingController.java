@@ -13,10 +13,8 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import java.util.Optional;
 import ru.hh.techradar.dto.RingDto;
 import ru.hh.techradar.filter.ComponentFilter;
-import ru.hh.techradar.filter.DateIdFilter;
 import ru.hh.techradar.mapper.RingMapper;
 import ru.hh.techradar.service.RingService;
 
@@ -55,7 +53,7 @@ public class RingController {
   @Produces(MediaType.APPLICATION_JSON)
   public Response save(@QueryParam("radar-id") Long radarId, @Valid RingDto dto) {
     return Response
-        .ok(ringMapper.toDto(ringService.save(radarId, ringMapper.toEntity(dto), Optional.empty())))
+        .ok(ringMapper.toDto(ringService.save(radarId, ringMapper.toEntity(dto))))
         .status(Response.Status.CREATED)
         .build();
   }
@@ -66,31 +64,7 @@ public class RingController {
   @Produces(MediaType.APPLICATION_JSON)
   public Response update(@PathParam("id") Long id, @Valid RingDto dto) {
     return Response
-        .ok(ringMapper.toDto(ringService.update(id, ringMapper.toEntity(dto), Optional.empty())))
+        .ok(ringMapper.toDto(ringService.update(id, ringMapper.toEntity(dto))))
         .build();
-  }
-
-  @PUT
-  @Path("/archive/{id}")
-  public Response archiveByFilter(@Valid @BeanParam DateIdFilter filter) {
-    Response.Status responseStatus;
-    if (ringService.archiveByFilter(filter)) {
-      responseStatus = Response.Status.OK;
-    } else {
-      responseStatus = Response.Status.BAD_REQUEST;
-    }
-    return Response.status(responseStatus).build();
-  }
-
-  @GET
-  @Path("/contain-blips/{id}")
-  public Response isContainBlipsByFilter(@Valid @BeanParam DateIdFilter filter) {
-    Response.Status responseStatus;
-    if (ringService.isContainBlipsByFilter(filter)) {
-      responseStatus = Response.Status.PRECONDITION_FAILED;
-    } else {
-      responseStatus = Response.Status.NO_CONTENT;
-    }
-    return Response.status(responseStatus).build();
   }
 }

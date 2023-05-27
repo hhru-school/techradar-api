@@ -1,18 +1,15 @@
 package ru.hh.techradar.service;
 
-import java.time.Instant;
+import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.hh.techradar.entity.Quadrant;
-import ru.hh.techradar.entity.QuadrantSetting;
 import ru.hh.techradar.entity.Radar;
 import ru.hh.techradar.exception.EntityExistsException;
 import ru.hh.techradar.exception.NotFoundException;
+import ru.hh.techradar.exception.UniqueException;
 import ru.hh.techradar.filter.ComponentFilter;
-import ru.hh.techradar.filter.DateIdFilter;
 import ru.hh.techradar.repository.QuadrantRepository;
 import ru.hh.techradar.repository.RadarRepository;
 
@@ -39,51 +36,47 @@ public class QuadrantService {
   }
 
   @Transactional
-  public Quadrant update(Long id, Quadrant entity, Optional<DateIdFilter> filter) {
+  public Quadrant update(Long id, Quadrant entity) {
     Quadrant found = quadrantRepository.findById(id).orElseThrow(() -> new NotFoundException(Quadrant.class, id));
-    if (quadrantRepository.isAnotherSuchQuadrantExistByFilter(entity, filter.orElse(new DateIdFilter(found.getRadar().getId(), Instant.now())))) {
-      throw new EntityExistsException(Quadrant.class, found.getCurrentSetting().getName());
+    if (found.getName().equals(entity.getName())) {
+      return found;
     }
-    found.setLastChangeTime(Instant.now());
-    Optional.ofNullable(entity.getCurrentSetting()).ifPresent(
-        quadrantSetting -> {
-          var currentSetting = Optional.ofNullable(found.getCurrentSetting()).orElseThrow(() -> new NotFoundException(QuadrantSetting.class, 1));
-          quadrantSetting.setQuadrant(found);
-          if (!Objects.equals(quadrantSetting.getPosition(), currentSetting.getPosition())
-              || !Objects.equals(quadrantSetting.getName(), currentSetting.getName())) {
-            found.getSettings().add(quadrantSetting);
-          }
-        }
-    );
+    isQuadrantValid(found.getRadar().getId(), entity);
+    found.setName(entity.getName());
     return quadrantRepository.update(found);
   }
 
   @Transactional
-  public Quadrant save(Long radarId, Quadrant entity, Optional<DateIdFilter> filter) {
-    entity.setRadar(radarRepository
-        .findById(radarId)
-        .orElseThrow(() -> new NotFoundException(Radar.class, radarId)));
-    if (quadrantRepository.isAnotherSuchQuadrantExistByFilter(entity, filter.orElse(new DateIdFilter(radarId, Instant.now())))) {
-      throw new EntityExistsException(Quadrant.class, entity.getCurrentSetting().getName());
-    }
-    return quadrantRepository.save(entity);
-  }
-
-  @Transactional(readOnly = true)
-  public Boolean isContainBlipsByFilter(DateIdFilter filter) {
-    return quadrantRepository.isContainBlipsByFilter(filter);
+  public Quadrant save(Long radarId, Quadrant entity) {
+    Radar radar = radarRepository.findById(radarId).orElseThrow(() -> new NotFoundException(Radar.class, radarId));
+    return save(radar, entity);
   }
 
   @Transactional
-  public Boolean archiveByFilter(DateIdFilter filter) {
-    if (!Boolean.TRUE.equals(isContainBlipsByFilter(filter))) {
-      return Boolean.FALSE;
+  public List<Quadrant> save(Long radarId, Collection<Quadrant> quadrants) {
+    isQuadrantsValid(quadrants);
+    Radar radar = radarRepository.findById(radarId).orElseThrow(() -> new NotFoundException(Radar.class, radarId));
+    return quadrants.stream().map(quadrant -> save(radar, quadrant)).toList();
+  }
+
+  private void isQuadrantsValid(Collection<Quadrant> quadrants) {
+    if (quadrants.size() != quadrants.stream().map(Quadrant::getName).distinct().count()) {
+      throw new UniqueException("Quadrant collection contains not unique names!");
     }
-    Quadrant found = quadrantRepository.findById(filter.getId()).orElseThrow(() -> new NotFoundException(Quadrant.class, filter.getId()));
-    if (Objects.isNull(found.getRemovedAt())) {
-      found.setRemovedAt(Instant.now());
-      quadrantRepository.update(found);
+    if (quadrants.size() != quadrants.stream().map(Quadrant::getPosition).distinct().count()) {
+      throw new UniqueException("Quadrant collection contains not unique positions!");
     }
-    return Boolean.TRUE;
+  }
+
+  private Quadrant save(Radar radar, Quadrant entity) {
+    entity.setRadar(radar);
+    return quadrantRepository.save(entity);
+  }
+
+  private void isQuadrantValid(Long radarId, Quadrant entity) {
+    List<Quadrant> quadrants = quadrantRepository.findAllByFilter(new ComponentFilter().radarId(radarId));
+    if (quadrants.stream().anyMatch(quadrant -> quadrant.getName().equals(entity.getName()))) {
+      throw new EntityExistsException(Quadrant.class, entity.getName());
+    }
   }
 }

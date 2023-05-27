@@ -23,6 +23,7 @@ import ru.hh.techradar.exception.ConstraintViolationExceptionMapper;
 import ru.hh.techradar.exception.EntityExistsExceptionMapper;
 import ru.hh.techradar.exception.NotFoundExceptionMapper;
 import ru.hh.techradar.exception.ParamExceptionMapper;
+import ru.hh.techradar.exception.UniqueExceptionMapper;
 import ru.hh.techradar.security.controller.AuthenticationController;
 import ru.hh.techradar.util.DateFormatParamConverterProvider;
 
@@ -63,6 +64,7 @@ public class ContextConfig {
     resourceConfig.register(ParamExceptionMapper.class);
     resourceConfig.register(ConstraintViolationExceptionMapper.class);
     resourceConfig.register(EntityExistsExceptionMapper.class);
+    resourceConfig.register(UniqueExceptionMapper.class);
   }
 
   private void converterProviderConfig(ResourceConfig resourceConfig) {
