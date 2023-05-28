@@ -1,6 +1,7 @@
 package ru.hh.techradar.dto;
 
 import java.util.List;
+import java.util.Objects;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -60,5 +61,24 @@ public class ContainerDto {
 
   public void setBlips(List<BlipDto> blips) {
     this.blips = blips;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (!(o instanceof ContainerDto that)) {
+      return false;
+    }
+    return radar.equals(that.radar) && Objects.equals(quadrants, that.quadrants) && Objects.equals(
+        rings,
+        that.rings
+    ) && Objects.equals(blips, that.blips);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(radar, quadrants, rings, blips);
   }
 }

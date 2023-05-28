@@ -1,6 +1,7 @@
 package ru.hh.techradar.service;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -47,6 +48,19 @@ public class BlipEventService {
     return isolatedSave(dto);
   }
 
+  @Transactional
+  public List<BlipEvent> fillParentsAndSave(List<BlipEvent> blipEvents, Long lastBlipEventId) {
+    List<BlipEvent> result = new ArrayList<>();
+    if (!blipEvents.isEmpty()) {
+      for (int i = 0; i < blipEvents.size(); i++) {
+        blipEvents.get(i).setParentId(lastBlipEventId);
+        result.add(save(blipEvents.get(i)));
+        lastBlipEventId = result.get(i).getId();
+      }
+    }
+    return result;
+  }
+
   @Transactional//TODO: think of returning value
   public BlipEvent insert(BlipEventDto blipEventDto) {
     BlipEvent savedBlipEvent = save(blipEventDto, false);
@@ -63,7 +77,9 @@ public class BlipEventService {
 
   @Transactional(readOnly = true)
   public Collection<BlipEvent> find(Long blipEventId, Long blipId) {
-    if(blipEventId == null || blipId == null) return findAll();
+    if (blipEventId == null || blipId == null) {
+      return findAll();
+    }
     return findBlipEventsOfTheBlip(blipId, blipEventId);
   }
 

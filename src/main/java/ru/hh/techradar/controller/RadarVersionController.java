@@ -42,6 +42,8 @@ public class RadarVersionController {
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   public Response save(RadarVersionDto dto) {
+    //TODO: think of how to down it to service (need a piece of advice).
+    // The problem is a cycle dependencies
     RadarVersion radarVersion = radarVersionMapper.toEntity(dto);
     radarVersion.setBlipEvent(blipEventService.findById(dto.getBlipEventId()));
     radarVersion.setRadar(radarService.findById(dto.getRadarId()));
@@ -54,10 +56,11 @@ public class RadarVersionController {
   @GET
   @Produces(MediaType.APPLICATION_JSON)
   public Response findAllByFilter(
-      @QueryParam("radar-id") @NotNull Long radarId
+      @QueryParam("radar-id") @NotNull Long radarId,
+      @QueryParam("last-released-version") Boolean demandLast
   ) {
     return Response
-        .ok(radarVersionMapper.toDtos(radarVersionService.findAllByRadarId(radarId)))
+        .ok(radarVersionMapper.toDtos(radarVersionService.findByRadarId(radarId, demandLast)))
         .build();
   }
 

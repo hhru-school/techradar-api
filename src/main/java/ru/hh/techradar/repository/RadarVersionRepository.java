@@ -21,4 +21,15 @@ public class RadarVersionRepository extends BaseRepositoryImpl<Long, RadarVersio
         .setParameter("radarId", radarId)
         .getResultList();
   }
+
+  public RadarVersion findLastRadarVersionFast(Long radarId, Boolean isReleased) {
+    Session session = sessionFactory.openSession();
+    return session.createQuery("""
+            SELECT rv FROM RadarVersion rv WHERE rv.id =
+            (SELECT MAX(rv2.id) from RadarVersion rv2 WHERE rv2.radar.id = :radarId AND rv2.release = :isReleased)
+            """, RadarVersion.class
+    ).setParameter("radarId", radarId)
+        .setParameter("isReleased", isReleased)
+        .getSingleResult();
+  }
 }

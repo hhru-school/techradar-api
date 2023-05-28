@@ -83,52 +83,70 @@ public class ContainerService {
 
   @Transactional
   public Container save(ContainerCreateDto dto, String username) {
-    User user = userService.findByUsername(username);
     Container container = new Container();
+    User user = userService.findByUsername(username);
     Radar radar = radarService.save(dto.getRadar());
+
     container.setRadar(radar);
-    Map<String, Quadrant> nameToQuadrant = new HashMap<>();
-    Map<String, Ring> nameToRing = new HashMap<>();
 
-    quadrantsHandle(dto, container, nameToQuadrant);
+    //TODO: refactor this two methods when saveAll will be available in quadrant and ring services
+    Map<String, Quadrant> nameToQuadrant = saveQuadrants(dto, container);
+    Map<String, Ring> nameToRing = saveRings(dto, container);
 
-    ringsHandle(dto, container, nameToRing);
-
-    List<Blip> blips = blipCreateMapper.toEntities(dto.getBlips());
-    List<BlipEvent> blipEvents = new ArrayList<>();
-    for (int i = 0; i < blips.size(); i++) {
-      Blip blip = blips.get(i);
-      blip.setRadar(radar);
-      Blip savedBlip = blipService.save(blip);
-      BlipEvent blipEvent = new BlipEvent();
-      blipEvent.setComment("init");
-      blipEvent.setBlip(savedBlip);
-      String quadrantName = dto.getBlips().get(i).getQuadrant().getName();
-      blipEvent.setQuadrant(nameToQuadrant.get(quadrantName));
-      String ringName = dto.getBlips().get(i).getRing().getName();
-      blipEvent.setRing(nameToRing.get(ringName));
-      blipEvent.setUser(user);
-      blipEvents.add(blipEvent);
-    }
-    if (blipEvents.size() > 0) {
-      BlipEvent firstBlipEvent = blipEvents.get(0);
-      firstBlipEvent.setParentId(null);
-      BlipEvent lastSavedBlipEvent = blipEventService.save(firstBlipEvent);
-      if (blipEvents.size() > 1) {
-        for (int i = 1; i < blipEvents.size(); i++) {
-          blipEvents.get(i).setParentId(lastSavedBlipEvent.getId());
-          lastSavedBlipEvent = blipEventService.save(blipEvents.get(i));
-        }
-      }
-    }
+    List<Blip> blips = blipService.saveAll(blipCreateMapper.toEntities(dto.getBlips()), radar);
     container.setBlips(blips);
-    if (blipEvents.size() > 0) {
-      container.setBlipEvent(blipEvents.get(blipEvents.size() - 1));
-    }
+
+    List<BlipEvent> blipEvents = prepareBlipEvents(dto, user, nameToQuadrant, nameToRing, blips);
+    blipEvents = blipEventService.fillParentsAndSave(blipEvents, null);
+    container.setBlipEvent(blipEvents.isEmpty() ? null : blipEvents.get(blipEvents.size() - 1));
     return container;
   }
 
-  private void quadrantsHandle(ContainerCreateDto dto, Container container, Map<String, Quadrant> nameToQuadrant) {
+  private List<BlipEvent> prepareBlipEvents(
+      ContainerCreateDto dto,
+      User user,
+      Map<String, Quadrant> nameToQuadrant,
+      Map<String, Ring> nameToRing,
+      List<Blip> blips) {
+    List<BlipEvent> blipEvents = new ArrayList<>();
+    for (int i = 0; i < blips.size(); i++) {
+      blipEvents.add(getBlipEvent(dto, user, nameToQuadrant, nameToRing, blips, i));
+    }
+    return blipEvents;
+  }
+
+  private BlipEvent getBlipEvent(
+      ContainerCreateDto dto,
+      User user,
+      Map<String, Quadrant> nameToQuadrant,
+      Map<String, Ring> nameToRing,
+      List<Blip> blips,
+      int i) {
+    BlipEvent blipEvent = new BlipEvent();
+    blipEvent.setComment("init");
+    blipEvent.setBlip(blips.get(i));
+    String quadrantName = dto.getBlips().get(i).getQuadrant().getName();
+    blipEvent.setQuadrant(nameToQuadrant.get(quadrantName));
+    String ringName = dto.getBlips().get(i).getRing().getName();
+    blipEvent.setRing(nameToRing.get(ringName));
+    blipEvent.setUser(user);
+    return blipEvent;
+  }
+
+  private Map<String, Ring> saveRings(ContainerCreateDto dto, Container container) {
+    Map<String, Ring> nameToRing = new HashMap<>();
+    List<Ring> rings = ringMapper.toEntities(dto.getRings());
+    rings.forEach(r -> {
+      String ringName = r.getCurrentSetting().getName();
+      Ring ring = ringService.save(container.getRadar().getId(), r, Optional.empty());
+      nameToRing.put(ringName, ring);
+    });
+    container.setRings(rings);
+    return nameToRing;
+  }
+
+  private Map<String, Quadrant> saveQuadrants(ContainerCreateDto dto, Container container) {
+    Map<String, Quadrant> nameToQuadrant = new HashMap<>();
     List<Quadrant> quadrants = quadrantMapper.toEntities(dto.getQuadrants());
     quadrants.forEach(q ->
     {
@@ -137,15 +155,6 @@ public class ContainerService {
       nameToQuadrant.put(quadrantName, quadrant);
     });
     container.setQuadrants(quadrants);
-  }
-
-  private void ringsHandle(ContainerCreateDto dto, Container container, Map<String, Ring> nameToRing) {
-    List<Ring> rings = ringMapper.toEntities(dto.getRings());
-    rings.forEach(r -> {
-      String ringName = r.getCurrentSetting().getName();
-      Ring ring = ringService.save(container.getRadar().getId(), r, Optional.empty());
-      nameToRing.put(ringName, ring);
-    });
-    container.setRings(rings);
+    return nameToQuadrant;
   }
 }

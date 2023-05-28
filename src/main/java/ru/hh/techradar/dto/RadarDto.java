@@ -1,6 +1,7 @@
 package ru.hh.techradar.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import java.util.Objects;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class RadarDto {
@@ -52,5 +53,21 @@ public class RadarDto {
 
   public void setCompanyId(Long companyId) {
     this.companyId = companyId;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (!(o instanceof RadarDto radarDto)) {
+      return false;
+    }
+    return name.equals(radarDto.name) && companyId.equals(radarDto.companyId);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(name, companyId);
   }
 }

@@ -12,7 +12,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.StringJoiner;
+import java.util.Objects;
 
 @Entity
 @Table(name = "blip")
@@ -99,25 +99,27 @@ public class Blip extends AuditableEntity<Long> {
     if (this == o) {
       return true;
     }
-    if (o == null || getClass() != o.getClass()) {
+    if (!(o instanceof Blip blip)) {
       return false;
     }
-    Blip blip = (Blip) o;
-    return id != null && id.equals(blip.id);
+    return name.equals(blip.name) && radar.equals(blip.radar);
   }
 
   @Override
   public int hashCode() {
-    return 11;
+    return Objects.hash(name, radar);
   }
 
   @Override
   public String toString() {
-    return new StringJoiner(", ", Blip.class.getSimpleName() + "[", "]")
-        .add("id=" + id)
-        .add("name='" + name + "'")
-        .add("description='" + description + "'")
-        .add("radar=" + radar)
-        .toString();
+    return "Blip{" +
+        "id=" + id +
+        ", name='" + name + '\'' +
+        ", description='" + description + '\'' +
+        ", radar=" + radar +
+        ", blipEvents=" + blipEvents +
+        ", quadrantId=" + quadrantId +
+        ", ringId=" + ringId +
+        '}';
   }
 }

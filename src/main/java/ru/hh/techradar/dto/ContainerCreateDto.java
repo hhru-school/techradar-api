@@ -1,6 +1,7 @@
 package ru.hh.techradar.dto;
 
 import java.util.List;
+import java.util.Objects;
 
 public class ContainerCreateDto {
   private RadarDto radar;
@@ -48,5 +49,24 @@ public class ContainerCreateDto {
 
   public void setBlips(List<BlipCreateDto> blips) {
     this.blips = blips;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (!(o instanceof ContainerCreateDto that)) {
+      return false;
+    }
+    return radar.equals(that.radar) && Objects.equals(quadrants, that.quadrants) && Objects.equals(
+        rings,
+        that.rings
+    ) && Objects.equals(blips, that.blips);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(radar, quadrants, rings, blips);
   }
 }

@@ -48,7 +48,14 @@ public class RadarVersionService {
     return radarVersionRepository.findAll();
   }
   @Transactional(readOnly = true)
-  public Collection<RadarVersion> findAllByRadarId(Long radarId) {
+  public Collection<RadarVersion> findByRadarId(Long radarId, Boolean demandLast) {
+    if(demandLast != null && demandLast) {
+      return List.of(findLastRadarVersion(radarId, true));
+    }
     return radarVersionRepository.findAllByRadarId(radarId);
+  }
+  @Transactional(readOnly = true)
+  public RadarVersion findLastRadarVersion(Long radarId, Boolean isReleased) {
+    return radarVersionRepository.findLastRadarVersionFast(radarId, isReleased);
   }
 }

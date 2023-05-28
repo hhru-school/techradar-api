@@ -76,16 +76,14 @@ public class Radar extends AuditableEntity<Long> {
     if (this == o) {
       return true;
     }
-    if (o == null || getClass() != o.getClass()) {
+    if (!(o instanceof Radar radar)) {
       return false;
     }
-    Radar radar = (Radar) o;
-    return Objects.equals(id, radar.id)
-        && Objects.equals(name, radar.name);
+    return name.equals(radar.name) && company.equals(radar.company);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, name);
+    return Objects.hash(name, company);
   }
 }

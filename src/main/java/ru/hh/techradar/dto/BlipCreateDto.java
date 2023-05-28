@@ -1,6 +1,7 @@
 package ru.hh.techradar.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import java.util.Objects;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class BlipCreateDto {
@@ -79,5 +80,21 @@ public class BlipCreateDto {
 
   public void setComment(String comment) {
     this.comment = comment;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (!(o instanceof BlipCreateDto that)) {
+      return false;
+    }
+    return Objects.equals(name, that.name) && Objects.equals(radar, that.radar) && Objects.equals(comment, that.comment);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(name, radar, comment);
   }
 }

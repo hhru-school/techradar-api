@@ -1,10 +1,13 @@
 package ru.hh.techradar.service;
 
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.hh.techradar.entity.Blip;
+import ru.hh.techradar.entity.Radar;
 import ru.hh.techradar.exception.NotFoundException;
 import ru.hh.techradar.filter.BlipFilter;
 import ru.hh.techradar.filter.ComponentFilter;
@@ -26,6 +29,16 @@ public class BlipService {
   @Transactional
   public Blip save(Blip blip) {
     return blipRepository.save(blip);
+  }
+
+  @Transactional
+  public List<Blip> saveAll(Collection<Blip> blips, Radar radar) {
+    List<Blip> resultList = new ArrayList<>();
+    blips.forEach(b -> {
+      b.setRadar(radar);
+      resultList.add(save(b));
+    });
+    return resultList;
   }
 
   @Transactional(readOnly = true)

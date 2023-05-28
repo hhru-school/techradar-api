@@ -1,6 +1,7 @@
 package ru.hh.techradar.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import java.util.Objects;
 import java.util.StringJoiner;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -74,16 +75,18 @@ public class BlipDto {
     if (this == o) {
       return true;
     }
-    if (o == null || getClass() != o.getClass()) {
+    if (!(o instanceof BlipDto blipDto)) {
       return false;
     }
-    BlipDto blipDto = (BlipDto) o;
-    return id != null && id.equals(blipDto.id);
+    return name.equals(blipDto.name) && Objects.equals(description, blipDto.description) && Objects.equals(
+        quadrantId,
+        blipDto.quadrantId
+    ) && Objects.equals(ringId, blipDto.ringId) && radarId.equals(blipDto.radarId);
   }
 
   @Override
   public int hashCode() {
-    return 11;
+    return Objects.hash(name, description, quadrantId, ringId, radarId);
   }
 
   @Override
