@@ -69,7 +69,11 @@ public class BlipEventRepository extends BaseRepositoryImpl<Long, BlipEvent> {
                     FROM blip_event e
                              JOIN r ON (r.parent_id = e.blip_event_id)
                 )
-                SELECT blip_event_id, comment, parent_id, blip_id, quadrant_id, ring_id, author_id, creation_time, last_change_time FROM r ORDER BY r.level DESC;"""
+                SELECT blip_event_id, comment, parent_id, blip_id, quadrant_id, ring_id, author_id, creation_time, last_change_time
+                FROM r
+                WHERE ring_id IS NOT NULL OR quadrant_id IS NOT NULL
+                ORDER BY r.level DESC;
+                """
             , BlipEvent.class)
         .setParameter("blipEventId", blipEventId)
         .getResultList();
@@ -92,6 +96,15 @@ public class BlipEventRepository extends BaseRepositoryImpl<Long, BlipEvent> {
             , BlipEvent.class)
         .setParameter("blipEventId", blipEventId)
         .setParameter("blipId", blipId)
+        .getResultList();
+  }
+
+  public List<BlipEvent> findChildren(Long blipEventId) {
+    Session session = sessionFactory.openSession();
+    return session.createQuery("""
+            SELECT be FROM BlipEvent be WHERE parentId = :blipEventId
+            """, BlipEvent.class)
+        .setParameter("blipEventId", blipEventId)
         .getResultList();
   }
 }

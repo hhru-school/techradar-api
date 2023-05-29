@@ -13,32 +13,26 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.springframework.stereotype.Controller;
 import ru.hh.techradar.dto.BlipDto;
-import ru.hh.techradar.entity.Blip;
 import ru.hh.techradar.mapper.BlipMapper;
 import ru.hh.techradar.service.BlipService;
-import ru.hh.techradar.service.RadarService;
 
 @Controller
 @Path("/api/blips")
 public class BlipController {
   private final BlipMapper blipMapper;
   private final BlipService blipService;
-  private final RadarService radarService;
 
-  public BlipController(BlipMapper blipMapper, BlipService blipService, RadarService radarService) {
+  public BlipController(BlipMapper blipMapper, BlipService blipService) {
     this.blipMapper = blipMapper;
     this.blipService = blipService;
-    this.radarService = radarService;
   }
 
   @POST
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   public Response save(BlipDto dto) {
-    Blip blip = blipMapper.toEntity(dto);
-    blip.setRadar(radarService.findById(dto.getRadarId()));
     return Response
-        .ok(blipMapper.toDto(blipService.save(blip)))
+        .ok(blipMapper.toDto(blipService.save(dto)))
         .status(Response.Status.CREATED)
         .build();
   }

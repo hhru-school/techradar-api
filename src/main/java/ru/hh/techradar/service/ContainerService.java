@@ -1,10 +1,10 @@
 package ru.hh.techradar.service;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.hh.techradar.dto.ContainerCreateDto;
@@ -134,26 +134,19 @@ public class ContainerService {
   }
 
   private Map<String, Ring> saveRings(ContainerCreateDto dto, Container container) {
-    Map<String, Ring> nameToRing = new HashMap<>();
     List<Ring> rings = ringMapper.toEntities(dto.getRings());
-    rings.forEach(r -> {
-      String ringName = r.getCurrentSetting().getName();
-      Ring ring = ringService.save(container.getRadar().getId(), r, Optional.empty());
-      nameToRing.put(ringName, ring);
-    });
+    Map<String, Ring> nameToRing = rings.stream()
+        .map(ring -> ringService.save(container.getRadar().getId(), ring, Optional.empty()))
+        .collect(Collectors.toMap(v -> v.getCurrentSetting().getName(), v -> v));
     container.setRings(rings);
     return nameToRing;
   }
 
   private Map<String, Quadrant> saveQuadrants(ContainerCreateDto dto, Container container) {
-    Map<String, Quadrant> nameToQuadrant = new HashMap<>();
     List<Quadrant> quadrants = quadrantMapper.toEntities(dto.getQuadrants());
-    quadrants.forEach(q ->
-    {
-      String quadrantName = q.getCurrentSetting().getName();
-      Quadrant quadrant = quadrantService.save(container.getRadar().getId(), q, Optional.empty());
-      nameToQuadrant.put(quadrantName, quadrant);
-    });
+    Map<String, Quadrant> nameToQuadrant = quadrants.stream()
+        .map(quadrant -> quadrantService.save(container.getRadar().getId(), quadrant, Optional.empty()))
+        .collect(Collectors.toMap(v -> v.getCurrentSetting().getName(), v -> v));
     container.setQuadrants(quadrants);
     return nameToQuadrant;
   }

@@ -27,10 +27,10 @@ public class BlipEvent extends AuditableEntity<Long> {
   @JoinColumn(name = "blip_id", nullable = false)
   private Blip blip;
   @ManyToOne
-  @JoinColumn(name = "quadrant_id", nullable = false)
+  @JoinColumn(name = "quadrant_id")
   private Quadrant quadrant;
   @ManyToOne
-  @JoinColumn(name = "ring_id", nullable = false)
+  @JoinColumn(name = "ring_id")
   private Ring ring;
   @ManyToOne
   @JoinColumn(name = "author_id", nullable = false)

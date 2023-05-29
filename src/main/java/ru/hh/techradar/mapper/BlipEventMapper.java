@@ -23,8 +23,8 @@ public class BlipEventMapper extends AbstractMapper<BlipEvent, BlipEventDto> {
     blipEventDto.setComment(entity.getComment());
     blipEventDto.setParentId(entity.getParentId());
     blipEventDto.setBlipId(entity.getBlip().getId());
-    blipEventDto.setQuadrantId(entity.getQuadrant().getId());
-    blipEventDto.setRingId(entity.getRing().getId());
+    Optional.ofNullable(entity.getQuadrant()).ifPresent(q -> blipEventDto.setQuadrantId(entity.getQuadrant().getId()));
+    Optional.ofNullable(entity.getRing()).ifPresent(r -> blipEventDto.setRingId(entity.getRing().getId()));
     blipEventDto.setAuthorId(entity.getUser().getId());
     blipEventDto.setCreationTime(entity.getCreationTime());
     blipEventDto.setLastChangeTime(entity.getLastChangeTime());

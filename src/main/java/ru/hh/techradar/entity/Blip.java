@@ -13,6 +13,7 @@ import jakarta.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.StringJoiner;
 
 @Entity
 @Table(name = "blip")
@@ -112,14 +113,11 @@ public class Blip extends AuditableEntity<Long> {
 
   @Override
   public String toString() {
-    return "Blip{" +
-        "id=" + id +
-        ", name='" + name + '\'' +
-        ", description='" + description + '\'' +
-        ", radar=" + radar +
-        ", blipEvents=" + blipEvents +
-        ", quadrantId=" + quadrantId +
-        ", ringId=" + ringId +
-        '}';
+    return new StringJoiner(", ", Blip.class.getSimpleName() + "[", "]")
+        .add("id=" + id)
+        .add("name='" + name + "'")
+        .add("description='" + description + "'")
+        .add("radar=" + radar)
+        .toString();
   }
 }

@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.hh.techradar.dto.BlipDto;
 import ru.hh.techradar.entity.Blip;
 import ru.hh.techradar.entity.Radar;
 import ru.hh.techradar.exception.NotFoundException;
@@ -18,16 +19,25 @@ import ru.hh.techradar.repository.BlipRepository;
 public class BlipService {
   private final BlipMapper blipMapper;
   private final BlipRepository blipRepository;
+  private final RadarService radarService;
 
   public BlipService(
       BlipMapper blipMapper,
-      BlipRepository blipRepository) {
+      BlipRepository blipRepository, RadarService radarService) {
     this.blipMapper = blipMapper;
     this.blipRepository = blipRepository;
+    this.radarService = radarService;
   }
 
   @Transactional
-  public Blip save(Blip blip) {
+  public Blip save(BlipDto dto) {
+    Blip blip = blipMapper.toEntity(dto);
+    blip.setRadar(radarService.findById(dto.getRadarId()));
+    return blipRepository.save(blip);
+  }
+
+  @Transactional
+  public Blip saveEntity(Blip blip) {
     return blipRepository.save(blip);
   }
 
@@ -36,7 +46,7 @@ public class BlipService {
     List<Blip> resultList = new ArrayList<>();
     blips.forEach(b -> {
       b.setRadar(radar);
-      resultList.add(save(b));
+      resultList.add(saveEntity(b));
     });
     return resultList;
   }

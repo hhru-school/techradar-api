@@ -41,8 +41,8 @@ public class BlipEventService {
   }
 
   @Transactional
-  public BlipEvent save(BlipEventDto dto, Boolean insert) {
-    if (insert != null && insert) {
+  public BlipEvent save(BlipEventDto dto, Boolean isInsert) {
+    if (isInsert != null && isInsert) {
       return insert(dto);
     }
     return isolatedSave(dto);
@@ -105,8 +105,8 @@ public class BlipEventService {
 
 
   @Transactional
-  public BlipEvent update(BlipEventDto dto, Boolean move) {
-    if (move != null && move) {
+  public BlipEvent update(BlipEventDto dto, Boolean isMove) {
+    if (isMove != null && isMove) {
       return move(dto);
     }
     return isolatedUpdate(dto);
@@ -135,8 +135,8 @@ public class BlipEventService {
     Optional.ofNullable(dto.getParentId()).ifPresent(blipEvent::setParentId);
     blipEvent.setParentId(dto.getParentId());
     blipEvent.setBlip(blipService.findById(dto.getBlipId()));
-    blipEvent.setQuadrant(quadrantService.findById(dto.getQuadrantId()));
-    blipEvent.setRing(ringService.findById(dto.getRingId()));
+    Optional.ofNullable(dto.getQuadrantId()).ifPresent(qId -> blipEvent.setQuadrant(quadrantService.findById(qId)));
+    Optional.ofNullable(dto.getRingId()).ifPresent(rId -> blipEvent.setRing(ringService.findById(rId)));
     blipEvent.setUser(userService.findById(dto.getAuthorId()));
     return blipEvent;
   }
@@ -144,5 +144,18 @@ public class BlipEventService {
   @Transactional
   public void deleteById(Long id) {
     blipEventRepository.deleteById(id);
+  }
+  @Transactional
+  public void deleteByIdChildrenPromoteToBrothers(Long blipEventId) {
+    BlipEvent foundBlipEvent = findById(blipEventId);
+    if(foundBlipEvent.getParentId() == null && blipEventRepository.findChildren(blipEventId).size() > 1) {
+      throw new UnsupportedOperationException("Delete operation for root node with more then one child is not supported");
+    }
+    //TODO: make a good error message
+    // (for now it's "deleted object would be re-saved by cascade (remove deleted object from associations):
+    // [ru.hh.techradar.entity.BlipEvent#1]")
+    // The problem is still in cycle dependencies: I cannot use radarVersionService here.
+    deleteById(blipEventId);
+    blipEventRepository.updateChildrenToBeBrothers(foundBlipEvent);
   }
 }

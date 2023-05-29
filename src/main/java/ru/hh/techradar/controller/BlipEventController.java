@@ -1,6 +1,7 @@
 package ru.hh.techradar.controller;
 
 import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.PUT;
@@ -30,10 +31,10 @@ public class BlipEventController {
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   public Response save(
-      @QueryParam("insert") Boolean insert,
+      @QueryParam("is-insert") Boolean isInsert,
       BlipEventDto dto
   ) {
-    return Response.ok(blipEventMapper.toDto(blipEventService.save(dto, insert)))
+    return Response.ok(blipEventMapper.toDto(blipEventService.save(dto, isInsert)))
         .status(Response.Status.CREATED)
         .build();
   }
@@ -71,15 +72,20 @@ public class BlipEventController {
   @Path("/{id}")
   public Response update(
       @PathParam("id") Long blipEventId,
-      @QueryParam("move") Boolean move,
+      @QueryParam("is-move") Boolean isMove,
       BlipEventDto dto
   ) {
     dto.setId(blipEventId);
-    return Response.ok(blipEventMapper.toDto(blipEventService.update(dto, move)))
+    return Response.ok(blipEventMapper.toDto(blipEventService.update(dto, isMove)))
         .build();
   }
-  //TODO: think of how to delete BEs:
-  // 1. Isolated.
-  // 2. With children and their children and so on.
-  // 3. Rebuilding children to brothers first.
+
+  @DELETE
+  @Path("/{id}")
+  public Response deleteById(@PathParam("id") Long id) {
+    blipEventService.deleteByIdChildrenPromoteToBrothers(id);
+    return Response
+        .status(Response.Status.NO_CONTENT)
+        .build();
+  }
 }
