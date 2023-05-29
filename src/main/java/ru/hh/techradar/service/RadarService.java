@@ -2,7 +2,6 @@ package ru.hh.techradar.service;
 
 import java.time.Instant;
 import java.util.List;
-import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.hh.techradar.dto.RadarDto;
@@ -45,10 +44,8 @@ public class RadarService {
   }
 
   @Transactional(readOnly = true)
-  public List<Radar> findAllByFilter(Long companyId, Instant actualDate) {
-    companyService.findById(companyId);
-    actualDate = Optional.ofNullable(actualDate).orElse(Instant.now());
-    return radarRepository.findAllByFilter(companyId, actualDate);
+  public List<Radar> findAllByCompanyId(Long companyId) {
+    return radarRepository.findAllByCompanyId(companyId);
   }
 
   @Transactional

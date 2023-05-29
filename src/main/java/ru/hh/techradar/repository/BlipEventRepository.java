@@ -71,7 +71,6 @@ public class BlipEventRepository extends BaseRepositoryImpl<Long, BlipEvent> {
                 )
                 SELECT blip_event_id, comment, parent_id, blip_id, quadrant_id, ring_id, author_id, creation_time, last_change_time
                 FROM r
-                WHERE ring_id IS NOT NULL OR quadrant_id IS NOT NULL
                 ORDER BY r.level DESC;
                 """
             , BlipEvent.class)

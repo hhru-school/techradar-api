@@ -56,6 +56,7 @@ public class BlipRepository extends BaseRepositoryImpl<Long, Blip> {
                 )
                 SELECT DISTINCT ON (r.blip_id) b.blip_id, b.name, b.description, b.radar_id, b.creation_time,
                 b.last_change_time, r.quadrant_id, r.ring_id FROM r LEFT JOIN blip b ON r.blip_id = b.blip_id
+                WHERE r.ring_id IS NOT NULL OR r.quadrant_id IS NOT NULL
                 ORDER BY r.blip_id, r.level;"""
             , Blip.class)
         .setParameter("blipEventId", blipEventId)
