@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotBlank;
 
 public class RingDto {
   private Long id;
-  @NotBlank(message = "Ring name cannot empty")
+  @NotBlank(message = "Ring name cannot be empty")
   private String name;
 
   @Max(message = "Position must be less than 8", value = 8)

@@ -5,12 +5,10 @@ import jakarta.validation.Valid;
 import jakarta.ws.rs.BeanParam;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
-import jakarta.ws.rs.POST;
 import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
-import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import ru.hh.techradar.dto.QuadrantDto;
@@ -45,16 +43,6 @@ public class QuadrantController {
   public Response findById(@PathParam("id") Long id) {
     return Response
         .ok(quadrantMapper.toDto(quadrantService.findById(id)))
-        .build();
-  }
-
-  @POST
-  @Consumes(MediaType.APPLICATION_JSON)
-  @Produces(MediaType.APPLICATION_JSON)
-  public Response save(@QueryParam("radar-id") Long radarId, @Valid QuadrantDto dto) {
-    return Response
-        .ok(quadrantMapper.toDto(quadrantService.save(radarId, quadrantMapper.toEntity(dto))))
-        .status(Response.Status.CREATED)
         .build();
   }
 

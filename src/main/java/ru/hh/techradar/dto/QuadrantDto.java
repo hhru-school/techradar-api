@@ -8,7 +8,7 @@ import java.util.StringJoiner;
 
 public class QuadrantDto {
   private Long id;
-  @NotBlank(message = "Quadrant name cannot empty")
+  @NotBlank(message = "Quadrant name cannot be empty")
   private String name;
   @Max(message = "Position must be less than 8", value = 8)
   @Min(message = "Position must be bigger than 0", value = 1)

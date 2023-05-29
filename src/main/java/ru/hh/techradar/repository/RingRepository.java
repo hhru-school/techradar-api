@@ -29,8 +29,16 @@ public class RingRepository extends BaseRepositoryImpl<Long, Ring> {
 
   public Optional<Ring> findById(Long id) {
     return sessionFactory.getCurrentSession()
-        .createQuery("SELECT r FROM Ring r WHERE r.id = :id", Ring.class)
+        .createQuery("SELECT r FROM Ring r LEFT JOIN FETCH r.radar  WHERE r.id = :id", Ring.class)
         .setParameter("id", id)
+        .uniqueResultOptional();
+  }
+
+  public Optional<Ring> findByNameAndRadarId(String name, Long radarId) {
+    return sessionFactory.getCurrentSession()
+        .createQuery("SELECT r FROM Ring r WHERE r.name = :name AND r.radar.id = :radarId", Ring.class)
+        .setParameter("name", name)
+        .setParameter("radarId", radarId)
         .uniqueResultOptional();
   }
 }

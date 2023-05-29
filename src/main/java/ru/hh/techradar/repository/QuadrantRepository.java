@@ -31,4 +31,12 @@ public class QuadrantRepository extends BaseRepositoryImpl<Long, Quadrant> {
         .setParameter("id", id)
         .uniqueResultOptional();
   }
+
+  public Optional<Quadrant> findByNameAndRadarId(String name, Long radarId) {
+    return sessionFactory.getCurrentSession()
+        .createQuery("SELECT q FROM Quadrant q WHERE q.name = :name AND q.radar.id = :radarId", Quadrant.class)
+        .setParameter("name", name)
+        .setParameter("radarId", radarId)
+        .uniqueResultOptional();
+  }
 }
