@@ -6,6 +6,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.ExceptionMapper;
 import java.util.stream.Collectors;
+import ru.hh.techradar.enumeration.ExceptionType;
 
 public class ConstraintViolationExceptionMapper implements ExceptionMapper<ConstraintViolationException> {
 
@@ -17,7 +18,7 @@ public class ConstraintViolationExceptionMapper implements ExceptionMapper<Const
         .collect(Collectors.joining("; ", "", ";"));
     return Response
         .status(Response.Status.BAD_REQUEST)
-        .entity(new Error(message, Response.Status.BAD_REQUEST))
+        .entity(new Error(message, Response.Status.BAD_REQUEST, ExceptionType.CONSTRAINT_VIOLATION))
         .type(MediaType.APPLICATION_JSON)
         .build();
   }

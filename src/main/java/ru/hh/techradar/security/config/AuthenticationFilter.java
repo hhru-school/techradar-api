@@ -17,6 +17,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import ru.hh.techradar.entity.User;
+import ru.hh.techradar.enumeration.ExceptionType;
 import ru.hh.techradar.exception.Error;
 import static ru.hh.techradar.security.dto.Constants.AUTHORIZATION;
 import static ru.hh.techradar.security.dto.Constants.TOKEN_TYPE;
@@ -74,8 +75,7 @@ public class AuthenticationFilter extends OncePerRequestFilter {
   }
 
   private void write(HttpServletResponse response, Exception exception) throws IOException {
-    //todo заменить на exception.getMessage()
-    Error error = new Error("Нет прав доступа!", Response.Status.FORBIDDEN);
+    Error error = new Error(exception.getMessage(), Response.Status.FORBIDDEN, ExceptionType.UNAUTHORIZED);
     response.setStatus(Response.Status.FORBIDDEN.getStatusCode());
     response.setContentType(MediaType.APPLICATION_JSON);
     response.getWriter().write(objectMapper.writeValueAsString(error));

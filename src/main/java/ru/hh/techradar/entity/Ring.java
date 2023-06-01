@@ -1,6 +1,5 @@
 package ru.hh.techradar.entity;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -9,12 +8,11 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import java.util.StringJoiner;
 
 @Entity
 @Table(name = "ring")
@@ -23,35 +21,24 @@ public class Ring extends AuditableEntity<Long> {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "ring_id", nullable = false)
   private Long id;
-  @Column(name = "removed_at")
-  private Instant removedAt;
+  @NotBlank
+  @Column(name = "name", nullable = false)
+  private String name;
+
+  @Max(message = "Position must be less than 8", value = 8)
+  @Min(message = "Position must be bigger than 0", value = 1)
+  @Column(name = "position", nullable = false)
+  private Integer position;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "radar_id", nullable = false)
   private Radar radar;
-
-  @OneToMany(mappedBy = "ring", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-  private List<RingSetting> settings = new ArrayList<>();
 
   public Ring(Radar radar) {
     this.radar = radar;
   }
 
   public Ring() {
-  }
-
-  public RingSetting getCurrentSetting() {
-    return settings.stream()
-        .sorted(Comparator.comparing(RingSetting::getId).reversed())
-        .toList().get(0);
-  }
-
-  public List<RingSetting> getSettings() {
-    return settings;
-  }
-
-  public void setSettings(List<RingSetting> settings) {
-    this.settings = settings;
   }
 
   public Long getId() {
@@ -62,12 +49,20 @@ public class Ring extends AuditableEntity<Long> {
     this.id = id;
   }
 
-  public Instant getRemovedAt() {
-    return removedAt;
+  public String getName() {
+    return name;
   }
 
-  public void setRemovedAt(Instant removedAt) {
-    this.removedAt = removedAt;
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  public Integer getPosition() {
+    return position;
+  }
+
+  public void setPosition(Integer position) {
+    this.position = position;
   }
 
   public Radar getRadar() {
@@ -97,12 +92,10 @@ public class Ring extends AuditableEntity<Long> {
 
   @Override
   public String toString() {
-    return "Ring {" +
-        "id=" + id +
-        ", removedAt=" + removedAt +
-        ", radarId=" + radar.getId() +
-        ", creationTime=" + getCreationTime() +
-        ", lastChangeTime=" + getLastChangeTime()
-        + '\n' + '}';
+    return new StringJoiner(", ", Ring.class.getSimpleName() + "[", "]")
+        .add("id=" + id)
+        .add("name='" + name + "'")
+        .add("position=" + position)
+        .toString();
   }
 }

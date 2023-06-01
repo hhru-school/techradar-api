@@ -3,26 +3,23 @@ package ru.hh.techradar.dto;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 
 public class RingDto {
   private Long id;
-  @NotBlank
+  @NotBlank(message = "Ring name cannot be empty")
   private String name;
-  @NotNull
+
   @Max(message = "Position must be less than 8", value = 8)
   @Min(message = "Position must be bigger than 0", value = 1)
   private Integer position;
-  private Long radarId;
 
   public RingDto() {
   }
 
-  public RingDto(Long id, String name, Integer position, Long radarId) {
+  public RingDto(Long id, String name, Integer position) {
     this.id = id;
     this.name = name;
     this.position = position;
-    this.radarId = radarId;
   }
 
   public Integer getPosition() {
@@ -47,14 +44,6 @@ public class RingDto {
 
   public void setId(Long id) {
     this.id = id;
-  }
-
-  public Long getRadarId() {
-    return radarId;
-  }
-
-  public void setRadarId(Long radarId) {
-    this.radarId = radarId;
   }
 
   @Override

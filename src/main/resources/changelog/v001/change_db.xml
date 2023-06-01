@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+    <changeSet id="1" author="Parfenov">
+        <sqlFile path="../sql/create-db.sql"
+                 endDelimiter="\nGO"
+                 relativeToChangelogFile="true"/>
+    </changeSet>
+
+    <changeSet id="2" author="Nedomets">
+        <sqlFile path="../sql/fill-db.sql"
+                 endDelimiter="\nGO"
+                 relativeToChangelogFile="true"/>
+    </changeSet>
+
+    <changeSet id="3" author="Nedomets">
+        <sql>
+            UPDATE blip_event
+            SET parent_id = null
+            WHERE blip_event_id in (SELECT min(be1.blip_event_id) FROM radar r1
+                                                                           JOIN blip b1 ON r1.radar_id = b1.radar_id
+                                                                           JOIN blip_event be1 ON b1.blip_id = be1.blip_id
+                                    GROUP BY r1.radar_id);
+            UPDATE blip_event
+            SET parent_id = blip_event_id - 1
+            WHERE blip_event_id not in (SELECT min(be1.blip_event_id) FROM radar r1
+                                                                               JOIN blip b1 ON r1.radar_id = b1.radar_id
+                                                                               JOIN blip_event be1 ON b1.blip_id = be1.blip_id
+                                        GROUP BY r1.radar_id);
+        </sql>
+    </changeSet>
+
+    <changeSet id="4" author="Nedomets">
+        <modifyDataType tableName="blip_event" columnName="parent_id" newDataType="BIGINT"/>
+        <addForeignKeyConstraint baseTableName="blip_event"
+                                 baseColumnNames="parent_id"
+                                 constraintName="fk_blip_event_blip_event1"
+                                 referencedTableName="blip_event"
+                                 referencedColumnNames="blip_event_id"/>
+        <sql>
+            CREATE INDEX fk_blip_event_blip_event1_idx ON blip_event (parent_id ASC);
+        </sql>
+    </changeSet>
+
+    <changeSet id="5" author="Nedomets">
+        <sql>
+            INSERT INTO blip_event (blip_event_id, comment, blip_id, parent_id, quadrant_id, ring_id, author_id, creation_time, last_change_time)
+            VALUES (651, 'комментарий 1', 19, 76, 1, 1, 1, now() + '1 day', now() + '1 day'),
+                   (652, 'комментарий 2', 19, 651, 1, 1, 1, now() + '2 day', now() + '2 day'),
+                   (653, 'комментарий 3', 19, 652, 1, 1, 1, now() + '3 day', now() + '3 day'),
+                   (654, 'комментарий 4', 19, 653, 1, 1, 1, now() + '4 day', now() + '4 day'),
+                   (655, 'комментарий 5', 19, 654, 1, 1, 1, now() + '5 day', now() + '5 day'),
+                   (656, 'комментарий 6', 19, 655, 1, 1, 1, now() + '6 day', now() + '6 day'),
+                   (657, 'комментарий 7', 19, 656, 1, 1, 1, now() + '7 day', now() + '7 day'),
+                   (658, 'комментарий 8', 19, 657, 1, 1, 1, now() + '8 day', now() + '8 day'),
+                   (659, 'комментарий 9', 19, 658, 1, 1, 1, now() + '9 day', now() + '9 day'),
+                   (660, 'комментарий 10', 19, 659, 1, 1, 1, now() + '10 day', now() + '10 day'),
+                   (661, 'комментарий 11', 19, 660, 2, 2, 1, now() + '11 day', now() + '11 day');
+            SELECT setval('blip_event_blip_event_id_seq', (SELECT max(blip_event_id) FROM blip_event));
+        </sql>
+    </changeSet>
+
+    <changeSet id="TR-33-1" author="Nedomets">
+        <addColumn tableName="ring">
+            <column name="position" type="INT"/>
+            <column name="name" type="VARCHAR(45)"/>
+        </addColumn>
+        <sql>
+            UPDATE ring AS r
+            SET position = rs.position, name = rs.name
+            FROM ring_setting AS rs
+            WHERE r.ring_id = rs.ring_id
+        </sql>
+        <addColumn tableName="quadrant">
+            <column name="position" type="INT"/>
+            <column name="name" type="VARCHAR(45)"/>
+        </addColumn>
+        <sql>
+            UPDATE quadrant AS q
+            SET position = qs.position, name = qs.name
+            FROM quadrant_setting AS qs
+            WHERE q.quadrant_id = qs.quadrant_id
+        </sql>
+    </changeSet>
+
+    <changeSet id="TR-33-2" author="Nedomets">
+        <dropColumn tableName="ring" columnName="removed_at"/>
+        <dropColumn tableName="quadrant" columnName="removed_at"/>
+        <dropTable tableName="ring_setting"/>
+        <dropTable tableName="quadrant_setting"/>
+    </changeSet>
+
+</databaseChangeLog>

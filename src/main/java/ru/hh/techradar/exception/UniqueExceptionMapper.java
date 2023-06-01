@@ -5,12 +5,12 @@ import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.ExceptionMapper;
 import ru.hh.techradar.enumeration.ExceptionType;
 
-public class EntityExistsExceptionMapper implements ExceptionMapper<EntityExistsException> {
+public class UniqueExceptionMapper implements ExceptionMapper<UniqueException> {
 
   @Override
-  public Response toResponse(EntityExistsException exception) {
+  public Response toResponse(UniqueException exception) {
     return Response.status(Response.Status.BAD_REQUEST).
-        entity(new Error(exception.getMessage(), Response.Status.BAD_REQUEST, ExceptionType.ENTITY_EXISTS)).
+        entity(new Error(exception.getMessage(), Response.Status.BAD_REQUEST, ExceptionType.UNIQUE)).
         type(MediaType.APPLICATION_JSON).
         build();
   }
