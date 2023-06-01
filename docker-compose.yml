@@ -1,10 +1,10 @@
 version: "3.9"
 services:
   postgres:
-    container_name: postgres
-    image: postgres:15.2
+    container_name: techradar-db
+    image: postgres:${POSTGRES_VERSION:-15.2}
     environment:
-      POSTGRES_DB: ${POSTGRES_DB:-tech_radar}
+      POSTGRES_DB: ${POSTGRES_NAME:-tech_radar}
       POSTGRES_USER: ${POSTGRES_USER:-postgres}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
     ports:
@@ -13,17 +13,20 @@ services:
       - radar
   techradar-api:
     container_name: techradar-api
-    image: techradarapi/techradar-api:1.0.9
-    command: [
-      "bash -c 'touch /app.jar'"
-    ]
+    image: techradarapi/techradar-api:${TAG:-latest}
+    build:
+      context: .
+      dockerfile_inline: |
+        FROM openjdk:${OPENJDK_VERSION:-20}
+        EXPOSE 8080
+        COPY target/*.jar app.jar
+        ENTRYPOINT ["java","-jar","app.jar","– spring.profiles.active=local"]
     ports:
       - "8080:8080"
     depends_on:
       - "postgres"
     networks:
       - radar
-
 networks:
   radar:
     name: radar
