@@ -18,7 +18,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import ru.hh.techradar.entity.User;
 import ru.hh.techradar.exception.Error;
-import ru.hh.techradar.exception.NotFoundException;
 import static ru.hh.techradar.security.dto.Constants.AUTHORIZATION;
 import static ru.hh.techradar.security.dto.Constants.TOKEN_TYPE;
 import static ru.hh.techradar.security.dto.Constants.TOKEN_TYPE_LENGTH;
@@ -58,8 +57,7 @@ public class AuthenticationFilter extends OncePerRequestFilter {
       response.addCookie(new Cookie("username", username));
       if (Objects.nonNull(username) && Objects.isNull(SecurityContextHolder.getContext().getAuthentication())) {
         User user = userService
-            .findByUsername(username)
-            .orElseThrow(() -> new NotFoundException(User.class, username));
+            .findByUsername(username);
         UserDetails userDetails = CustomUserDetails.toCustomUserDetails(user);
         if (tokenService.isTokenValid(token, userDetails)) {
           UsernamePasswordAuthenticationToken authToken =

@@ -1,16 +1,17 @@
 package ru.hh.techradar.dto;
 
-import jakarta.validation.constraints.NotNull;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import java.util.Objects;
 import java.util.StringJoiner;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class BlipDto {
-  @NotNull
   private Long id;
-  @NotNull
   private String name;
   private String description;
   private Long quadrantId;
   private Long ringId;
+  private Long radarId;
 
   public BlipDto() {
   }
@@ -61,21 +62,31 @@ public class BlipDto {
     this.ringId = ringId;
   }
 
+  public Long getRadarId() {
+    return radarId;
+  }
+
+  public void setRadarId(Long radarId) {
+    this.radarId = radarId;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
       return true;
     }
-    if (o == null || getClass() != o.getClass()) {
+    if (!(o instanceof BlipDto blipDto)) {
       return false;
     }
-    BlipDto blipDto = (BlipDto) o;
-    return id != null && id.equals(blipDto.id);
+    return name.equals(blipDto.name) && Objects.equals(description, blipDto.description) && Objects.equals(
+        quadrantId,
+        blipDto.quadrantId
+    ) && Objects.equals(ringId, blipDto.ringId) && radarId.equals(blipDto.radarId);
   }
 
   @Override
   public int hashCode() {
-    return 11;
+    return Objects.hash(name, description, quadrantId, ringId, radarId);
   }
 
   @Override

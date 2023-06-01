@@ -4,7 +4,7 @@ import jakarta.ws.rs.QueryParam;
 
 public class UserFilter {
 
-  @QueryParam("companyId")
+  @QueryParam("company-id")
   private Long companyId;
 
   public UserFilter() {

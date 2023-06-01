@@ -21,16 +21,16 @@ public class BlipEvent extends AuditableEntity<Long> {
   private Long id;
   @Column(name = "comment")
   private String comment;
-  @Column(name = "version_name")
-  private String versionName;
+  @Column(name = "parent_id")
+  private Long parentId;
   @ManyToOne
   @JoinColumn(name = "blip_id", nullable = false)
   private Blip blip;
   @ManyToOne
-  @JoinColumn(name = "quadrant_id", nullable = false)
+  @JoinColumn(name = "quadrant_id")
   private Quadrant quadrant;
   @ManyToOne
-  @JoinColumn(name = "ring_id", nullable = false)
+  @JoinColumn(name = "ring_id")
   private Ring ring;
   @ManyToOne
   @JoinColumn(name = "author_id", nullable = false)
@@ -42,21 +42,20 @@ public class BlipEvent extends AuditableEntity<Long> {
   public BlipEvent(
       Long id,
       String comment,
-      String versionName,
       Blip blip,
       Quadrant quadrant,
       Ring ring,
       User user,
       Instant creationTime,
-      Instant lastChangeTime) {
+      Instant lastChangeTime, Long parentId) {
     super(creationTime, lastChangeTime);
     this.id = id;
     this.comment = comment;
-    this.versionName = versionName;
     this.blip = blip;
     this.quadrant = quadrant;
     this.ring = ring;
     this.user = user;
+    this.parentId = parentId;
   }
 
   public Long getId() {
@@ -73,14 +72,6 @@ public class BlipEvent extends AuditableEntity<Long> {
 
   public void setComment(String comment) {
     this.comment = comment;
-  }
-
-  public String getVersionName() {
-    return versionName;
-  }
-
-  public void setVersionName(String versionName) {
-    this.versionName = versionName;
   }
 
   public Blip getBlip() {
@@ -115,6 +106,14 @@ public class BlipEvent extends AuditableEntity<Long> {
     this.user = user;
   }
 
+  public Long getParentId() {
+    return parentId;
+  }
+
+  public void setParentId(Long parentId) {
+    this.parentId = parentId;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -137,7 +136,7 @@ public class BlipEvent extends AuditableEntity<Long> {
     return new StringJoiner(", ", BlipEvent.class.getSimpleName() + "[", "]")
         .add("id=" + id)
         .add("comment='" + comment + "'")
-        .add("versionName='" + versionName + "'")
+        .add("parentId='" + parentId + "'")
         .add("blip=" + blip)
         .add("quadrant=" + quadrant)
         .add("ring=" + ring)

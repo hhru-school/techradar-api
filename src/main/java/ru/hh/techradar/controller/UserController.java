@@ -32,6 +32,16 @@ public class UserController {
     this.userMapper = userMapper;
   }
 
+  @POST
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response save(@QueryParam("company-id") Long companyId, UserDto userDto) {
+    return Response
+        .ok(userMapper.toDto(userService.save(companyId, userMapper.toEntity(userDto))))
+        .status(Response.Status.CREATED)
+        .build();
+  }
+
   @GET
   @Produces(MediaType.APPLICATION_JSON)
   public Response findAllByFilter(@BeanParam UserFilter filter) {
@@ -49,21 +59,11 @@ public class UserController {
         .build();
   }
 
-  @POST
-  @Consumes(MediaType.APPLICATION_JSON)
-  @Produces(MediaType.APPLICATION_JSON)
-  public Response save(@QueryParam("companyId") Long companyId, UserDto userDto) {
-    return Response
-        .ok(userMapper.toDto(userService.save(companyId, userMapper.toEntity(userDto))))
-        .status(Response.Status.CREATED)
-        .build();
-  }
-
   @PUT
   @Path("/{id}")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
-  public Response update(@PathParam("id") Long id, @QueryParam("companyId") Long companyId, UserDto userDto) {
+  public Response update(@PathParam("id") Long id, @QueryParam("company-id") Long companyId, UserDto userDto) {
     return Response
         .ok(userMapper.toDto(userService.update(id, companyId, userMapper.toEntity(userDto))))
         .build();

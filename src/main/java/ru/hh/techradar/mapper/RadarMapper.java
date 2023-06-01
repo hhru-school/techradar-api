@@ -2,6 +2,7 @@ package ru.hh.techradar.mapper;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.stereotype.Component;
 import ru.hh.techradar.dto.RadarDto;
 import ru.hh.techradar.entity.Radar;
@@ -9,19 +10,12 @@ import ru.hh.techradar.entity.Radar;
 @Component
 public class RadarMapper extends AbstractMapper<Radar, RadarDto> {
 
-  private final QuadrantMapper quadrantMapper;
-  private final RingMapper ringMapper;
-  private final BlipMapper blipMapper;
-
-  public RadarMapper(QuadrantMapper quadrantMapper, RingMapper ringMapper, BlipMapper blipMapper) {
-    this.quadrantMapper = quadrantMapper;
-    this.ringMapper = ringMapper;
-    this.blipMapper = blipMapper;
-  }
-
+  //TODO: think of adding company_id and user_id
   @Override
   public Radar toEntity(RadarDto dto) {
-    return null;
+    Radar radar = new Radar();
+    radar.setName(dto.getName());
+    return radar;
   }
 
   @Override
@@ -29,9 +23,8 @@ public class RadarMapper extends AbstractMapper<Radar, RadarDto> {
     RadarDto radarDto = new RadarDto();
     radarDto.setId(entity.getId());
     radarDto.setName(entity.getName());
-    radarDto.setQuadrants(quadrantMapper.toDtos(entity.getQuadrants()));
-    radarDto.setRings(ringMapper.toDtos(entity.getRings()));
-    radarDto.setBlips(blipMapper.toDtos(entity.getBlips()));
+    radarDto.setCompanyId(entity.getCompany().getId());
+    radarDto.setAuthorId(entity.getAuthor().getId());
     return radarDto;
   }
 
@@ -44,5 +37,12 @@ public class RadarMapper extends AbstractMapper<Radar, RadarDto> {
 
   public List<RadarDto> toShortDtos(Collection<Radar> entities) {
     return entities.stream().map(this::toShortDto).toList();
+  }
+
+  public Radar toUpdate(Radar target, Radar source) {
+    Optional.ofNullable(source.getName()).ifPresent(target::setName);
+    Optional.ofNullable(source.getCompany()).ifPresent(target::setCompany);
+    Optional.ofNullable(source.getAuthor()).ifPresent(target::setAuthor);
+    return target;
   }
 }

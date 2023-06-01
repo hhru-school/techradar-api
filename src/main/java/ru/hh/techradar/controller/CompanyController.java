@@ -30,6 +30,16 @@ public class CompanyController {
     this.companyService = companyService;
   }
 
+  @POST
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response save(CompanyDto companyDto) {
+    return Response
+        .ok(companyMapper.toDto(companyService.save(companyMapper.toEntity(companyDto))))
+        .status(Response.Status.CREATED)
+        .build();
+  }
+
   @GET
   @Produces(MediaType.APPLICATION_JSON)
   public Response findAll() {
@@ -44,16 +54,6 @@ public class CompanyController {
   public Response findById(@PathParam("id") Long id) {
     return Response
         .ok(companyMapper.toDto(companyService.findById(id)))
-        .build();
-  }
-
-  @POST
-  @Consumes(MediaType.APPLICATION_JSON)
-  @Produces(MediaType.APPLICATION_JSON)
-  public Response save(CompanyDto companyDto) {
-    return Response
-        .ok(companyMapper.toDto(companyService.save(companyMapper.toEntity(companyDto))))
-        .status(Response.Status.CREATED)
         .build();
   }
 

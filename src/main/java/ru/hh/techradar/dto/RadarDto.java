@@ -1,26 +1,26 @@
 package ru.hh.techradar.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import java.util.List;
 import java.util.Objects;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class RadarDto {
   private Long id;
   private String name;
-  private List<QuadrantDto> quadrants;
-  private List<RingDto> rings;
-  private List<BlipDto> blips;
+  private Long authorId;
+  private Long companyId;
 
   public RadarDto() {
   }
 
-  public RadarDto(Long id, String name, List<QuadrantDto> quadrants, List<RingDto> rings, List<BlipDto> blips) {
+  public RadarDto(
+      Long id,
+      String name,
+      Long companyId//,
+  ) {
     this.id = id;
     this.name = name;
-    this.quadrants = quadrants;
-    this.rings = rings;
-    this.blips = blips;
+    this.companyId = companyId;
   }
 
   public Long getId() {
@@ -39,28 +39,20 @@ public class RadarDto {
     this.name = name;
   }
 
-  public List<QuadrantDto> getQuadrants() {
-    return quadrants;
+  public Long getAuthorId() {
+    return authorId;
   }
 
-  public void setQuadrants(List<QuadrantDto> quadrants) {
-    this.quadrants = quadrants;
+  public void setAuthorId(Long authorId) {
+    this.authorId = authorId;
   }
 
-  public List<RingDto> getRings() {
-    return rings;
+  public Long getCompanyId() {
+    return companyId;
   }
 
-  public void setRings(List<RingDto> rings) {
-    this.rings = rings;
-  }
-
-  public List<BlipDto> getBlips() {
-    return blips;
-  }
-
-  public void setBlips(List<BlipDto> blips) {
-    this.blips = blips;
+  public void setCompanyId(Long companyId) {
+    this.companyId = companyId;
   }
 
   @Override
@@ -71,14 +63,11 @@ public class RadarDto {
     if (!(o instanceof RadarDto radarDto)) {
       return false;
     }
-    return name.equals(radarDto.name) && Objects.equals(quadrants, radarDto.quadrants) && Objects.equals(
-        rings,
-        radarDto.rings
-    ) && Objects.equals(blips, radarDto.blips);
+    return name.equals(radarDto.name) && companyId.equals(radarDto.companyId);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(name, quadrants, rings, blips);
+    return Objects.hash(name, companyId);
   }
 }

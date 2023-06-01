@@ -1,19 +1,16 @@
 package ru.hh.techradar.dto;
 
-import jakarta.validation.constraints.NotNull;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import java.time.Instant;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class BlipEventDto {
   private Long id;
   private String comment;
-  private String versionName;
-  @NotNull
+  private Long parentId;
   private Long blipId;
-  @NotNull
   private Long quadrantId;
-  @NotNull
   private Long ringId;
-  @NotNull
   private Long authorId;
   private Instant creationTime;
   private Instant lastChangeTime;
@@ -24,8 +21,7 @@ public class BlipEventDto {
   public BlipEventDto(
       Long id,
       String comment,
-      String versionName,
-      Long blipId,
+      Long parentId, Long blipId,
       Long quadrantId,
       Long ringId,
       Long authorId,
@@ -34,7 +30,7 @@ public class BlipEventDto {
   ) {
     this.id = id;
     this.comment = comment;
-    this.versionName = versionName;
+    this.parentId = parentId;
     this.blipId = blipId;
     this.quadrantId = quadrantId;
     this.ringId = ringId;
@@ -57,14 +53,6 @@ public class BlipEventDto {
 
   public void setComment(String comment) {
     this.comment = comment;
-  }
-
-  public String getVersionName() {
-    return versionName;
-  }
-
-  public void setVersionName(String versionName) {
-    this.versionName = versionName;
   }
 
   public Long getBlipId() {
@@ -115,6 +103,14 @@ public class BlipEventDto {
     this.lastChangeTime = lastChangeTime;
   }
 
+  public Long getParentId() {
+    return parentId;
+  }
+
+  public void setParentId(Long parentId) {
+    this.parentId = parentId;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -137,7 +133,6 @@ public class BlipEventDto {
     return "BlipEventDto{" +
         "id=" + id +
         ", comment='" + comment + '\'' +
-        ", versionName='" + versionName + '\'' +
         ", blipId=" + blipId +
         ", quadrantId=" + quadrantId +
         ", ringId=" + ringId +

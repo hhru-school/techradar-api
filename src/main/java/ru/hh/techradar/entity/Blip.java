@@ -12,6 +12,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.StringJoiner;
 
 @Entity
@@ -30,6 +31,10 @@ public class Blip extends AuditableEntity<Long> {
   private Radar radar;
   @OneToMany(mappedBy = "blip", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<BlipEvent> blipEvents = new ArrayList<>();
+  @Column(name = "quadrant_id")
+  private Long quadrantId;
+  @Column(name = "ring_id")
+  private Long ringId;
 
   public Blip() {
   }
@@ -75,11 +80,11 @@ public class Blip extends AuditableEntity<Long> {
   }
 
   public Long getQuadrantId() {
-    return blipEvents.get(0).getQuadrant().getId();
+    return quadrantId;
   }
 
   public Long getRingId() {
-    return blipEvents.get(0).getRing().getId();
+    return ringId;
   }
 
   public List<BlipEvent> getBlipEvents() {
@@ -95,16 +100,15 @@ public class Blip extends AuditableEntity<Long> {
     if (this == o) {
       return true;
     }
-    if (o == null || getClass() != o.getClass()) {
+    if (!(o instanceof Blip blip)) {
       return false;
     }
-    Blip blip = (Blip) o;
-    return id != null && id.equals(blip.id);
+    return name.equals(blip.name) && radar.equals(blip.radar);
   }
 
   @Override
   public int hashCode() {
-    return 11;
+    return Objects.hash(name, radar);
   }
 
   @Override

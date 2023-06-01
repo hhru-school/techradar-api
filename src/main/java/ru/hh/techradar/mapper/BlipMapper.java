@@ -11,7 +11,7 @@ public class BlipMapper extends AbstractMapper<Blip, BlipDto> {
   @Override
   public Blip toEntity(BlipDto dto) {
     Blip blip = new Blip();
-    blip.setId(dto.getId());
+    Optional.ofNullable(dto.getId()).ifPresent(blip::setId);
     blip.setName(dto.getName());
     blip.setDescription(dto.getDescription());
     return blip;
@@ -25,6 +25,7 @@ public class BlipMapper extends AbstractMapper<Blip, BlipDto> {
     blipDto.setDescription(entity.getDescription());
     blipDto.setQuadrantId(entity.getQuadrantId());
     blipDto.setRingId(entity.getRingId());
+    blipDto.setRadarId(entity.getRadar().getId());
     return blipDto;
   }
 

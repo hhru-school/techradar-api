@@ -15,14 +15,16 @@ public class QuadrantDto {
   @Max(message = "Position must be less than 8", value = 8)
   @Min(message = "Position must be bigger than 0", value = 1)
   private Integer position;
+  private Long radarId;
 
   public QuadrantDto() {
   }
 
-  public QuadrantDto(Long id, String name, Integer position) {
+  public QuadrantDto(Long id, String name, Integer position, Long radarId) {
     this.id = id;
     this.name = name;
     this.position = position;
+    this.radarId = radarId;
   }
 
   public Long getId() {
@@ -47,6 +49,14 @@ public class QuadrantDto {
 
   public void setPosition(Integer position) {
     this.position = position;
+  }
+
+  public Long getRadarId() {
+    return radarId;
+  }
+
+  public void setRadarId(Long radarId) {
+    this.radarId = radarId;
   }
 
   @Override
