@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -134,20 +135,14 @@ public class ContainerService {
   }
 
   private Map<String, Ring> saveRings(ContainerCreateDto dto, Container container) {
-    List<Ring> rings = ringMapper.toEntities(dto.getRings());
-    Map<String, Ring> nameToRing = rings.stream()
-        .map(ring -> ringService.save(container.getRadar().getId(), ring, Optional.empty()))
-        .collect(Collectors.toMap(v -> v.getCurrentSetting().getName(), v -> v));
+    List<Ring> rings = ringService.save(container.getRadar().getId(),ringMapper.toEntities(dto.getRings()));
     container.setRings(rings);
-    return nameToRing;
+    return rings.stream().collect(Collectors.toMap(Ring::getName, Function.identity()));
   }
 
   private Map<String, Quadrant> saveQuadrants(ContainerCreateDto dto, Container container) {
-    List<Quadrant> quadrants = quadrantMapper.toEntities(dto.getQuadrants());
-    Map<String, Quadrant> nameToQuadrant = quadrants.stream()
-        .map(quadrant -> quadrantService.save(container.getRadar().getId(), quadrant, Optional.empty()))
-        .collect(Collectors.toMap(v -> v.getCurrentSetting().getName(), v -> v));
+    List<Quadrant> quadrants = quadrantService.save(container.getRadar().getId(), quadrantMapper.toEntities(dto.getQuadrants()));
     container.setQuadrants(quadrants);
-    return nameToQuadrant;
+    return quadrants.stream().collect(Collectors.toMap(Quadrant::getName, Function.identity()));
   }
 }
