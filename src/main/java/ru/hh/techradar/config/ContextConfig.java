@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import ru.hh.techradar.controller.BlipController;
 import ru.hh.techradar.controller.BlipEventController;
+import ru.hh.techradar.controller.CSVRadarController;
 import ru.hh.techradar.controller.CompanyController;
 import ru.hh.techradar.controller.ContainerController;
 import ru.hh.techradar.controller.QuadrantController;
@@ -19,6 +20,7 @@ import ru.hh.techradar.controller.RingController;
 import ru.hh.techradar.controller.UserController;
 import ru.hh.techradar.exception.BadCredentialsExceptionMapper;
 import ru.hh.techradar.exception.BaseExceptionMapper;
+import ru.hh.techradar.exception.CSVFormatExceptionMapper;
 import ru.hh.techradar.exception.ConstraintViolationExceptionMapper;
 import ru.hh.techradar.exception.EntityExistsExceptionMapper;
 import ru.hh.techradar.exception.NotFoundExceptionMapper;
@@ -46,6 +48,7 @@ public class ContextConfig {
     resourceConfig.register(BlipEventController.class);
     resourceConfig.register(CompanyController.class);
     resourceConfig.register(ContainerController.class);
+    resourceConfig.register(CSVRadarController.class);
     resourceConfig.register(QuadrantController.class);
     resourceConfig.register(RadarController.class);
     resourceConfig.register(RadarVersionController.class);
@@ -63,6 +66,7 @@ public class ContextConfig {
     resourceConfig.register(BaseExceptionMapper.class);
     resourceConfig.register(ParamExceptionMapper.class);
     resourceConfig.register(ConstraintViolationExceptionMapper.class);
+    resourceConfig.register(CSVFormatExceptionMapper.class);
     resourceConfig.register(EntityExistsExceptionMapper.class);
     resourceConfig.register(UniqueExceptionMapper.class);
   }

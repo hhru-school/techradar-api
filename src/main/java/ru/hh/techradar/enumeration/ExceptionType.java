@@ -9,4 +9,5 @@ public enum ExceptionType {
   PARAM,
   UNIQUE,
   UNAUTHORIZED,
+  CSV_FORMAT,
 }

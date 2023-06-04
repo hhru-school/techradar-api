@@ -8,7 +8,6 @@ public class Error {
   private String message;
   private Response.Status status;
   private Instant timestamp;
-
   private ExceptionType type;
 
   public Error() {
