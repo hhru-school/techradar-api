@@ -2,6 +2,7 @@ package ru.hh.techradar.security.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -41,6 +42,18 @@ public class SecurityConfig {
         .requestMatchers(
             "/api/auth/register",
             "/api/auth/authenticate"
+        )
+        .permitAll()
+        .requestMatchers(
+            HttpMethod.GET,
+            "/api/blips/**",
+            "/api/blip-events/**",
+            "/api/companies/**",
+            "/api/containers/**",
+            "/api/quadrants/**",
+            "/api/radars/**",
+            "/api/radar-versions/**",
+            "/api/rings/**"
         )
         .permitAll()
         .anyRequest()
