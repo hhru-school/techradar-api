@@ -1,4 +1,4 @@
-name: On merge action
+name: Merge tests
 
 on:
   push:
@@ -10,45 +10,51 @@ env:
   POSTGRES_USER: ${{ secrets.POSTGRES_DB_USERNAME }}
   POSTGRES_PASSWORD: ${{ secrets.POSTGRES_DB_PASSWORD }}
   POSTGRES_VERSION: ${{ vars.POSTGRES_VERSION }}
-  JAVA_VERSION: ${{ vars.JAVA_VERSION }}
+  POSTGRES_DB: ${{ vars.POSTGRES_DB }}
+
+  OPENJDK_VERSION: ${{ vars.JAVA_VERSION }}
 
 jobs:
   test:
     runs-on: ubuntu-latest
-    services:
-      postgres:
-        image: postgres:${{ vars.POSTGRES_VERSION }}
-        env:
-          POSTGRES_USER: '${{ vars.POSTGRES_USER }}'
-          POSTGRES_PASSWORD: '${{ vars.POSTGRES_PASSWORD }}'
-          POSTGRES_DB: '${{ vars.POSTGRES_DB }}'
-        ports:
-          - "5433:5432"
     steps:
+      - name: Start test-DB (PostgreSQL ${{ vars.POSTGRES_VERSION }})
+        run: |
+          docker run --name postgres -d -p 5433:5432 \
+          -e POSTGRES_USER=$POSTGRES_USER \
+          -e POSTGRES_PASSWORD=$POSTGRES_PASSWORD \
+          -e POSTGRES_DB=$POSTGRES_DB \
+          --health-cmd pg_isready \
+          --health-interval 10s \
+          --health-timeout 5s \
+          --health-retries 5 \
+          postgres
       - uses: actions/checkout@v3
       - name: Set up JDK ${{ vars.JAVA_VERSION }}
         uses: actions/setup-java@v3
         with:
           java-version: '${{ vars.JAVA_VERSION }}'
           distribution: 'oracle'
+          cache: maven
       - name: Run tests with Maven
-        run: mvn -B -Dspring.profiles.active=local clean test
-  build:
-    needs: "test"
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Set up JDK ${{ vars.JAVA_VERSION }}
-        uses: actions/setup-java@v3
-        with:
-          java-version: '${{ vars.JAVA_VERSION }}'
-          distribution: 'oracle'
+        run: mvn --quiet -Denv=local clean test
       - name: Build with Maven
-        run: mvn -B -Dmaven.test.skip -Dspring.profiles.active=local package
+        run: mvn --quiet -Dmaven.test.skip -Denv=local package
   deploy:
-    needs: "build"
+    needs: test
     runs-on: ubuntu-latest
     steps:
+      - name: Start build-DB
+        run: |
+          docker run --name postgres -d -p 5433:5432 \
+          -e POSTGRES_USER=$POSTGRES_USER \
+          -e POSTGRES_PASSWORD=$POSTGRES_PASSWORD \
+          -e POSTGRES_DB=$POSTGRES_DB \
+          --health-cmd pg_isready \
+          --health-interval 10s \
+          --health-timeout 5s \
+          --health-retries 5 \
+          postgres
       - uses: actions/checkout@v3
       - name: Set up JDK ${{ vars.JAVA_VERSION }}
         uses: actions/setup-java@v3
@@ -57,30 +63,28 @@ jobs:
           distribution: 'oracle'
           cache: maven
       - name: Build with Maven
-        run: mvn -B -Dmaven.test.skip -Dspring.profiles.active=local package
+        run: mvn --quiet -Dmaven.test.skip -Denv=local package
       - name: Docker login
         run: echo "$PASSWORD" | docker login -u "$USER" --password-stdin
         env:
           USER: ${{ secrets.DOCKER_USERNAME }}
           PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-      - name: Update date info
-        run: echo TAG=$(date --iso-8601=seconds) | tr ':' . | cut -c -23 > .env
       - name: Docker compose build
+        run: TAG=_ docker compose build --no-cache
+      - name: Docker compose push by date
         run: |
-          POSTGRES_NAME=${{ vars.POSTGRES_DB }} \
+          POSTGRES_DB=${{ vars.POSTGRES_DB }} \
           POSTGRES_USER=$POSTGRES_USER \
           POSTGRES_PASSWORD=$POSTGRES_PASSWORD \
           POSTGRES_VERSION=$POSTGRES_VERSION \
           OPENJDK_VERSION=$JAVA_VERSION \
-          docker compose build --no-cache
-      - name: Docker compose push by date
-        run: docker compose push
+          TAG=B-$(date +'%Y-%m-%d') \
+          docker compose build --push
       - name: Docker compose push latest
         run: |
-          echo TAG=latest > .env &&
-          POSTGRES_NAME=${{ vars.POSTGRES_DB }} \
+          POSTGRES_DB=${{ vars.POSTGRES_DB }} \
           POSTGRES_USER=$POSTGRES_USER \
           POSTGRES_PASSWORD=$POSTGRES_PASSWORD \
           POSTGRES_VERSION=$POSTGRES_VERSION \
           OPENJDK_VERSION=$JAVA_VERSION \
-          docker compose build --push --no-cache
+          TAG=B-latest docker compose build --push

@@ -1,9 +1,8 @@
-name: On pull request action
+name: Pull request tests
 
 on:
   pull_request:
-    types:
-      - opened
+    types: [opened, reopened, edited]
     branches:
       - main
   workflow_dispatch:
@@ -11,33 +10,27 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    services:
-      postgres:
-        image: postgres:${{ vars.POSTGRES_VERSION }}
+    steps:
+      - name: Start test-DB (PostgreSQL ${{ vars.POSTGRES_VERSION }})
         env:
           POSTGRES_USER: '${{ secrets.POSTGRES_DB_USERNAME }}'
           POSTGRES_PASSWORD: '${{ secrets.POSTGRES_DB_PASSWORD }}'
           POSTGRES_DB: '${{ vars.POSTGRES_DB }}'
-        ports:
-          - "5433:5432"
-    steps:
+        run: |
+          docker run --name postgres -d -p 5433:5432 \
+          -e POSTGRES_USER=$POSTGRES_USER \
+          -e POSTGRES_PASSWORD=$POSTGRES_PASSWORD \
+          -e POSTGRES_DB=$POSTGRES_DB \
+          --health-cmd pg_isready \
+          --health-interval 10s \
+          --health-timeout 5s \
+          --health-retries 5 \
+          postgres
       - uses: actions/checkout@v3
       - name: Set up JDK ${{ vars.JAVA_VERSION }}
         uses: actions/setup-java@v3
         with:
           java-version: '${{ vars.JAVA_VERSION }}'
           distribution: 'oracle'
-      - name: Run tests with Maven
-        run: mvn -B -Dspring.profiles.active=local clean test
-  build:
-    needs: "test"
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Set up JDK ${{ vars.JAVA_VERSION }}
-        uses: actions/setup-java@v3
-        with:
-          java-version: '${{ vars.JAVA_VERSION }}'
-          distribution: 'oracle'
-      - name: Build with Maven
-        run: mvn -B -Dmaven.test.skip -Dspring.profiles.active=local package
+      - name: Run tests and build with Maven
+        run: mvn --quiet -Denv=local clean test package

@@ -1,0 +1,24 @@
+name: Deploy
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: SSH connect & deploy
+        uses: cross-the-world/ssh-scp-ssh-pipelines@latest
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          user: ${{ secrets.SSH_USER }}
+          pass: ${{ secrets.SSH_PASSWORD }}
+          connect_timeout: 10s
+          first_ssh: |
+            cd ~/server
+            sed '/BACKEND_TAG/d' .env -i
+            echo "BACKEND_TAG=B-latest" >> .env
+            docker compose down
+            docker compose up -d
+            docker image prune --all --force
