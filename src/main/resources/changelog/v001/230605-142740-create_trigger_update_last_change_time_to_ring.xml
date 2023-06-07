@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="230605-142740" author="parfenovds">
+        <sql>
+            DROP TRIGGER IF EXISTS update_last_change_time_to_ring ON ring;
+            CREATE TRIGGER update_last_change_time_to_ring
+                BEFORE UPDATE
+                ON ring
+                FOR EACH ROW EXECUTE PROCEDURE change_update_time();
+        </sql>
+        <rollback>
+            DROP TRIGGER update_last_change_time_to_ring ON ring;
+        </rollback>
+        <sql>
+            DROP TRIGGER IF EXISTS make_creation_time_to_ring ON ring;
+            CREATE TRIGGER make_creation_time_to_ring
+                BEFORE INSERT
+                ON ring
+                FOR EACH ROW EXECUTE PROCEDURE make_creation_time();
+        </sql>
+        <rollback>
+            DROP TRIGGER make_creation_time_to_ring ON ring;
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>

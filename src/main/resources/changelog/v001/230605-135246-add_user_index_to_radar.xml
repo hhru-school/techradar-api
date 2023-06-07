@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="230605-135246" author="parfenovds">
+        <preConditions onFail="MARK_RAN">
+                <not>
+                    <indexExists indexName="fk_radar_user1_idx" tableName="radar"/>
+                </not>
+        </preConditions>
+        <createIndex tableName="radar" indexName="fk_radar_user1_idx">
+            <column name="author_id" descending="false"/>
+        </createIndex>
+    </changeSet>
+
+</databaseChangeLog>
