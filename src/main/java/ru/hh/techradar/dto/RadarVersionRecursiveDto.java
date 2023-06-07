@@ -2,10 +2,11 @@ package ru.hh.techradar.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import java.time.Instant;
+import java.util.List;
 import java.util.Objects;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class RadarVersionDto {
+public class RadarVersionRecursiveDto {
   private Long id;
   private String name;
   private Boolean release;
@@ -16,13 +17,14 @@ public class RadarVersionDto {
   private Boolean toggleAvailable;
   private Instant creationTime;
   private Instant lastChangeTime;
+  private List<RadarVersionRecursiveDto> children;
 
-  public RadarVersionDto() {
+  public RadarVersionRecursiveDto() {
   }
 
-  public RadarVersionDto(Long id, String name, Boolean release, Long radarId, Long blipEventId,
+  public RadarVersionRecursiveDto(Long id, String name, Boolean release, Long radarId, Long blipEventId,
       Long parentId, Integer level,
-      Boolean toggleAvailable, Instant creationTime, Instant lastChangeTime) {
+      Boolean toggleAvailable, Instant creationTime, Instant lastChangeTime, List<RadarVersionRecursiveDto> children) {
     this.id = id;
     this.name = name;
     this.release = release;
@@ -33,6 +35,7 @@ public class RadarVersionDto {
     this.toggleAvailable = toggleAvailable;
     this.creationTime = creationTime;
     this.lastChangeTime = lastChangeTime;
+    this.children = children;
   }
 
   public Long getId() {
@@ -115,12 +118,20 @@ public class RadarVersionDto {
     this.lastChangeTime = lastChangeTime;
   }
 
+  public List<RadarVersionRecursiveDto> getChildren() {
+    return children;
+  }
+
+  public void setChildren(List<RadarVersionRecursiveDto> children) {
+    this.children = children;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
       return true;
     }
-    if (!(o instanceof RadarVersionDto that)) {
+    if (!(o instanceof RadarVersionRecursiveDto that)) {
       return false;
     }
     return name.equals(that.name) && radarId.equals(that.radarId);

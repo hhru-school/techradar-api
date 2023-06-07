@@ -14,8 +14,8 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.springframework.stereotype.Controller;
 import ru.hh.techradar.dto.RadarVersionDto;
-import ru.hh.techradar.entity.RadarVersion;
 import ru.hh.techradar.mapper.RadarVersionMapper;
+import ru.hh.techradar.mapper.RadarVersionRecursiveMapper;
 import ru.hh.techradar.service.BlipEventService;
 import ru.hh.techradar.service.RadarService;
 import ru.hh.techradar.service.RadarVersionService;
@@ -25,42 +25,56 @@ import ru.hh.techradar.service.RadarVersionService;
 public class RadarVersionController {
   private final RadarVersionService radarVersionService;
   private final RadarVersionMapper radarVersionMapper;
-  private final RadarService radarService;
-  private final BlipEventService blipEventService;
+  private final RadarVersionRecursiveMapper radarVersionRecursiveMapper;
 
   public RadarVersionController(
       RadarVersionService radarVersionService, RadarVersionMapper radarVersionMapper,
       RadarService radarService,
-      BlipEventService blipEventService) {
+      BlipEventService blipEventService, RadarVersionRecursiveMapper radarVersionRecursiveMapper) {
     this.radarVersionService = radarVersionService;
     this.radarVersionMapper = radarVersionMapper;
-    this.radarService = radarService;
-    this.blipEventService = blipEventService;
+    this.radarVersionRecursiveMapper = radarVersionRecursiveMapper;
   }
 
   @POST
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
-  public Response save(RadarVersionDto dto) {
-    //TODO: think of how to down it to service (need a piece of advice).
-    // The problem is a cycle dependencies
-    RadarVersion radarVersion = radarVersionMapper.toEntity(dto);
-    radarVersion.setBlipEvent(blipEventService.findById(dto.getBlipEventId()));
-    radarVersion.setRadar(radarService.findById(dto.getRadarId()));
+  public Response save(RadarVersionDto dto, @QueryParam("link-to-last-release") Boolean toLastRelease) {
     return Response
-        .ok(radarVersionMapper.toDto(radarVersionService.save(radarVersion)))
+        .ok(radarVersionMapper.toDto(radarVersionService.save(dto, toLastRelease)))
         .status(Response.Status.CREATED)
         .build();
   }
 
   @GET
   @Produces(MediaType.APPLICATION_JSON)
-  public Response findAllByFilter(
-      @QueryParam("radar-id") @NotNull Long radarId,
-      @QueryParam("last-released-version") Boolean demandLast
+  public Response findAllByRadarId(
+      @QueryParam("radar-id") @NotNull Long radarId
   ) {
     return Response
-        .ok(radarVersionMapper.toDtos(radarVersionService.findByRadarId(radarId, demandLast)))
+        .ok(radarVersionMapper.toDtos(radarVersionService.findByRadarId(radarId)))
+        .build();
+  }
+
+  @GET
+  @Path("/released-versions")
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response findAllReleasedRadarVersionsByRadarId(
+      @QueryParam("radar-id") @NotNull Long radarId
+  ) {
+    return Response
+        .ok(radarVersionMapper.toDtos(radarVersionService.findAllReleasedRadarVersions(radarId)))
+        .build();
+  }
+
+  @GET
+  @Path("/last-released-version")
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response findLatestRadarVersion(
+      @QueryParam("radar-id") @NotNull Long radarId
+  ) {
+    return Response
+        .ok(radarVersionMapper.toDto(radarVersionService.findLastReleasedRadarVersion(radarId)))
         .build();
   }
 
@@ -72,6 +86,17 @@ public class RadarVersionController {
   ) {
     return Response
         .ok(radarVersionMapper.toDto(radarVersionService.findById(id)))
+        .build();
+  }
+
+  @GET
+  @Path("/graph")
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response findGraph(
+      @QueryParam("radar-id") Long radarId
+  ) {
+    return Response
+        .ok(radarVersionRecursiveMapper.toDto(radarVersionService.findRoot(radarId)))
         .build();
   }
 
