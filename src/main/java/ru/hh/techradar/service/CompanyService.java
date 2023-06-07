@@ -1,7 +1,6 @@
 package ru.hh.techradar.service;
 
 import jakarta.inject.Inject;
-import java.time.Instant;
 import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,7 +40,6 @@ public class CompanyService implements BaseService<Long, Company> {
   @Transactional
   public Company update(Long id, Company company) {
     Company found = companyRepository.findById(id).orElseThrow(() -> new NotFoundException(Company.class, id));
-    found.setLastChangeTime(Instant.now());
     return companyRepository.update(companyMapper.toUpdate(found, company));
   }
 

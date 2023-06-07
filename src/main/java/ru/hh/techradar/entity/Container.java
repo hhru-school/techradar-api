@@ -2,9 +2,7 @@ package ru.hh.techradar.entity;
 
 import java.util.List;
 import java.util.Objects;
-import org.springframework.stereotype.Component;
 
-@Component
 public class Container {
   private BlipEvent blipEvent;
   private Radar radar;

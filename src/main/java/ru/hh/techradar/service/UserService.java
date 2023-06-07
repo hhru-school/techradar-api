@@ -1,6 +1,5 @@
 package ru.hh.techradar.service;
 
-import java.time.Instant;
 import java.util.List;
 import java.util.Objects;
 import org.springframework.stereotype.Service;
@@ -57,7 +56,6 @@ public class UserService {
     if (Objects.nonNull(companyId)) {
       found.setCompany(companyService.findById(companyId));
     }
-    found.setLastChangeTime(Instant.now());
     return userRepository.update(userMapper.toUpdate(found, user));
   }
 
