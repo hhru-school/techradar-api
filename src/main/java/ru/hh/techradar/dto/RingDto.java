@@ -1,9 +1,11 @@
 package ru.hh.techradar.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class RingDto {
   private Long id;
   @NotBlank(message = "Ring name cannot be empty")
