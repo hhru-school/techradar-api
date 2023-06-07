@@ -1,11 +1,11 @@
 package ru.hh.techradar.service;
 
-import java.time.Instant;
 import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.hh.techradar.dto.RadarDto;
 import ru.hh.techradar.entity.Radar;
+import ru.hh.techradar.exception.EntityExistsException;
 import ru.hh.techradar.exception.NotFoundException;
 import ru.hh.techradar.mapper.RadarMapper;
 import ru.hh.techradar.repository.RadarRepository;
@@ -32,6 +32,9 @@ public class RadarService {
 
   @Transactional
   public Radar save(RadarDto dto) {
+    if(radarRepository.findByNameAndCompanyId(dto.getName(), dto.getCompanyId()).isPresent()) {
+      throw new EntityExistsException(Radar.class, dto.getName());
+    }
     Radar radar = radarMapper.toEntity(dto);
     radar.setAuthor(userService.findById(dto.getAuthorId()));
     radar.setCompany(companyService.findById(dto.getCompanyId()));
@@ -51,7 +54,9 @@ public class RadarService {
   @Transactional
   public Radar update(Long id, Radar radar) {
     Radar found = radarRepository.findById(id).orElseThrow(() -> new NotFoundException(Radar.class, id));
-    found.setLastChangeTime(Instant.now());
+    if(radar.getName() != null && !found.getName().equals(radar.getName()) && radarRepository.findByNameAndCompanyId(radar.getName(), found.getCompany().getId()).isPresent()) {
+      throw new EntityExistsException(Radar.class, radar.getName());
+    }
     return radarRepository.update(radarMapper.toUpdate(found, radar));
   }
 

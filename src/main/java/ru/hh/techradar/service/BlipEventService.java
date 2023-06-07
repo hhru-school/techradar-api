@@ -1,6 +1,5 @@
 package ru.hh.techradar.service;
 
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -8,31 +7,44 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.hh.techradar.dto.BlipEventDto;
+import ru.hh.techradar.entity.Blip;
 import ru.hh.techradar.entity.BlipEvent;
+import ru.hh.techradar.entity.Radar;
+import ru.hh.techradar.entity.RadarVersion;
+import ru.hh.techradar.entity.User;
 import ru.hh.techradar.exception.NotFoundException;
+import ru.hh.techradar.exception.OperationNotAllowedException;
 import ru.hh.techradar.mapper.BlipEventMapper;
 import ru.hh.techradar.repository.BlipEventRepository;
+import ru.hh.techradar.repository.RadarVersionRepository;
 
 @Service
 public class BlipEventService {
+  public static final String ROOT_BLIP_EVENT_COMMENT = "root blip event";
+  public static final String NO_CORRESPONDING_RELEASE_VERSION_EXCEPTION_MESSAGE = "There's no corresponding release version!";
+  public static final String DELETE_OPERATION_FOR_ROOT_BLIP_EVENT_IS_NOT_SUPPORTED = "Delete operation for root blip event is not supported";
   private final BlipEventMapper blipEventMapper;
   private final BlipEventRepository blipEventRepository;
   private final BlipService blipService;
   private final QuadrantService quadrantService;
   private final RingService ringService;
   private final UserService userService;
+  private final RadarService radarService;
+  private final RadarVersionRepository radarVersionRepository;
 
   public BlipEventService(
       BlipEventMapper blipEventMapper, BlipEventRepository blipEventRepository,
       BlipService blipService,
       QuadrantService quadrantService,
-      RingService ringService, UserService userService) {
+      RingService ringService, UserService userService, RadarService radarService, RadarVersionRepository radarVersionRepository) {
     this.blipEventMapper = blipEventMapper;
     this.blipEventRepository = blipEventRepository;
     this.blipService = blipService;
     this.quadrantService = quadrantService;
     this.ringService = ringService;
     this.userService = userService;
+    this.radarService = radarService;
+    this.radarVersionRepository = radarVersionRepository;
   }
 
   @Transactional
@@ -48,8 +60,30 @@ public class BlipEventService {
     return isolatedSave(dto);
   }
 
+  public BlipEvent prepareRootBlipEvent(User user, Radar radar) {
+    return new BlipEvent(
+        null,
+        ROOT_BLIP_EVENT_COMMENT,
+        null,
+        null,
+        null,
+        user,
+        null,
+        null,
+        null,
+        radar
+    );
+  }
+
   @Transactional
-  public List<BlipEvent> fillParentsAndSave(List<BlipEvent> blipEvents, Long lastBlipEventId) {
+  public BlipEvent saveRootBlipEvent(User user, Radar radar) {
+    BlipEvent rootBlipEvent = prepareRootBlipEvent(user, radar);
+    return blipEventRepository.save(rootBlipEvent);
+  }
+
+  @Transactional
+  public List<BlipEvent> fillParentsAndSave(List<BlipEvent> blipEvents) {
+    Long lastBlipEventId = null;
     List<BlipEvent> result = new ArrayList<>();
     if (!blipEvents.isEmpty()) {
       for (int i = 0; i < blipEvents.size(); i++) {
@@ -61,7 +95,7 @@ public class BlipEventService {
     return result;
   }
 
-  @Transactional//TODO: think of returning value
+  @Transactional
   public BlipEvent insert(BlipEventDto blipEventDto) {
     BlipEvent savedBlipEvent = save(blipEventDto, false);
     blipEventRepository.updateBrothersToBeChildren(savedBlipEvent);
@@ -76,11 +110,11 @@ public class BlipEventService {
 
 
   @Transactional(readOnly = true)
-  public Collection<BlipEvent> find(Long blipEventId, Long blipId) {
-    if (blipEventId == null || blipId == null) {
+  public Collection<BlipEvent> find(Long blipId) {
+    if (blipId == null) {
       return findAll();
     }
-    return findBlipEventsOfTheBlip(blipId, blipEventId);
+    return findBlipEventsOfTheBlip(blipId);
   }
 
   @Transactional(readOnly = true)
@@ -95,12 +129,17 @@ public class BlipEventService {
 
   @Transactional(readOnly = true)
   public List<BlipEvent> findAllBlipsByBlipEventId(Long blipEventId) {
+    BlipEvent validatedExistence = findById(blipEventId);
     return blipEventRepository.findAllBlipEventsByBlipEventId(blipEventId);
   }
 
   @Transactional(readOnly = true)
-  public List<BlipEvent> findBlipEventsOfTheBlip(Long blipId, Long blipEventId) {
-    return blipEventRepository.findBlipEventsOfTheBlip(blipId, blipEventId);
+  public List<BlipEvent> findBlipEventsOfTheBlip(Long blipId) {
+    Blip blip = blipService.findById(blipId);
+    RadarVersion radarVersion = radarVersionRepository.findLastReleasedRadarVersion(
+        blip.getRadar().getId()).orElseThrow(() -> new NotFoundException(NO_CORRESPONDING_RELEASE_VERSION_EXCEPTION_MESSAGE)
+    );
+    return blipEventRepository.findBlipEventsOfTheBlip(blipId, radarVersion.getBlipEvent().getId());
   }
 
 
@@ -126,7 +165,6 @@ public class BlipEventService {
     Long id = dto.getId();
     BlipEvent entity = fillBlipEvent(dto);
     BlipEvent found = blipEventRepository.findById(id).orElseThrow(() -> new NotFoundException(BlipEvent.class, id));
-    found.setLastChangeTime(Instant.now());
     return blipEventRepository.update(blipEventMapper.toUpdate(found, entity));
   }
 
@@ -138,24 +176,30 @@ public class BlipEventService {
     Optional.ofNullable(dto.getQuadrantId()).ifPresent(qId -> blipEvent.setQuadrant(quadrantService.findById(qId)));
     Optional.ofNullable(dto.getRingId()).ifPresent(rId -> blipEvent.setRing(ringService.findById(rId)));
     blipEvent.setUser(userService.findById(dto.getAuthorId()));
+    blipEvent.setRadar(radarService.findById(dto.getRadarId()));
     return blipEvent;
   }
 
   @Transactional
   public void deleteById(Long id) {
+    BlipEvent foundBlipEvent = findById(id);
+    throwExceptionIfBlipEventIsRoot(foundBlipEvent);
     blipEventRepository.deleteById(id);
   }
+
   @Transactional
   public void deleteByIdChildrenPromoteToBrothers(Long blipEventId) {
     BlipEvent foundBlipEvent = findById(blipEventId);
-    if(foundBlipEvent.getParentId() == null && blipEventRepository.findChildren(blipEventId).size() > 1) {
-      throw new UnsupportedOperationException("Delete operation for root node with more then one child is not supported");
-    }
-    //TODO: make a good error message
-    // (for now it's "deleted object would be re-saved by cascade (remove deleted object from associations):
-    // [ru.hh.techradar.entity.BlipEvent#1]")
-    // The problem is still in cycle dependencies: I cannot use radarVersionService here.
-    deleteById(blipEventId);
+    throwExceptionIfBlipEventIsRoot(foundBlipEvent);
+    BlipEvent parentBlipEvent = findById(foundBlipEvent.getParentId());
+    radarVersionRepository.replaceBlipEventByItsParent(foundBlipEvent, parentBlipEvent);
     blipEventRepository.updateChildrenToBeBrothers(foundBlipEvent);
+    deleteById(blipEventId);
+  }
+
+  private static void throwExceptionIfBlipEventIsRoot(BlipEvent foundBlipEvent) {
+    if (foundBlipEvent.getParentId() == null) {
+      throw new OperationNotAllowedException(DELETE_OPERATION_FOR_ROOT_BLIP_EVENT_IS_NOT_SUPPORTED);
+    }
   }
 }

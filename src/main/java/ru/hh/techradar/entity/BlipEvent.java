@@ -24,7 +24,7 @@ public class BlipEvent extends AuditableEntity<Long> {
   @Column(name = "parent_id")
   private Long parentId;
   @ManyToOne
-  @JoinColumn(name = "blip_id", nullable = false)
+  @JoinColumn(name = "blip_id")
   private Blip blip;
   @ManyToOne
   @JoinColumn(name = "quadrant_id")
@@ -35,6 +35,9 @@ public class BlipEvent extends AuditableEntity<Long> {
   @ManyToOne
   @JoinColumn(name = "author_id", nullable = false)
   private User user;
+  @ManyToOne
+  @JoinColumn(name = "radar_id", nullable = false)
+  private Radar radar;
 
   public BlipEvent() {
   }
@@ -47,7 +50,9 @@ public class BlipEvent extends AuditableEntity<Long> {
       Ring ring,
       User user,
       Instant creationTime,
-      Instant lastChangeTime, Long parentId) {
+      Instant lastChangeTime,
+      Long parentId,
+      Radar radar) {
     super(creationTime, lastChangeTime);
     this.id = id;
     this.comment = comment;
@@ -56,6 +61,7 @@ public class BlipEvent extends AuditableEntity<Long> {
     this.ring = ring;
     this.user = user;
     this.parentId = parentId;
+    this.radar = radar;
   }
 
   public Long getId() {
@@ -114,16 +120,29 @@ public class BlipEvent extends AuditableEntity<Long> {
     this.parentId = parentId;
   }
 
+  public Radar getRadar() {
+    return radar;
+  }
+
+  public void setRadar(Radar radar) {
+    this.radar = radar;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
       return true;
     }
-    if (o == null || getClass() != o.getClass()) {
+    if (!(o instanceof BlipEvent blipEvent)) {
       return false;
     }
-    BlipEvent blipEvent = (BlipEvent) o;
-    return id != null && Objects.equals(id, blipEvent.id);
+    return Objects.equals(id, blipEvent.id) && Objects.equals(comment, blipEvent.comment) && Objects.equals(
+        parentId,
+        blipEvent.parentId
+    ) && Objects.equals(blip, blipEvent.blip) && Objects.equals(quadrant, blipEvent.quadrant) && Objects.equals(
+        ring,
+        blipEvent.ring
+    ) && user.equals(blipEvent.user) && radar.equals(blipEvent.radar);
   }
 
   @Override

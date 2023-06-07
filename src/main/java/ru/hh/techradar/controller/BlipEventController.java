@@ -14,6 +14,7 @@ import jakarta.ws.rs.core.Response;
 import org.springframework.stereotype.Controller;
 import ru.hh.techradar.dto.BlipEventDto;
 import ru.hh.techradar.mapper.BlipEventMapper;
+import ru.hh.techradar.mapper.BlipEventReadMapper;
 import ru.hh.techradar.service.BlipEventService;
 
 @Controller
@@ -21,10 +22,12 @@ import ru.hh.techradar.service.BlipEventService;
 public class BlipEventController {
   private final BlipEventMapper blipEventMapper;
   private final BlipEventService blipEventService;
+  private final BlipEventReadMapper blipEventReadMapper;
 
-  public BlipEventController(BlipEventMapper blipEventMapper, BlipEventService blipEventService) {
+  public BlipEventController(BlipEventMapper blipEventMapper, BlipEventService blipEventService, BlipEventReadMapper blipEventReadMapper) {
     this.blipEventMapper = blipEventMapper;
     this.blipEventService = blipEventService;
+    this.blipEventReadMapper = blipEventReadMapper;
   }
 
   @POST
@@ -51,10 +54,9 @@ public class BlipEventController {
   @GET
   @Produces(MediaType.APPLICATION_JSON)
   public Response find(
-      @QueryParam("blip-event-id") Long blipEventId,//TODO: check if using filters is a good idea
       @QueryParam("blip-id") Long blipId
   ) {
-    return Response.ok(blipEventMapper.toDtos(blipEventService.find(blipEventId, blipId)))
+    return Response.ok(blipEventReadMapper.toDtos(blipEventService.find(blipId)))
         .build();
   }
 
@@ -62,7 +64,7 @@ public class BlipEventController {
   @Produces(MediaType.APPLICATION_JSON)
   @Path("/radar-log")
   public Response findAllBlipsByBlipEventId(@QueryParam("blip-event-id") Long blipEventId) {
-    return Response.ok(blipEventMapper.toDtos(blipEventService.findAllBlipsByBlipEventId(blipEventId)))
+    return Response.ok(blipEventReadMapper.toDtos(blipEventService.findAllBlipsByBlipEventId(blipEventId)))
         .build();
   }
 

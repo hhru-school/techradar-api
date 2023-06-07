@@ -60,16 +60,16 @@ public class BlipEventRepository extends BaseRepositoryImpl<Long, BlipEvent> {
     Session session = sessionFactory.openSession();
     return session.createNativeQuery("""
                 WITH RECURSIVE r AS (
-                    SELECT blip_event_id, comment, parent_id, blip_id, quadrant_id, ring_id, author_id, creation_time, last_change_time, 1 AS level
+                    SELECT blip_event_id, comment, parent_id, blip_id, quadrant_id, ring_id, author_id, radar_id, creation_time, last_change_time, 1 AS level
                     FROM blip_event
                     WHERE blip_event_id = :blipEventId
                     UNION
                     SELECT e.blip_event_id, e.comment, e.parent_id,
-                           e.blip_id, e.quadrant_id, e.ring_id, e.author_id, e.creation_time, e.last_change_time, r.level + 1 AS level
+                           e.blip_id, e.quadrant_id, e.ring_id, e.author_id, e.radar_id, e.creation_time, e.last_change_time, r.level + 1 AS level
                     FROM blip_event e
                              JOIN r ON (r.parent_id = e.blip_event_id)
                 )
-                SELECT blip_event_id, comment, parent_id, blip_id, quadrant_id, ring_id, author_id, creation_time, last_change_time
+                SELECT blip_event_id, comment, parent_id, blip_id, quadrant_id, ring_id, author_id, radar_id, creation_time, last_change_time
                 FROM r
                 ORDER BY r.level DESC;
                 """
@@ -82,16 +82,16 @@ public class BlipEventRepository extends BaseRepositoryImpl<Long, BlipEvent> {
     Session session = sessionFactory.openSession();
     return session.createNativeQuery("""
                 WITH RECURSIVE r AS (
-                    SELECT blip_event_id, comment, parent_id, blip_id, quadrant_id, ring_id, author_id, creation_time, last_change_time, 1 AS level
+                    SELECT blip_event_id, comment, parent_id, blip_id, quadrant_id, ring_id, author_id, radar_id, creation_time, last_change_time, 1 AS level
                     FROM blip_event
                     WHERE blip_event_id = :blipEventId
                     UNION
                     SELECT e.blip_event_id, e.comment, e.parent_id,
-                           e.blip_id, e.quadrant_id, e.ring_id, e.author_id, e.creation_time, e.last_change_time, r.level + 1 AS level
+                           e.blip_id, e.quadrant_id, e.ring_id, e.author_id, e.radar_id, e.creation_time, e.last_change_time, r.level + 1 AS level
                     FROM blip_event e
                              JOIN r ON (r.parent_id = e.blip_event_id)
                 )
-                SELECT blip_event_id, comment, parent_id, blip_id, quadrant_id, ring_id, author_id, creation_time, last_change_time FROM r WHERE blip_id = :blipId ORDER BY r.level DESC;"""
+                SELECT blip_event_id, comment, parent_id, blip_id, quadrant_id, ring_id, author_id, radar_id, creation_time, last_change_time FROM r WHERE blip_id = :blipId ORDER BY r.level DESC;"""
             , BlipEvent.class)
         .setParameter("blipEventId", blipEventId)
         .setParameter("blipId", blipId)

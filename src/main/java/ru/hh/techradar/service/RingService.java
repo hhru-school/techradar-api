@@ -8,8 +8,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.hh.techradar.entity.Ring;
 import ru.hh.techradar.entity.Radar;
+import ru.hh.techradar.entity.Ring;
 import ru.hh.techradar.exception.EntityExistsException;
 import ru.hh.techradar.exception.NotFoundException;
 import ru.hh.techradar.exception.UniqueException;
@@ -19,6 +19,8 @@ import ru.hh.techradar.repository.RingRepository;
 
 @Service
 public class RingService {
+  public static final String RING_COLLECTION_CONTAINS_NOT_UNIQUE_NAMES = "Ring collection contains not unique names: %s";
+  public static final String RING_COLLECTION_CONTAINS_NOT_UNIQUE_POSITIONS = "Ring collection contains not unique positions: %s";
   private final RingRepository ringRepository;
   private final RadarRepository radarRepository;
 
@@ -63,14 +65,14 @@ public class RingService {
         .filter(name -> Collections.frequency(rings.stream().map(Ring::getName).toList(), name) > 1)
         .collect(Collectors.toSet());
     if (!names.isEmpty()) {
-      throw new UniqueException(String.format("Ring collection contains not unique names: %s", names));
+      throw new UniqueException(String.format(RING_COLLECTION_CONTAINS_NOT_UNIQUE_NAMES, names));
     }
     Set<Integer> positions = rings.stream()
         .map(Ring::getPosition)
         .filter(position -> Collections.frequency(rings.stream().map(Ring::getPosition).toList(), position) > 1)
         .collect(Collectors.toSet());
     if (!positions.isEmpty()) {
-      throw new UniqueException(String.format("Ring collection contains not unique positions: %s", positions));
+      throw new UniqueException(String.format(RING_COLLECTION_CONTAINS_NOT_UNIQUE_POSITIONS, positions));
     }
   }
 

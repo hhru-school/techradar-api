@@ -2,9 +2,7 @@ package ru.hh.techradar.dto;
 
 import java.util.List;
 import java.util.Objects;
-import org.springframework.stereotype.Component;
 
-@Component
 public class ContainerDto {
   private Long blipEventId;
   private RadarDto radar;

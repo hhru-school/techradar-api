@@ -2,7 +2,6 @@ package ru.hh.techradar.service;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -11,7 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.hh.techradar.entity.Quadrant;
 import ru.hh.techradar.entity.Radar;
-import ru.hh.techradar.entity.Ring;
 import ru.hh.techradar.exception.EntityExistsException;
 import ru.hh.techradar.exception.NotFoundException;
 import ru.hh.techradar.exception.UniqueException;
@@ -21,6 +19,8 @@ import ru.hh.techradar.repository.RadarRepository;
 
 @Service
 public class QuadrantService {
+  public static final String QUADRANT_COLLECTION_CONTAINS_NOT_UNIQUE_NAMES = "Quadrant collection contains not unique names: %s";
+  public static final String QUADRANT_COLLECTION_CONTAINS_NOT_UNIQUE_POSITIONS = "Quadrant collection contains not unique positions: %s";
   private final QuadrantRepository quadrantRepository;
   private final RadarRepository radarRepository;
 
@@ -65,14 +65,14 @@ public class QuadrantService {
         .filter(name -> Collections.frequency(quadrants.stream().map(Quadrant::getName).toList(), name) > 1)
         .collect(Collectors.toSet());
     if (!names.isEmpty()) {
-      throw new UniqueException(String.format("Quadrant collection contains not unique names: %s", names));
+      throw new UniqueException(String.format(QUADRANT_COLLECTION_CONTAINS_NOT_UNIQUE_NAMES, names));
     }
     Set<Integer> positions = quadrants.stream()
         .map(Quadrant::getPosition)
         .filter(position -> Collections.frequency(quadrants.stream().map(Quadrant::getPosition).toList(), position) > 1)
         .collect(Collectors.toSet());
     if (!positions.isEmpty()) {
-      throw new UniqueException(String.format("Quadrant collection contains not unique positions: %s", positions));
+      throw new UniqueException(String.format(QUADRANT_COLLECTION_CONTAINS_NOT_UNIQUE_POSITIONS, positions));
     }
   }
 

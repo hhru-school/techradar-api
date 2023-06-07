@@ -24,6 +24,7 @@ import ru.hh.techradar.exception.CSVFormatExceptionMapper;
 import ru.hh.techradar.exception.ConstraintViolationExceptionMapper;
 import ru.hh.techradar.exception.EntityExistsExceptionMapper;
 import ru.hh.techradar.exception.NotFoundExceptionMapper;
+import ru.hh.techradar.exception.OperationNotAllowedExceptionMapper;
 import ru.hh.techradar.exception.ParamExceptionMapper;
 import ru.hh.techradar.exception.UniqueExceptionMapper;
 import ru.hh.techradar.security.controller.AuthenticationController;
@@ -69,6 +70,7 @@ public class ContextConfig {
     resourceConfig.register(CSVFormatExceptionMapper.class);
     resourceConfig.register(EntityExistsExceptionMapper.class);
     resourceConfig.register(UniqueExceptionMapper.class);
+    resourceConfig.register(OperationNotAllowedExceptionMapper.class);
   }
 
   private void converterProviderConfig(ResourceConfig resourceConfig) {

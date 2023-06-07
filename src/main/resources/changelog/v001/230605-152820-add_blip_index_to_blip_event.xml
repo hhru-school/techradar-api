@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="230605-152820" author="parfenovds">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <indexExists indexName="fk_blip_event_blip_id1_idx" tableName="blip_event"/>
+            </not>
+        </preConditions>
+        <createIndex tableName="blip_event" indexName="fk_blip_event_blip_id1_idx">
+            <column name="blip_id" descending="false"/>
+        </createIndex>
+    </changeSet>
+</databaseChangeLog>

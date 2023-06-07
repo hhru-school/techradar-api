@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="230605-113812" author="parfenovds">
+        <createProcedure>
+            CREATE OR REPLACE FUNCTION make_creation_time() RETURNS trigger
+        LANGUAGE plpgsql
+        AS $$
+            BEGIN
+        NEW.creation_time := CURRENT_TIMESTAMP;
+            RETURN NEW;
+            END;
+        $$;
+        </createProcedure>
+        <rollback>
+            DROP FUNCTION make_creation_time();
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="230605-154925" author="parfenovds">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="radar_version"/>
+            </not>
+        </preConditions>
+        <createTable tableName="radar_version">
+            <column name="radar_version_id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="name" type="varchar(45)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="release" type="boolean">
+                <constraints nullable="false"/>
+            </column>
+            <column name="radar_id" type="bigint">
+                <constraints nullable="false"
+                             foreignKeyName="fk_radar_version_radar1"
+                             references="radar (radar_id)"/>
+            </column>
+            <column name="blip_event_id" type="bigint">
+                <constraints nullable="true"
+                             foreignKeyName="fk_radar_version_blip_event1"
+                             references="blip_event (blip_event_id)"/>
+            </column>
+            <column name="parent_id" type="bigint">
+                <constraints nullable="true"
+                             foreignKeyName="fk_radar_version_radar_version1"
+                             references="radar_version (radar_version_id)"/>
+            </column>
+            <column name="level" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="toggle_available" type="boolean">
+                <constraints nullable="true"/>
+            </column>
+            <column name="creation_time" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_change_time" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>

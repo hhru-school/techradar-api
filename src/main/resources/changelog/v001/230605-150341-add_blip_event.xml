@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="230605-150341" author="parfenovds">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="blip_event"/>
+            </not>
+        </preConditions>
+        <createTable tableName="blip_event">
+            <column name="blip_event_id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="comment" type="varchar(500)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="parent_id" type="bigint">
+                <constraints nullable="true"
+                             foreignKeyName="fk_blip_event_blip_event1"
+                             references="blip_event (blip_event_id)"/>
+            </column>
+            <column name="blip_id" type="bigint">
+                <constraints nullable="true"
+                             foreignKeyName="fk_blip_event_blip1"
+                             references="blip (blip_id)"/>
+            </column>
+            <column name="quadrant_id" type="bigint">
+                <constraints nullable="true"
+                             foreignKeyName="fk_blip_event_quadrant1"
+                             references="quadrant (quadrant_id)"/>
+            </column>
+            <column name="ring_id" type="bigint">
+                <constraints nullable="true"
+                             foreignKeyName="fk_blip_event_ring1"
+                             references="ring (ring_id)"/>
+            </column>
+            <column name="author_id" type="bigint">
+                <constraints nullable="false"
+                             foreignKeyName="fk_blip_event_tr_user1"
+                             references="tr_user (user_id)"/>
+            </column>
+            <column name="radar_id" type="bigint">
+                <constraints nullable="false"
+                             foreignKeyName="fk_blip_event_radar1"
+                             references="radar (radar_id)"/>
+            </column>
+            <column name="creation_time" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="true"/>
+            </column>
+            <column name="last_change_time" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>

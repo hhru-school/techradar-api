@@ -11,18 +11,26 @@ public class RadarVersionDto {
   private Boolean release;
   private Long radarId;
   private Long blipEventId;
+  private Long parentId;
+  private Integer level;
+  private Boolean toggleAvailable;
   private Instant creationTime;
   private Instant lastChangeTime;
 
   public RadarVersionDto() {
   }
 
-  public RadarVersionDto(Long id, String name, Boolean release, Long radarId, Long blipEventId, Instant creationTime, Instant lastChangeTime) {
+  public RadarVersionDto(Long id, String name, Boolean release, Long radarId, Long blipEventId,
+      Long parentId, Integer level,
+      Boolean toggleAvailable, Instant creationTime, Instant lastChangeTime) {
     this.id = id;
     this.name = name;
     this.release = release;
     this.radarId = radarId;
     this.blipEventId = blipEventId;
+    this.parentId = parentId;
+    this.level = level;
+    this.toggleAvailable = toggleAvailable;
     this.creationTime = creationTime;
     this.lastChangeTime = lastChangeTime;
   }
@@ -65,6 +73,30 @@ public class RadarVersionDto {
 
   public void setBlipEventId(Long blipEventId) {
     this.blipEventId = blipEventId;
+  }
+
+  public Long getParentId() {
+    return parentId;
+  }
+
+  public void setParentId(Long parentId) {
+    this.parentId = parentId;
+  }
+
+  public Integer getLevel() {
+    return level;
+  }
+
+  public void setLevel(Integer level) {
+    this.level = level;
+  }
+
+  public Boolean getToggleAvailable() {
+    return toggleAvailable;
+  }
+
+  public void setToggleAvailable(Boolean toggleAvailable) {
+    this.toggleAvailable = toggleAvailable;
   }
 
   public Instant getCreationTime() {
