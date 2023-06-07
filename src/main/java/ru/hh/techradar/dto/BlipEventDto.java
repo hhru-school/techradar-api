@@ -2,6 +2,7 @@ package ru.hh.techradar.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import java.time.Instant;
+import java.util.Objects;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class BlipEventDto {
@@ -12,6 +13,7 @@ public class BlipEventDto {
   private Long quadrantId;
   private Long ringId;
   private Long authorId;
+  private Long radarId;
   private Instant creationTime;
   private Instant lastChangeTime;
 
@@ -25,6 +27,7 @@ public class BlipEventDto {
       Long quadrantId,
       Long ringId,
       Long authorId,
+      Long radarId,
       Instant creationTime,
       Instant lastChangeTime
   ) {
@@ -35,6 +38,7 @@ public class BlipEventDto {
     this.quadrantId = quadrantId;
     this.ringId = ringId;
     this.authorId = authorId;
+    this.radarId = radarId;
     this.creationTime = creationTime;
     this.lastChangeTime = lastChangeTime;
   }
@@ -111,16 +115,32 @@ public class BlipEventDto {
     this.parentId = parentId;
   }
 
+  public Long getRadarId() {
+    return radarId;
+  }
+
+  public void setRadarId(Long radarId) {
+    this.radarId = radarId;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
       return true;
     }
-    if (o == null || getClass() != o.getClass()) {
+    if (!(o instanceof BlipEventDto that)) {
       return false;
     }
-    BlipEventDto blipEventDto = (BlipEventDto) o;
-    return id != null && id.equals(blipEventDto.id);
+    return Objects.equals(id, that.id) && Objects.equals(comment, that.comment) && Objects.equals(
+        parentId,
+        that.parentId
+    ) && Objects.equals(blipId, that.blipId) && Objects.equals(quadrantId, that.quadrantId) && Objects.equals(
+        ringId,
+        that.ringId
+    ) && authorId.equals(that.authorId) && radarId.equals(that.radarId) && Objects.equals(
+        creationTime,
+        that.creationTime
+    ) && Objects.equals(lastChangeTime, that.lastChangeTime);
   }
 
   @Override

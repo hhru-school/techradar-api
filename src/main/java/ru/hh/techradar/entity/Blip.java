@@ -1,6 +1,5 @@
 package ru.hh.techradar.entity;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -29,7 +28,7 @@ public class Blip extends AuditableEntity<Long> {
   @ManyToOne
   @JoinColumn(name = "radar_id", nullable = false)
   private Radar radar;
-  @OneToMany(mappedBy = "blip", cascade = CascadeType.ALL, orphanRemoval = true)
+  @OneToMany(mappedBy = "blip", orphanRemoval = true)
   private List<BlipEvent> blipEvents = new ArrayList<>();
   @Column(name = "quadrant_id")
   private Long quadrantId;
