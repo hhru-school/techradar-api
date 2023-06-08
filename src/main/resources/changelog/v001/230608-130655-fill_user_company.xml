@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="230608-130655" author="parfenovds">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">SELECT COUNT(1)
+                                         FROM user_company
+                                         WHERE company_id IS NOT NULL;</sqlCheck>
+        </preConditions>
+        <sql>
+            INSERT INTO user_company (user_id, company_id)
+            VALUES (1, 1);
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>

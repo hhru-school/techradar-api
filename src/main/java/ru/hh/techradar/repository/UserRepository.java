@@ -18,7 +18,8 @@ public class UserRepository extends BaseRepositoryImpl<Long, User> {
 
   public List<User> findAllByFilter(UserFilter filter) {
     return sessionFactory.getCurrentSession()
-        .createQuery("SELECT u FROM User u WHERE u.company.id =: companyId ORDER BY u.id", User.class)
+//        .createQuery("SELECT u FROM User u WHERE u.company.id =: companyId ORDER BY u.id", User.class)
+        .createQuery("", User.class)
         .setParameter("companyId", filter.getCompanyId())
         .getResultList();
   }
@@ -29,4 +30,8 @@ public class UserRepository extends BaseRepositoryImpl<Long, User> {
         .setParameter("username", username)
         .uniqueResultOptional();
   }
+
+//  public void addCompany(User user, Company company) {
+//    user.addCompany(company);
+//  }
 }

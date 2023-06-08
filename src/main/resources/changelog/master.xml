@@ -48,5 +48,9 @@
     <include file="v001/230605-160940-add_composite_unique_constraint_to_radar_version.xml" relativeToChangelogFile="true"/>
     <include file="v001/230605-161114-create_trigger_update_last_change_time_to_radar_version.xml" relativeToChangelogFile="true"/>
     <include file="v001/230605-161630-fill_db.xml" relativeToChangelogFile="true"/>
+    <include file="v001/230608-114402-add_user_company.xml" relativeToChangelogFile="true"/>
+    <include file="v001/230608-121047-drop_company_column_from_user.xml" relativeToChangelogFile="true"/>
+    <include file="v001/230608-130655-fill_user_company.xml" relativeToChangelogFile="true"/>
+    <include file="v001/230608-132835-remove_not_null_time_constraints.xml" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>

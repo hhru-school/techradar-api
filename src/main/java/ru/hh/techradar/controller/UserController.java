@@ -10,11 +10,11 @@ import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
-import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import ru.hh.techradar.dto.UserDto;
 import ru.hh.techradar.filter.UserFilter;
+import ru.hh.techradar.mapper.CompanyMapper;
 import ru.hh.techradar.mapper.UserMapper;
 import ru.hh.techradar.service.UserService;
 
@@ -23,21 +23,37 @@ public class UserController {
 
   private final UserService userService;
   private final UserMapper userMapper;
+  private final CompanyMapper companyMapper;
 
   @Inject
   public UserController(
       UserService userService,
-      UserMapper userMapper) {
+      UserMapper userMapper, CompanyMapper companyMapper) {
     this.userService = userService;
     this.userMapper = userMapper;
+    this.companyMapper = companyMapper;
   }
 
   @POST
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
-  public Response save(@QueryParam("company-id") Long companyId, UserDto userDto) {
+  public Response save(UserDto userDto) {
     return Response
-        .ok(userMapper.toDto(userService.save(companyId, userMapper.toEntity(userDto))))
+        .ok(userMapper.toDto(userService.save(userMapper.toEntity(userDto))))
+        .status(Response.Status.CREATED)
+        .build();
+  }
+
+  @POST
+  @Path("/{user-id}/companies/{company-id}")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response joinUserAndCompany(
+      @PathParam("user-id") Long userId,
+      @PathParam("company-id") Long companyId
+  ) {
+    userService.joinUserAndCompany(userId, companyId);
+    return Response
         .status(Response.Status.CREATED)
         .build();
   }
@@ -59,13 +75,22 @@ public class UserController {
         .build();
   }
 
+  @GET
+  @Path("/{id}/companies")
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response findAllCompaniesByUserId(@PathParam("id") Long id) {
+    return Response
+        .ok(companyMapper.toDtos(userService.findAllCompaniesByUserId(id)))
+        .build();
+  }
+
   @PUT
   @Path("/{id}")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
-  public Response update(@PathParam("id") Long id, @QueryParam("company-id") Long companyId, UserDto userDto) {
+  public Response update(@PathParam("id") Long id, UserDto userDto) {
     return Response
-        .ok(userMapper.toDto(userService.update(id, companyId, userMapper.toEntity(userDto))))
+        .ok(userMapper.toDto(userService.update(id, userMapper.toEntity(userDto))))
         .build();
   }
 
@@ -73,6 +98,18 @@ public class UserController {
   @Path("/{id}")
   public Response deleteById(@PathParam("id") Long id) {
     userService.deleteById(id);
+    return Response
+        .status(Response.Status.NO_CONTENT)
+        .build();
+  }
+
+  @DELETE
+  @Path("/{user-id}/companies/{company-id}")
+  public Response disjointUserAndCompany(
+      @PathParam("user-id") Long userId,
+      @PathParam("company-id") Long companyId
+  ) {
+    userService.disjointUserAndCompany(userId, companyId);
     return Response
         .status(Response.Status.NO_CONTENT)
         .build();
