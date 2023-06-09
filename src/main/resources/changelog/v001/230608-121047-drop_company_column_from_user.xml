@@ -4,18 +4,14 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
-    <changeSet id="230605-132802" author="parfenovds">
+    <changeSet id="230608-121047" author="parfenovds">
         <preConditions onFail="MARK_RAN">
-            <and>
-                <not>
-                    <indexExists indexName="fk_user_company1_idx" tableName="tr_user"/>
-                </not>
                 <columnExists tableName="tr_user"
                               columnName="company_id" />
-            </and>
         </preConditions>
-        <createIndex tableName="tr_user" indexName="fk_user_company1_idx">
-            <column name="company_id" descending="false"/>
-        </createIndex>
+        <dropColumn tableName="tr_user">
+            <column name="company_id"/>
+        </dropColumn>
     </changeSet>
+
 </databaseChangeLog>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="230608-132835" author="parfenovds">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="NO">
+                SELECT is_nullable
+                FROM information_schema.columns
+                WHERE table_name = 'company'
+                  AND column_name = 'creation_time'
+            </sqlCheck>
+        </preConditions>
+        <dropNotNullConstraint tableName="company" columnName="creation_time"/>
+        <dropNotNullConstraint tableName="tr_user" columnName="creation_time"/>
+        <dropNotNullConstraint tableName="radar" columnName="creation_time"/>
+        <dropNotNullConstraint tableName="ring" columnName="creation_time"/>
+        <dropNotNullConstraint tableName="quadrant" columnName="creation_time"/>
+        <dropNotNullConstraint tableName="blip" columnName="creation_time"/>
+        <dropNotNullConstraint tableName="radar_version" columnName="creation_time"/>
+        <dropNotNullConstraint tableName="company" columnName="last_change_time"/>
+        <dropNotNullConstraint tableName="tr_user" columnName="last_change_time"/>
+        <dropNotNullConstraint tableName="radar" columnName="last_change_time"/>
+        <dropNotNullConstraint tableName="ring" columnName="last_change_time"/>
+        <dropNotNullConstraint tableName="quadrant" columnName="last_change_time"/>
+        <dropNotNullConstraint tableName="blip" columnName="last_change_time"/>
+        <dropNotNullConstraint tableName="radar_version" columnName="last_change_time"/>
+    </changeSet>
+
+</databaseChangeLog>

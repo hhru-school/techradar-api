@@ -42,7 +42,7 @@ public class AuthenticationService {
       user.setPassword(passwordEncoder.encode(register.getPassword()));
       user.setRole(Role.USER);
       //todo нужно проработать логику привязки пользователя к компании
-      userService.save(1L, user);
+      userService.save(user);
       return Map.of("message", "Успешная регистрация!");
     }
     throw new IllegalArgumentException("Подтвержденный пароль не совпадает с паролем!");

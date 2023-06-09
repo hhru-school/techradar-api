@@ -22,6 +22,7 @@ import ru.hh.techradar.dto.ContainerCreateDto;
 import ru.hh.techradar.dto.QuadrantDto;
 import ru.hh.techradar.dto.RadarDto;
 import ru.hh.techradar.dto.RingDto;
+import ru.hh.techradar.entity.Company;
 import ru.hh.techradar.entity.User;
 import ru.hh.techradar.exception.CSVFormatException;
 import ru.hh.techradar.exception.UniqueException;
@@ -34,15 +35,18 @@ public class CSVRadarService {
   private final String EXCEPTION_MESSAGE_FILE_EXTENSION_CSV = "Invalid file format!";
   private final String EXCEPTION_MESSAGE_EMPTY = "File is empty!";
   private final UserService userService;
+  private final CompanyService companyService;
 
-  public CSVRadarService(UserService userService) {
+  public CSVRadarService(UserService userService, CompanyService companyService) {
     this.userService = userService;
+    this.companyService = companyService;
   }
 
   public ContainerCreateDto uploadRadar(
       InputStream inputStream,
       FormDataContentDisposition fileDisposition,
-      String username) {
+      String username,
+      Long companyId) {
     if (!fileDisposition.getFileName().endsWith(FILE_EXTENSION_CSV)) {
       throw new CSVFormatException(EXCEPTION_MESSAGE_FILE_EXTENSION_CSV);
     }
@@ -55,18 +59,18 @@ public class CSVRadarService {
           .build()
           .parse();
       validate(radarsCSV);
-      containerCreateDto = createContainerCreateDto(fileDisposition.getFileName(), username, radarsCSV);
+      containerCreateDto = createContainerCreateDto(fileDisposition.getFileName(), username, radarsCSV, companyId);
     } catch (IOException exception) {
       throw new CSVFormatException(exception.getMessage());
     }
     return containerCreateDto;
   }
 
-  private ContainerCreateDto createContainerCreateDto(String radarName, String username, List<RadarCSV> radarsCSV) {
+  private ContainerCreateDto createContainerCreateDto(String radarName, String username, List<RadarCSV> radarsCSV, Long companyId) {
     ContainerCreateDto containerCreateDto = new ContainerCreateDto();
     containerCreateDto.setBlips(radarsCSV.stream().filter(this::isNotEmptyBlipName).map(this::toBlipCreateDto).toList());
     addQuadrantDtoAndRingDto(radarsCSV, containerCreateDto);
-    containerCreateDto.setRadar(createRadarDto(radarName, username));
+    containerCreateDto.setRadar(createRadarDto(radarName, username, companyId));
     return containerCreateDto;
   }
 
@@ -90,12 +94,13 @@ public class CSVRadarService {
     return containerCreateDto;
   }
 
-  private RadarDto createRadarDto(String radarName, String username) {
+  private RadarDto createRadarDto(String radarName, String username, Long companyId) {
     RadarDto radarDto = new RadarDto();
     User user = userService.findByUsername(username);
+    Company company = companyService.findById(companyId);
     radarDto.setName(radarName);
     radarDto.setAuthorId(user.getId());
-    radarDto.setCompanyId(user.getCompany().getId());
+    radarDto.setCompanyId(company.getId());
     return radarDto;
   }
 

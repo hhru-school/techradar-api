@@ -1,17 +1,20 @@
 package ru.hh.techradar.entity;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 import java.util.StringJoiner;
 import ru.hh.techradar.enumeration.Role;
 
@@ -33,9 +36,13 @@ public class User extends AuditableEntity<Long> {
   @Column(name = "role")
   private Role role;
 
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "company_id", nullable = false)
-  private Company company;
+  @ManyToMany(cascade = {CascadeType.ALL})
+  @JoinTable(
+      name = "user_company",
+      joinColumns = {@JoinColumn(name = "user_id")},
+      inverseJoinColumns = {@JoinColumn(name = "company_id")}
+  )
+  Set<Company> companies = new HashSet<>();
 
   public User() {
   }
@@ -72,12 +79,22 @@ public class User extends AuditableEntity<Long> {
     this.role = role;
   }
 
-  public Company getCompany() {
-    return company;
+  public void addCompany(Company company) {
+    companies.add(company);
+    company.getUsers().add(this);
   }
 
-  public void setCompany(Company company) {
-    this.company = company;
+  public void removeCompany(Company company) {
+    companies.remove(company);
+    company.getUsers().remove(this);
+  }
+
+  public Set<Company> getCompanies() {
+    return companies;
+  }
+
+  public void setCompanies(Set<Company> companies) {
+    this.companies = companies;
   }
 
   @Override

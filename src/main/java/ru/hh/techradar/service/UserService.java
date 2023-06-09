@@ -1,9 +1,10 @@
 package ru.hh.techradar.service;
 
-import java.util.List;
-import java.util.Objects;
+import java.util.Collection;
+import org.hibernate.Hibernate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.hh.techradar.entity.Company;
 import ru.hh.techradar.entity.User;
 import ru.hh.techradar.exception.EntityExistsException;
 import ru.hh.techradar.exception.NotFoundException;
@@ -28,8 +29,8 @@ public class UserService {
   }
 
   @Transactional(readOnly = true)
-  public List<User> findAllByFilter(UserFilter filter) {
-    return userRepository.findAllByFilter(filter);
+  public Collection<User> findAllByFilter(UserFilter filter) {
+    return companyService.findById(filter.getCompanyId()).getUsers();
   }
 
   @Transactional(readOnly = true)
@@ -48,27 +49,44 @@ public class UserService {
   }
 
   @Transactional
-  public User update(Long id, Long companyId, User user) {
+  public User update(Long id, User user) {
     User found = userRepository.findById(id).orElseThrow(() -> new NotFoundException(User.class, id));
     if (!user.equals(found) && isPresent(user)) {
       throw new EntityExistsException(User.class, user.getUsername());
-    }
-    if (Objects.nonNull(companyId)) {
-      found.setCompany(companyService.findById(companyId));
     }
     return userRepository.update(userMapper.toUpdate(found, user));
   }
 
   @Transactional
-  public User save(Long companyId, User entity) {
+  public User save(User entity) {
     if (isPresent(entity)) {
       throw new EntityExistsException(User.class, entity.getUsername());
     }
-    entity.setCompany(companyService.findById(companyId));
     return userRepository.save(entity);
   }
 
   private boolean isPresent(User entity) {
     return userRepository.findByUsername(entity.getUsername()).isPresent();
+  }
+
+  @Transactional
+  public void joinUserAndCompany(Long userId, Long companyId) {
+    User user = findById(userId);
+    Company company = companyService.findById(companyId);
+    user.addCompany(company);
+  }
+
+  @Transactional
+  public void disjointUserAndCompany(Long userId, Long companyId) {
+    User user = findById(userId);
+    Company company = companyService.findById(companyId);
+    user.removeCompany(company);
+  }
+
+  @Transactional(readOnly = true)
+  public Collection<Company> findAllCompaniesByUserId(Long userId) {
+    User user = findById(userId);
+    Hibernate.initialize(user.getCompanies());
+    return user.getCompanies();
   }
 }
