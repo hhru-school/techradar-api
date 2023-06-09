@@ -83,7 +83,7 @@ public class UserService {
     user.removeCompany(company);
   }
 
-  @Transactional
+  @Transactional(readOnly = true)
   public Collection<Company> findAllCompaniesByUserId(Long userId) {
     User user = findById(userId);
     Hibernate.initialize(user.getCompanies());

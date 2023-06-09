@@ -32,7 +32,7 @@ public class CSVRadarController {
       @FormDataParam("file") InputStream inputStream,
       @FormDataParam("file") FormDataContentDisposition fileDisposition,
       @CookieParam("username") String username,
-      @QueryParam("company") Long companyId
+      @QueryParam("company-id") Long companyId
   ) {
     return Response
         .ok(csvRadarService.uploadRadar(inputStream, fileDisposition, username, companyId))
