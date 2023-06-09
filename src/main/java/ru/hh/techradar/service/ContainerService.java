@@ -13,6 +13,7 @@ import ru.hh.techradar.entity.BlipEvent;
 import ru.hh.techradar.entity.Container;
 import ru.hh.techradar.entity.Quadrant;
 import ru.hh.techradar.entity.Radar;
+import ru.hh.techradar.entity.RadarVersion;
 import ru.hh.techradar.entity.Ring;
 import ru.hh.techradar.entity.User;
 import ru.hh.techradar.filter.ComponentFilter;
@@ -58,6 +59,22 @@ public class ContainerService {
 
   @Transactional(readOnly = true)
   public Container findByBlipEventId(Long blipEventId) {
+    BlipEvent blipEvent = blipEventService.findById(blipEventId);
+    Container container = getContainerWithoutBlips(blipEventId);
+    container.setBlips(blipService.findAllByBlipEventId(blipEvent.getId()));
+    return container;
+  }
+
+  @Transactional(readOnly = true)
+  public Container findByRadarVersionId(Long radarVersionId) {
+    RadarVersion radarVersion = radarVersionService.findById(radarVersionId);
+    Long blipEventId = radarVersion.getBlipEvent().getId();
+    Container container = getContainerWithoutBlips(blipEventId);
+    container.setBlips(blipService.findActualBlipsByRadarVersionWithDrawInfo(radarVersion));
+    return container;
+  }
+
+  private Container getContainerWithoutBlips(Long blipEventId) {
     Container container = new Container();
     BlipEvent blipEvent = blipEventService.findById(blipEventId);
     Radar radar = blipEvent.getRadar();
@@ -65,13 +82,7 @@ public class ContainerService {
     container.setBlipEvent(blipEvent);
     container.setQuadrants(quadrantService.findAllByFilter(new ComponentFilter().radarId(radar.getId()).actualDate(blipEvent.getCreationTime())));
     container.setRings(ringService.findAllByFilter(new ComponentFilter().radarId(radar.getId()).actualDate(blipEvent.getCreationTime())));
-    container.setBlips(blipService.findAllByBlipEventId(blipEvent.getId()));
     return container;
-  }
-
-  @Transactional(readOnly = true)
-  public Container findByRadarVersionId(Long radarVersionId) {
-    return findByBlipEventId(radarVersionService.findById(radarVersionId).getBlipEvent().getId());
   }
 
   @Transactional(readOnly = true)

@@ -34,6 +34,8 @@ public class Blip extends AuditableEntity<Long> {
   private Long quadrantId;
   @Column(name = "ring_id")
   private Long ringId;
+  @Column(name = "draw_info")
+  private String drawInfo;
 
   public Blip() {
   }
@@ -88,6 +90,14 @@ public class Blip extends AuditableEntity<Long> {
 
   public List<BlipEvent> getBlipEvents() {
     return blipEvents;
+  }
+
+  public String getDrawInfo() {
+    return drawInfo;
+  }
+
+  public void setDrawInfo(String drawInfo) {
+    this.drawInfo = drawInfo;
   }
 
   public void setBlipEvents(List<BlipEvent> blipEvents) {

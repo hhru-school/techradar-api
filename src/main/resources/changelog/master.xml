@@ -52,5 +52,6 @@
     <include file="v001/230608-121047-drop_company_column_from_user.xml" relativeToChangelogFile="true"/>
     <include file="v001/230608-130655-fill_user_company.xml" relativeToChangelogFile="true"/>
     <include file="v001/230608-132835-remove_not_null_time_constraints.xml" relativeToChangelogFile="true"/>
+    <include file="v001/230609-164242-add_draw_info_column_to_blip.xml" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>
