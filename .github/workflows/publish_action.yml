@@ -19,6 +19,4 @@ jobs:
             cd ~/server
             sed '/BACKEND_TAG/d' .env -i
             echo "BACKEND_TAG=B-latest" >> .env
-            docker compose down
-            docker compose up -d
-            docker image prune --all --force
+            ./backend/deploy.sh
