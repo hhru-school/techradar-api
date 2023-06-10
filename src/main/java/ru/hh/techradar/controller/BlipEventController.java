@@ -1,6 +1,7 @@
 package ru.hh.techradar.controller;
 
 import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.CookieParam;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
@@ -34,10 +35,11 @@ public class BlipEventController {
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   public Response save(
+      @CookieParam("username") String username,
       @QueryParam("is-insert") Boolean isInsert,
       BlipEventDto dto
   ) {
-    return Response.ok(blipEventMapper.toDto(blipEventService.save(dto, isInsert)))
+    return Response.ok(blipEventMapper.toDto(blipEventService.save(username, dto, isInsert)))
         .status(Response.Status.CREATED)
         .build();
   }

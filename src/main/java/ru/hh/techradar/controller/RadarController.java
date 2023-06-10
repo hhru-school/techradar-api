@@ -2,6 +2,7 @@ package ru.hh.techradar.controller;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.CookieParam;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
@@ -31,9 +32,11 @@ public class RadarController {
   @POST
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
-  public Response save(RadarDto dto) {
+  public Response save(RadarDto dto,
+      @CookieParam("username") String username
+  ) {
     return Response
-        .ok(radarMapper.toDto(radarService.save(dto)))
+        .ok(radarMapper.toDto(radarService.save(dto, username)))
         .status(Response.Status.CREATED)
         .build();
   }
