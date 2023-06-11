@@ -4,54 +4,6 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
-
-    <include file="v001/230605-094630-add_company.xml" relativeToChangelogFile="true"/>
-    <include file="v001/230605-113706-create_change_update_time_function.xml" relativeToChangelogFile="true"/>
-    <include file="v001/230605-113812-create_creation_time_function.xml" relativeToChangelogFile="true"/>
-    <include file="v001/230605-114320-create_trigger_update_last_change_time_to_company.xml" relativeToChangelogFile="true"/>
-    <include file="v001/230605-114847-add_tr_user.xml" relativeToChangelogFile="true"/>
-    <include file="v001/230605-132802-add_company_index_to_tr_user.xml" relativeToChangelogFile="true"/>
-    <include file="v001/230605-133001-add_index_username_UNIQUE_idx.xml" relativeToChangelogFile="true"/>
-    <include file="v001/230605-133436-create_trigger_update_last_change_time_to_tr_user.xml" relativeToChangelogFile="true"/>
-    <include file="v001/230605-133655-add_radar.xml" relativeToChangelogFile="true"/>
-    <include file="v001/230605-134702-add_composite_unique_constraint_to_radar.xml" relativeToChangelogFile="true"/>
-    <include file="v001/230605-134842-add_company_index_to_radar.xml" relativeToChangelogFile="true"/>
-    <include file="v001/230605-135246-add_user_index_to_radar.xml" relativeToChangelogFile="true"/>
-    <include file="v001/230605-140109-create_trigger_update_last_change_time_to_radar.xml" relativeToChangelogFile="true"/>
-    <include file="v001/230605-140251-add_ring.xml" relativeToChangelogFile="true"/>
-    <include file="v001/230605-141723-add_composite_name_unique_constraint_to_ring.xml" relativeToChangelogFile="true"/>
-    <include file="v001/230605-142026-add_composite_position_unique_constraint_to_ring.xml" relativeToChangelogFile="true"/>
-    <include file="v001/230605-142522-add_indexes_to_ring.xml" relativeToChangelogFile="true"/>
-    <include file="v001/230605-142740-create_trigger_update_last_change_time_to_ring.xml" relativeToChangelogFile="true"/>
-    <include file="v001/230605-143500-add_quadrant.xml" relativeToChangelogFile="true"/>
-    <include file="v001/230605-143600-add_composite_name_unique_constraint_to_quadrant.xml" relativeToChangelogFile="true"/>
-    <include file="v001/230605-143630-add_composite_position_unique_constraint_to_quadrant.xml" relativeToChangelogFile="true"/>
-    <include file="v001/230605-143700-add_indexes_to_quadrant.xml" relativeToChangelogFile="true"/>
-    <include file="v001/230605-143800-create_trigger_update_last_change_time_to_quadrant.xml" relativeToChangelogFile="true"/>
-    <include file="v001/230605-145215-add_blip.xml" relativeToChangelogFile="true"/>
-    <include file="v001/230605-145514-add_composite_unique_constraint_to_blip.xml" relativeToChangelogFile="true"/>
-    <include file="v001/230605-145646-add_indexes_to_blip.xml" relativeToChangelogFile="true"/>
-    <include file="v001/230605-145755-create_trigger_update_last_change_time_to_blip.xml" relativeToChangelogFile="true"/>
-    <include file="v001/230605-150341-add_blip_event.xml" relativeToChangelogFile="true"/>
-    <include file="v001/230605-152720-add_parent_index_to_blip_event.xml" relativeToChangelogFile="true"/>
-    <include file="v001/230605-152820-add_blip_index_to_blip_event.xml" relativeToChangelogFile="true"/>
-    <include file="v001/230605-152920-add_quadrant_index_to_blip_event.xml" relativeToChangelogFile="true"/>
-    <include file="v001/230605-153020-add_ring_index_to_blip_event.xml" relativeToChangelogFile="true"/>
-    <include file="v001/230605-153120-add_author_index_to_blip_event.xml" relativeToChangelogFile="true"/>
-    <include file="v001/230605-153220-add_radar_index_to_blip_event.xml" relativeToChangelogFile="true"/>
-    <include file="v001/230605-154646-create_trigger_update_last_change_time_to_blip_event.xml" relativeToChangelogFile="true"/>
-    <include file="v001/230605-154925-add_radar_version.xml" relativeToChangelogFile="true"/>
-    <include file="v001/230605-160423-add_radar_index_to_radar_version.xml" relativeToChangelogFile="true"/>
-    <include file="v001/230605-160523-add_blip_event_index_to_radar_version.xml" relativeToChangelogFile="true"/>
-    <include file="v001/230605-160623-add_parent_index_to_radar_version.xml" relativeToChangelogFile="true"/>
-    <include file="v001/230605-160723-add_level_index_to_radar_version.xml" relativeToChangelogFile="true"/>
-    <include file="v001/230605-160940-add_composite_unique_constraint_to_radar_version.xml" relativeToChangelogFile="true"/>
-    <include file="v001/230605-161114-create_trigger_update_last_change_time_to_radar_version.xml" relativeToChangelogFile="true"/>
-    <include file="v001/230605-161630-fill_db.xml" relativeToChangelogFile="true"/>
-    <include file="v001/230608-114402-add_user_company.xml" relativeToChangelogFile="true"/>
-    <include file="v001/230608-121047-drop_company_column_from_user.xml" relativeToChangelogFile="true"/>
-    <include file="v001/230608-130655-fill_user_company.xml" relativeToChangelogFile="true"/>
-    <include file="v001/230608-132835-remove_not_null_time_constraints.xml" relativeToChangelogFile="true"/>
-    <include file="v001/230609-164242-add_draw_info_column_to_blip.xml" relativeToChangelogFile="true"/>
+    <includeAll path="v001/" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>
