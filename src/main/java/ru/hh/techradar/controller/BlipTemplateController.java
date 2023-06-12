@@ -1,6 +1,5 @@
 package ru.hh.techradar.controller;
 
-import jakarta.validation.Valid;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
@@ -9,6 +8,7 @@ import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.springframework.stereotype.Controller;
@@ -28,16 +28,16 @@ public class BlipTemplateController {
   }
 
   @GET
-  @Path("/{name}")
+  @Path("/search")
   @Produces(MediaType.APPLICATION_JSON)
-  public Response getAutocompleteList(@PathParam("name") String namePart) {
+  public Response getAutocompleteList(@QueryParam("q") String namePart) {
     return Response.ok(
         blipTemplateMapper.toDtos(blipTemplateService.findByNamePart(namePart))
     ).build();
   }
 
   @GET
-  @Path("/exact/{name}")
+  @Path("/{name}")
   @Produces(MediaType.APPLICATION_JSON)
   public Response getByName(@PathParam("name") String name) {
     return Response.ok(
@@ -49,7 +49,7 @@ public class BlipTemplateController {
   @Path("/{name}")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
-  public Response update(@PathParam("name") String blipToUpdate, @Valid BlipTemplateDto blipTemplateDto) {
+  public Response update(@PathParam("name") String blipToUpdate, BlipTemplateDto blipTemplateDto) {
     return Response.ok(
         blipTemplateMapper.toDto(
             blipTemplateService.update(blipToUpdate, blipTemplateMapper.toEntity(blipTemplateDto))
@@ -60,7 +60,7 @@ public class BlipTemplateController {
   @POST
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
-  public Response add(@Valid BlipTemplateDto blipTemplateDto) {
+  public Response add(BlipTemplateDto blipTemplateDto) {
     return Response.ok(
         blipTemplateMapper.toDto(
             blipTemplateService.save(blipTemplateMapper.toEntity(blipTemplateDto))

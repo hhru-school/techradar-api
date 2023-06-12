@@ -1,6 +1,5 @@
 package ru.hh.techradar.mapper;
 
-import java.util.Optional;
 import org.springframework.stereotype.Component;
 import ru.hh.techradar.dto.BlipTemplateDto;
 import ru.hh.techradar.entity.BlipTemplate;
@@ -18,8 +17,7 @@ public class BlipTemplateMapper extends AbstractMapper<BlipTemplate, BlipTemplat
   }
 
   public BlipTemplate update(BlipTemplate source, BlipTemplate target) {
-    Optional.ofNullable(source.getName()).ifPresent(target::setName);
-    Optional.ofNullable(source.getDescription()).ifPresent(target::setDescription);
+    target.setDescription(source.getDescription());
     return target;
   }
 }

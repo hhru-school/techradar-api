@@ -1,5 +1,6 @@
 package ru.hh.techradar.service;
 
+import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,13 +33,13 @@ public class BlipTemplateService implements BaseService<String, BlipTemplate> {
 
   @Transactional
   @Override
-  public BlipTemplate update(String id, BlipTemplate entity) {
+  public BlipTemplate update(String id, @Valid BlipTemplate entity) {
     return blipTemplateRepository.update(blipTemplateMapper.update(entity, findById(id)));
   }
 
   @Transactional
   @Override
-  public BlipTemplate save(BlipTemplate entity) {
+  public BlipTemplate save(@Valid BlipTemplate entity) {
     return blipTemplateRepository.save(entity);
   }
 
