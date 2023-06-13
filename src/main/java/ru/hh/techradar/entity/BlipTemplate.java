@@ -13,7 +13,7 @@ import java.time.Instant;
 public class BlipTemplate extends AuditableEntity<String> {
   @Id
   @Column(name = "name", nullable = false)
-  @Pattern(regexp = "^([a-zA-Zа-яёА-ЯЁ]+).*\\S$")
+  @Pattern(regexp = "^([a-zA-Zа-яёА-ЯЁ0-9]+).*\\S$")
   private String name;
 
   @Column(name = "description", nullable = false)
