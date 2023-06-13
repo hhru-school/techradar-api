@@ -31,12 +31,12 @@ public class RadarService {
   }
 
   @Transactional
-  public Radar save(RadarDto dto) {
+  public Radar save(RadarDto dto, String username) {
     if(radarRepository.findByNameAndCompanyId(dto.getName(), dto.getCompanyId()).isPresent()) {
       throw new EntityExistsException(Radar.class, dto.getName());
     }
     Radar radar = radarMapper.toEntity(dto);
-    radar.setAuthor(userService.findById(dto.getAuthorId()));
+    radar.setAuthor(userService.findByUsername(username));
     radar.setCompany(companyService.findById(dto.getCompanyId()));
     return radarRepository.save(radar);
   }

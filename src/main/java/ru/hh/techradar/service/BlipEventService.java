@@ -36,7 +36,10 @@ public class BlipEventService {
       BlipEventMapper blipEventMapper, BlipEventRepository blipEventRepository,
       BlipService blipService,
       QuadrantService quadrantService,
-      RingService ringService, UserService userService, RadarService radarService, RadarVersionRepository radarVersionRepository) {
+      RingService ringService,
+      UserService userService,
+      RadarService radarService,
+      RadarVersionRepository radarVersionRepository) {
     this.blipEventMapper = blipEventMapper;
     this.blipEventRepository = blipEventRepository;
     this.blipService = blipService;
@@ -53,11 +56,11 @@ public class BlipEventService {
   }
 
   @Transactional
-  public BlipEvent save(BlipEventDto dto, Boolean isInsert) {
+  public BlipEvent save(String username, BlipEventDto dto, Boolean isInsert) {
     if (isInsert != null && isInsert) {
-      return insert(dto);
+      return insert(dto, username);
     }
-    return isolatedSave(dto);
+    return isolatedSave(dto, username);
   }
 
   public BlipEvent prepareRootBlipEvent(User user, Radar radar) {
@@ -96,15 +99,15 @@ public class BlipEventService {
   }
 
   @Transactional
-  public BlipEvent insert(BlipEventDto blipEventDto) {
-    BlipEvent savedBlipEvent = save(blipEventDto, false);
+  public BlipEvent insert(BlipEventDto blipEventDto, String username) {
+    BlipEvent savedBlipEvent = save(username, blipEventDto, false);
     blipEventRepository.updateBrothersToBeChildren(savedBlipEvent);
     return savedBlipEvent;
   }
 
   @Transactional
-  public BlipEvent isolatedSave(BlipEventDto dto) {
-    BlipEvent blipEvent = fillBlipEvent(dto);
+  public BlipEvent isolatedSave(BlipEventDto dto, String username) {
+    BlipEvent blipEvent = fillBlipEvent(dto, username);
     return blipEventRepository.save(blipEvent);
   }
 
@@ -163,19 +166,19 @@ public class BlipEventService {
   @Transactional
   public BlipEvent isolatedUpdate(BlipEventDto dto) {
     Long id = dto.getId();
-    BlipEvent entity = fillBlipEvent(dto);
     BlipEvent found = blipEventRepository.findById(id).orElseThrow(() -> new NotFoundException(BlipEvent.class, id));
+    BlipEvent entity = fillBlipEvent(dto, found.getUser().getUsername());
     return blipEventRepository.update(blipEventMapper.toUpdate(found, entity));
   }
 
-  private BlipEvent fillBlipEvent(BlipEventDto dto) {
+  private BlipEvent fillBlipEvent(BlipEventDto dto, String username) {
     BlipEvent blipEvent = blipEventMapper.toEntity(dto);
     Optional.ofNullable(dto.getParentId()).ifPresent(blipEvent::setParentId);
     blipEvent.setParentId(dto.getParentId());
     blipEvent.setBlip(blipService.findById(dto.getBlipId()));
     Optional.ofNullable(dto.getQuadrantId()).ifPresent(qId -> blipEvent.setQuadrant(quadrantService.findById(qId)));
     Optional.ofNullable(dto.getRingId()).ifPresent(rId -> blipEvent.setRing(ringService.findById(rId)));
-    blipEvent.setUser(userService.findById(dto.getAuthorId()));
+    blipEvent.setUser(userService.findByUsername(username));
     blipEvent.setRadar(radarService.findById(dto.getRadarId()));
     return blipEvent;
   }

@@ -97,7 +97,7 @@ public class ContainerService {
   public Container save(ContainerCreateDto dto, String username) {
     Container container = new Container();
     User user = userService.findByUsername(username);
-    Radar radar = radarService.save(dto.getRadar());
+    Radar radar = radarService.save(dto.getRadar(), username);
 
     container.setRadar(radar);
 
