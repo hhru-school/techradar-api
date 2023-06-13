@@ -6,6 +6,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import java.time.Instant;
 
 @Entity
@@ -13,11 +14,13 @@ import java.time.Instant;
 public class BlipTemplate extends AuditableEntity<String> {
   @Id
   @Column(name = "name", nullable = false)
-  @Pattern(regexp = "^([a-zA-Zа-яёА-ЯЁ0-9]+).*\\S$")
+  @Size(max = 45)
+  @Pattern(regexp = "^\\S+(\\s+\\S+)*$")
   private String name;
 
   @Column(name = "description", nullable = false)
-  @NotNull(message = "Description must be not null!")
+  @Size(max = 500)
+  @NotNull(message = "Description must be not null")
   private String description;
 
   public BlipTemplate(String name, @NotNull String description) {
@@ -49,5 +52,4 @@ public class BlipTemplate extends AuditableEntity<String> {
   public void setDescription(@NotNull String description) {
     this.description = description;
   }
-
 }
