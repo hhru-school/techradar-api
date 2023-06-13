@@ -4,8 +4,8 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import java.time.Instant;
 
 @Entity
@@ -13,19 +13,19 @@ import java.time.Instant;
 public class BlipTemplate extends AuditableEntity<String> {
   @Id
   @Column(name = "name", nullable = false)
-  @NotBlank(message = "Name must contain at least one symbol!")
+  @Pattern(regexp = "^([a-zA-Zа-яёА-ЯЁ]+).*\\S$")
   private String name;
 
   @Column(name = "description", nullable = false)
   @NotNull(message = "Description must be not null!")
   private String description;
 
-  public BlipTemplate(@NotBlank String name, @NotNull String description) {
+  public BlipTemplate(String name, @NotNull String description) {
     this.name = name;
     this.description = description;
   }
 
-  public BlipTemplate(Instant creationTime, Instant lastChangeTime, @NotBlank String name, @NotNull String description) {
+  public BlipTemplate(Instant creationTime, Instant lastChangeTime, String name, @NotNull String description) {
     super(creationTime, lastChangeTime);
     this.name = name;
     this.description = description;
@@ -34,11 +34,11 @@ public class BlipTemplate extends AuditableEntity<String> {
   public BlipTemplate() {
   }
 
-  public @NotBlank String getName() {
+  public String getName() {
     return name;
   }
 
-  public void setName(@NotBlank String name) {
+  public void setName(String name) {
     this.name = name;
   }
 
