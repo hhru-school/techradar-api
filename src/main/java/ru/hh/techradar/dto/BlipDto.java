@@ -12,6 +12,7 @@ public class BlipDto {
   private Long quadrantId;
   private Long ringId;
   private Long radarId;
+  private String drawInfo;
 
   public BlipDto() {
   }
@@ -68,6 +69,14 @@ public class BlipDto {
 
   public void setRadarId(Long radarId) {
     this.radarId = radarId;
+  }
+
+  public String getDrawInfo() {
+    return drawInfo;
+  }
+
+  public void setDrawInfo(String drawInfo) {
+    this.drawInfo = drawInfo;
   }
 
   @Override

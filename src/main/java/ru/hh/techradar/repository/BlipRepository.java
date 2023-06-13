@@ -5,6 +5,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
 import ru.hh.techradar.entity.Blip;
+import ru.hh.techradar.entity.RadarVersion;
 import ru.hh.techradar.filter.BlipFilter;
 import ru.hh.techradar.filter.ComponentFilter;
 
@@ -55,11 +56,62 @@ public class BlipRepository extends BaseRepositoryImpl<Long, Blip> {
                              JOIN r ON (r.parent_id = e.blip_event_id)
                 )
                 SELECT DISTINCT ON (r.blip_id) b.blip_id, b.name, b.description, b.radar_id, b.creation_time,
-                b.last_change_time, r.quadrant_id, r.ring_id FROM r LEFT JOIN blip b ON r.blip_id = b.blip_id
+                b.last_change_time, r.quadrant_id, r.ring_id, draw_info FROM r LEFT JOIN blip b ON r.blip_id = b.blip_id
                 WHERE r.blip_id IS NOT NULL
                 ORDER BY r.blip_id, r.level;"""
             , Blip.class)
         .setParameter("blipEventId", blipEventId)
+        .getResultList();
+  }
+
+  public List<Blip> findActualBlipsByRadarVersionWithDrawInfo(RadarVersion radarVersion) {
+    Session session = sessionFactory.openSession();
+    return session.createNativeQuery("""
+               WITH RECURSIVE r AS (
+                   SELECT be.blip_event_id, be.parent_id, be.blip_id, be.quadrant_id, be.ring_id, 1 AS level,
+                          rv.radar_version_id AS radar_version_id,
+                          rv.name AS radar_version_name,
+                          rv.parent_id AS radar_version_parent_id,
+                          ri.position AS actual_ring_position
+                   FROM blip_event be
+                            LEFT JOIN radar_version rv ON rv.radar_version_id = :radarVersionId
+                            LEFT JOIN ring ri ON be.ring_id = ri.ring_id
+                   WHERE be.blip_event_id = :blipEventId
+                   UNION
+                   SELECT e.blip_event_id, e.parent_id,
+                          e.blip_id, e.quadrant_id, e.ring_id, r.level + 1 AS level,
+                          CASE WHEN rv.radar_version_id IS NULL THEN r.radar_version_id ELSE rv.radar_version_id END AS radar_version_id,
+                          CASE WHEN rv.name IS NULL THEN r.radar_version_name ELSE rv.name END AS radar_version_name,
+                          CASE WHEN rv.parent_id IS NULL THEN r.radar_version_parent_id ELSE rv.parent_id END AS radar_version_parent_id,
+                          ri.position AS actual_ring_position
+                   FROM blip_event e
+                            JOIN r ON r.parent_id = e.blip_event_id
+                            LEFT JOIN radar_version rv ON e.blip_event_id = rv.blip_event_id
+                            LEFT JOIN ring ri ON e.ring_id = ri.ring_id
+               ), cte AS (
+                   SELECT *,
+                          LEAD(r.ring_id) OVER (PARTITION BY r.blip_id ORDER BY r.level) AS prev_ring_id
+                   FROM r
+               )
+               
+               SELECT DISTINCT ON (cte.blip_id)
+                   b.blip_id, b.name, b.description, b.radar_id, b.creation_time, b.last_change_time,
+                   cte.quadrant_id, cte.ring_id,
+                   CASE
+                       WHEN cte.radar_version_id < :radarVersionId OR cte.ring_id = cte.prev_ring_id THEN 'FIXED'
+                       WHEN cte.radar_version_id = :radarVersionId AND cte.prev_ring_id IS NULL THEN 'NEW'
+                       WHEN cte.radar_version_id = :radarVersionId AND ri.position > cte.actual_ring_position THEN 'FORWARD'
+                       ELSE 'BACKWARD'
+                       END AS draw_info
+               FROM cte
+                        LEFT JOIN blip b ON cte.blip_id = b.blip_id
+                        LEFT JOIN ring ri ON cte.prev_ring_id = ri.ring_id
+               WHERE cte.blip_id IS NOT NULL
+               ORDER BY cte.blip_id, cte.level;
+               """
+            , Blip.class)
+        .setParameter("blipEventId", radarVersion.getBlipEvent().getId())
+        .setParameter("radarVersionId", radarVersion.getId())
         .getResultList();
   }
 }

@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.hh.techradar.dto.BlipDto;
 import ru.hh.techradar.entity.Blip;
 import ru.hh.techradar.entity.Radar;
+import ru.hh.techradar.entity.RadarVersion;
 import ru.hh.techradar.exception.NotFoundException;
 import ru.hh.techradar.exception.UniqueException;
 import ru.hh.techradar.filter.BlipFilter;
@@ -101,5 +102,9 @@ public class BlipService {
   @Transactional
   public void deleteById(Long id) {
     blipRepository.deleteById(id);
+  }
+
+  public List<Blip> findActualBlipsByRadarVersionWithDrawInfo(RadarVersion radarVersion) {
+    return blipRepository.findActualBlipsByRadarVersionWithDrawInfo(radarVersion);
   }
 }

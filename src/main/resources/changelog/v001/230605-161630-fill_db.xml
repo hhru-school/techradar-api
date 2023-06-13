@@ -1517,7 +1517,7 @@
             VALUES (1, '_init_', true, 1, 1, NULL, 0, true, now(), now()),
                    (2, 'first', true, 1, 50, 1, 1, true, now(), now()),
                    (3, 'second', true, 1, 76, 2, 2, true, now(), now()),
-                   (4, 'third', true, 1, 77, 3, 3, true, now(), now()),
+                   (4, 'third', true, 1, 78, 3, 3, true, now(), now()),
                    (5, '_init_', true, 2, 79, NULL, 0, true, now(), now()),
                    (6, 'first', true, 2, 156, 5, 1, true, now(), now()),
                    (7, '_init_', true, 3, 157, NULL, 0, true, now(), now()),
