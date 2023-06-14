@@ -53,7 +53,8 @@ public class SecurityConfig {
             "/api/quadrants/**",
             "/api/radars/**",
             "/api/radar-versions/**",
-            "/api/rings/**"
+            "/api/rings/**",
+            "/api/blip-templates/**"
         )
         .permitAll()
         .anyRequest()

@@ -128,7 +128,6 @@
                 <artifactId>liquibase-maven-plugin</artifactId>
                 <version>4.9.1</version>
                 <configuration>
-                    <!--suppress UnresolvedMavenProperty -->
                     <propertyFile>${profile.propertyFile}</propertyFile>
                 </configuration>
                 <executions>
@@ -162,6 +161,7 @@
                     <name>env</name>
                     <value>prod</value>
                 </property>
+                <activeByDefault>true</activeByDefault>
             </activation>
             <properties>
                 <profile.propertyFile>src/main/resources/liquibase.yml</profile.propertyFile>

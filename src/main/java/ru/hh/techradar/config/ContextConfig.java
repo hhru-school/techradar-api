@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import ru.hh.techradar.controller.BlipController;
 import ru.hh.techradar.controller.BlipEventController;
+import ru.hh.techradar.controller.BlipTemplateController;
 import ru.hh.techradar.controller.CSVRadarController;
 import ru.hh.techradar.controller.CompanyController;
 import ru.hh.techradar.controller.ContainerController;
@@ -56,6 +57,7 @@ public class ContextConfig {
     resourceConfig.register(RingController.class);
     resourceConfig.register(UserController.class);
     resourceConfig.register(AuthenticationController.class);
+    resourceConfig.register(BlipTemplateController.class);
     exceptionMapperConfig(resourceConfig);
     converterProviderConfig(resourceConfig);
     return resourceConfig;
