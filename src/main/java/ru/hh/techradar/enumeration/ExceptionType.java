@@ -9,6 +9,6 @@ public enum ExceptionType {
   PARAM,
   UNIQUE,
   UNAUTHORIZED,
-  CSV_FORMAT,
+  FILE,
   OPERATION_NOT_ALLOWED,
 }

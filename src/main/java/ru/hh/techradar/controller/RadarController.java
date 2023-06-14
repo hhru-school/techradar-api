@@ -14,6 +14,7 @@ import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.springframework.stereotype.Controller;
+import static ru.hh.techradar.controller.UtilService.getUsername;
 import ru.hh.techradar.dto.RadarDto;
 import ru.hh.techradar.mapper.RadarMapper;
 import ru.hh.techradar.service.RadarService;
@@ -32,11 +33,9 @@ public class RadarController {
   @POST
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
-  public Response save(RadarDto dto,
-      @CookieParam("username") String username
-  ) {
+  public Response save(RadarDto dto) {
     return Response
-        .ok(radarMapper.toDto(radarService.save(dto, username)))
+        .ok(radarMapper.toDto(radarService.save(dto, getUsername())))
         .status(Response.Status.CREATED)
         .build();
   }

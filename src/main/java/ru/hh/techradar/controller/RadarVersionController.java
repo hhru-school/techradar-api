@@ -16,8 +16,6 @@ import org.springframework.stereotype.Controller;
 import ru.hh.techradar.dto.RadarVersionDto;
 import ru.hh.techradar.mapper.RadarVersionMapper;
 import ru.hh.techradar.mapper.RadarVersionRecursiveMapper;
-import ru.hh.techradar.service.BlipEventService;
-import ru.hh.techradar.service.RadarService;
 import ru.hh.techradar.service.RadarVersionService;
 
 @Controller
@@ -28,9 +26,9 @@ public class RadarVersionController {
   private final RadarVersionRecursiveMapper radarVersionRecursiveMapper;
 
   public RadarVersionController(
-      RadarVersionService radarVersionService, RadarVersionMapper radarVersionMapper,
-      RadarService radarService,
-      BlipEventService blipEventService, RadarVersionRecursiveMapper radarVersionRecursiveMapper) {
+      RadarVersionService radarVersionService,
+      RadarVersionMapper radarVersionMapper,
+      RadarVersionRecursiveMapper radarVersionRecursiveMapper) {
     this.radarVersionService = radarVersionService;
     this.radarVersionMapper = radarVersionMapper;
     this.radarVersionRecursiveMapper = radarVersionRecursiveMapper;

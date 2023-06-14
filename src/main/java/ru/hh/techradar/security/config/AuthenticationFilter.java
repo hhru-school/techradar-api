@@ -55,7 +55,6 @@ public class AuthenticationFilter extends OncePerRequestFilter {
     try {
       String token = authHeader.substring(TOKEN_TYPE_LENGTH);
       String username = tokenService.extractUsername(token);
-      response.addCookie(new Cookie("username", username));
       if (Objects.nonNull(username) && Objects.isNull(SecurityContextHolder.getContext().getAuthentication())) {
         User user = userService
             .findByUsername(username);

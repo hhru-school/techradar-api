@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.hh.techradar.dto.RadarVersionDto;
 import ru.hh.techradar.entity.BlipEvent;
+import ru.hh.techradar.entity.Container;
 import ru.hh.techradar.entity.Radar;
 import ru.hh.techradar.entity.RadarVersion;
 import ru.hh.techradar.exception.EntityExistsException;
@@ -42,25 +43,38 @@ public class RadarVersionService {
   }
 
   @Transactional
+  public RadarVersion saveReleaseVersion(Container container, String versionName) {
+    RadarVersion radarVersion = new RadarVersion();
+    radarVersion.setRelease(true);
+    radarVersion.setRadar(container.getRadar());
+    radarVersion.setName(versionName);
+    radarVersion.setBlipEvent(container.getBlipEvent());
+    radarVersion.setParent(container.getRadarVersion());
+    radarVersion.setLevel(container.getRadarVersion().getLevel() + 1);
+    radarVersion.setToggleAvailable(true);
+    return radarVersionRepository.save(radarVersion);
+  }
+
+  @Transactional
   public RadarVersion save(RadarVersionDto dto, Boolean toLastRelease) {
     RadarVersion radarVersion = radarVersionMapper.toEntity(dto);
     Optional.ofNullable(dto.getBlipEventId()).ifPresent(beId -> radarVersion.setBlipEvent(blipEventService.findById(beId)));
     radarVersion.setRadar(radarService.findById(dto.getRadarId()));
-    if(radarVersionRepository.findByNameAndRadarId(radarVersion.getName(), radarVersion.getRadar().getId()).isPresent()) {
+    if (radarVersionRepository.findByNameAndRadarId(radarVersion.getName(), radarVersion.getRadar().getId()).isPresent()) {
       throw new EntityExistsException(RadarVersion.class, radarVersion.getName());
     }
     RadarVersion lastRadarVersion = findLastReleasedRadarVersion(radarVersion.getRadar().getId());
     BlipEvent blipEvent = radarVersion.getBlipEvent();
     if (toLastRelease != null && toLastRelease) {
       blipEvent = lastRadarVersion.getBlipEvent();
-    } else if(radarVersion.getRelease() != null && radarVersion.getRelease()) {
+    } else if (radarVersion.getRelease() != null && radarVersion.getRelease()) {
       throw new OperationNotAllowedException(CREATION_OF_RELEASED_VERSION_IS_NOT_ALLOWED);
     }
     return saveNextRadarVersion(radarVersion, blipEvent);
   }
 
   @Transactional
-  public void saveRootRadarVersion(Radar radar, BlipEvent rootBlipEvent) {
+  public RadarVersion saveRootRadarVersion(Radar radar, BlipEvent rootBlipEvent) {
     RadarVersion rootRadarVersion = new RadarVersion(
         null,
         null,
@@ -73,7 +87,7 @@ public class RadarVersionService {
         0,
         true
     );
-    radarVersionRepository.save(rootRadarVersion);
+    return radarVersionRepository.save(rootRadarVersion);
   }
 
   @Transactional
@@ -100,7 +114,9 @@ public class RadarVersionService {
 
   @Transactional(readOnly = true)
   public RadarVersion findRoot(Long radarId) {
-    return radarVersionRepository.findRoot(radarId).orElseThrow(() -> new NotFoundException(RadarVersion.class, radarId));//TODO: change to correct error (now it's radarId instead of real id)
+    return radarVersionRepository.findRoot(radarId).orElseThrow(() -> new NotFoundException(
+        RadarVersion.class,
+        radarId));//TODO: change to correct error (now it's radarId instead of real id)
   }
 
   @Transactional(readOnly = true)
@@ -110,7 +126,7 @@ public class RadarVersionService {
 
   @Transactional(readOnly = true)
   public Collection<RadarVersion> findByRadarId(Long radarId) {
-        return radarVersionRepository.findAllByRadarId(radarId);
+    return radarVersionRepository.findAllByRadarId(radarId);
   }
 
   @Transactional(readOnly = true)
@@ -135,10 +151,10 @@ public class RadarVersionService {
   }
 
   private void updateValidating(RadarVersionDto dto, RadarVersion target) {
-    if(target.getLevel() == 0) {
+    if (target.getLevel() == 0) {
       throw new OperationNotAllowedException(MODIFICATION_OF_ROOT_VERSION_IS_FORBIDDEN);
     }
-    if(dto.getName() != null && !target.getName().equals(dto.getName()) &&
+    if (dto.getName() != null && !target.getName().equals(dto.getName()) &&
         radarVersionRepository.findByNameAndRadarId(dto.getName(), target.getRadar().getId()).isPresent()) {
       throw new EntityExistsException(RadarVersion.class, dto.getName());
     }
@@ -146,8 +162,8 @@ public class RadarVersionService {
 
   private void updateReleaseAndToggle(RadarVersionDto dto, RadarVersion target) {
     Optional.ofNullable(dto.getRelease()).ifPresent(isRelease -> {
-      if(!isRelease.equals(target.getRelease())) {
-        if(!target.getToggleAvailable()) {
+      if (!isRelease.equals(target.getRelease())) {
+        if (!target.getToggleAvailable()) {
           throw new OperationNotAllowedException(RELEASE_STATUS_TOGGLE_IS_FORBIDDEN);
         }
         radarVersionRepository.setToggleAvailabilityOfRelatives(target.getParent().getId(), !isRelease);
@@ -163,7 +179,7 @@ public class RadarVersionService {
     Optional.ofNullable(dto.getBlipEventId())
         .ifPresent(beId -> {
           BlipEvent blipEventToSet = blipEventService.findById(beId);
-          if(!target.getBlipEvent().equals(blipEventToSet)) {
+          if (!target.getBlipEvent().equals(blipEventToSet)) {
             radarVersionRepository.setBlipEventToChildrenWhereBlipEventEqualsToParents(target, blipEventToSet);
             target.setBlipEvent(blipEventToSet);
           }
@@ -172,10 +188,10 @@ public class RadarVersionService {
 
   @Transactional
   public void deleteById(Long id) {
-    if(findById(id).getLevel().equals(0)) {
+    if (findById(id).getLevel().equals(0)) {
       throw new OperationNotAllowedException(ROOT_VERSION_REMOVE_IS_FORBIDDEN);
     }
-    if(!radarVersionRepository.findChildren(id).isEmpty()) {
+    if (!radarVersionRepository.findChildren(id).isEmpty()) {
       throw new OperationNotAllowedException(RADAR_VERSION_WITH_CHILDREN_REMOVAL_IS_FORBIDDEN);
     }
     radarVersionRepository.deleteById(id);

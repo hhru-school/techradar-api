@@ -101,7 +101,7 @@ public class ContainerService {
 
     container.setRadar(radar);
 
-    List<Ring> rings = ringService.save(container.getRadar().getId(),ringMapper.toEntities(dto.getRings()));
+    List<Ring> rings = ringService.save(container.getRadar().getId(), ringMapper.toEntities(dto.getRings()));
     container.setRings(rings);
     Map<String, Ring> nameToRing = getNameToRing(rings);
 
@@ -114,7 +114,8 @@ public class ContainerService {
 
     List<BlipEvent> blipEvents = prepareBlipEvents(dto, user, nameToQuadrant, nameToRing, blips, radar);
     blipEvents = blipEventService.fillParentsAndSave(blipEvents);
-    radarVersionService.saveRootRadarVersion(radar, blipEvents.get(0));
+    RadarVersion radarVersion = radarVersionService.saveRootRadarVersion(radar, blipEvents.get(0));
+    container.setRadarVersion(radarVersion);
     BlipEvent lastBlipEvent = blipEvents.get(blipEvents.size() - 1);
     container.setBlipEvent(lastBlipEvent);
     return container;
