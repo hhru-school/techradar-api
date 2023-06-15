@@ -18,6 +18,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.dhatim.fastexcel.reader.ReadableWorkbook;
 import org.dhatim.fastexcel.reader.Row;
 import org.dhatim.fastexcel.reader.Sheet;
@@ -112,39 +113,55 @@ public class RadarFileService {
     for (var map : sheetNameToRadarFiles.entrySet()) {
       if (!map.getValue().isEmpty()) {
         if (Objects.isNull(container)) {
+          container = saveContainer(filename, username, companyId, map);
+          nameToQuadrant = container.getQuadrants().stream().collect(Collectors.toMap(Quadrant::getName, Function.identity()));
+          nameToRing = container.getRings().stream().collect(Collectors.toMap(Ring::getName, Function.identity()));
           blipNameToRadarFile = map.getValue().stream()
               .filter(r -> Objects.nonNull(r.getBlipName()) && !r.getRingName().isEmpty())
               .collect(Collectors.toMap(RadarItem::getBlipName, Function.identity()));
-          ContainerCreateDto containerDto = createContainer(filename, username, map.getValue(), companyId);
-          container = containerService.save(containerDto, username);
-          RadarVersion radarVersion = radarVersionService.saveReleaseVersion(container, map.getKey());
-          container.setRadarVersion(radarVersion);
-          nameToQuadrant = container.getQuadrants().stream().collect(Collectors.toMap(Quadrant::getName, Function.identity()));
-          nameToRing = container.getRings().stream().collect(Collectors.toMap(Ring::getName, Function.identity()));
         } else {
-          for (RadarItem tempRadar : map.getValue()) {
-            if (blipNameToRadarFile.containsKey(tempRadar.getBlipName())) {
-              RadarItem saved = blipNameToRadarFile.get(tempRadar.getBlipName());
-              if (!saved.getQuadrantName().equals(tempRadar.getQuadrantName()) || !saved.getRingName().equals(tempRadar.getRingName())) {
-                BlipEvent blipEvent = blipEventService.save(username, toBlipEventUpdateDto(tempRadar, container, nameToQuadrant, nameToRing), false);
-                container.setBlipEvent(blipEvent);
-              }
-            } else {
-              if (nameToQuadrant.containsKey(tempRadar.getQuadrantName()) && nameToRing.containsKey(tempRadar.getRingName())) {
-                Blip blip = blipService.save(toBlipDto(tempRadar, container));
-                BlipEvent blipEvent = blipEventService.save(username, toBlipEventDto(tempRadar, container, blip), false);
-                container.getBlips().add(blip);
-                container.setBlipEvent(blipEvent);
-                blipNameToRadarFile.put(tempRadar.getBlipName(), tempRadar);
-              }
-            }
-          }
-          RadarVersion radarVersion = radarVersionService.saveReleaseVersion(container, map.getKey());
-          container.setRadarVersion(radarVersion);
+          createAndSaveRadarVersion(username, container, blipNameToRadarFile, nameToQuadrant, nameToRing, map);
         }
       }
     }
     return Map.of("radarId", container.getRadar().getId());
+  }
+
+  private Container saveContainer(String filename, String username, Long companyId, Map.Entry<String, List<RadarItem>> map) {
+    Container container;
+    ContainerCreateDto containerDto = createContainer(filename, username, map.getValue(), companyId);
+    container = containerService.save(containerDto, username);
+    RadarVersion radarVersion = radarVersionService.saveReleaseVersion(container, map.getKey());
+    container.setRadarVersion(radarVersion);
+    return container;
+  }
+
+  private void createAndSaveRadarVersion(
+      String username,
+      Container container,
+      Map<String, RadarItem> blipNameToRadarFile,
+      Map<String, Quadrant> nameToQuadrant,
+      Map<String, Ring> nameToRing,
+      Map.Entry<String, List<RadarItem>> map) {
+    for (RadarItem tempRadar : map.getValue()) {
+      if (blipNameToRadarFile.containsKey(tempRadar.getBlipName())) {
+        RadarItem saved = blipNameToRadarFile.get(tempRadar.getBlipName());
+        if (!saved.getQuadrantName().equals(tempRadar.getQuadrantName()) || !saved.getRingName().equals(tempRadar.getRingName())) {
+          BlipEvent blipEvent = blipEventService.save(username, toBlipEventUpdateDto(tempRadar, container, nameToQuadrant, nameToRing), false);
+          container.setBlipEvent(blipEvent);
+        }
+      } else {
+        if (nameToQuadrant.containsKey(tempRadar.getQuadrantName()) && nameToRing.containsKey(tempRadar.getRingName())) {
+          Blip blip = blipService.save(toBlipDto(tempRadar, container));
+          BlipEvent blipEvent = blipEventService.save(username, toBlipEventDto(tempRadar, container, blip), false);
+          container.getBlips().add(blip);
+          container.setBlipEvent(blipEvent);
+          blipNameToRadarFile.put(tempRadar.getBlipName(), tempRadar);
+        }
+      }
+    }
+    RadarVersion radarVersion = radarVersionService.saveReleaseVersion(container, map.getKey());
+    container.setRadarVersion(radarVersion);
   }
 
   private List<RadarItem> parseCSV(InputStream inputStream) {
@@ -177,8 +194,8 @@ public class RadarFileService {
   }
 
   private List<RadarItem> toRadarFiles(Sheet sheet) {
-    try {
-      return sheet.openStream()
+    try (Stream<Row> rows = sheet.openStream()) {
+      return rows
           .skip(1)
           .filter(r -> Objects.nonNull(r.getCellText(0)) && !r.getCellText(0).isEmpty())
           .map(this::toRadarFile)
@@ -341,10 +358,10 @@ public class RadarFileService {
     for (RadarItem radarItem : radarsFile) {
       if (isNotEmptyBlipName(radarItem)) {
         if (Objects.isNull(radarItem.getQuadrantName()) || radarItem.getQuadrantName().isEmpty()) {
-          message.append(String.format("For technology %s not specified %s name!\n", radarItem.getBlipName(), "sector"));
+          message.append(String.format("\nFor technology %s not specified %s name!", radarItem.getBlipName(), "sector"));
         }
         if (Objects.isNull(radarItem.getRingName()) || radarItem.getRingName().isEmpty()) {
-          message.append(String.format("For technology %s not specified %s name!\n", radarItem.getBlipName(), "ring"));
+          message.append(String.format("\nFor technology %s not specified %s name!", radarItem.getBlipName(), "ring"));
         }
       }
     }
