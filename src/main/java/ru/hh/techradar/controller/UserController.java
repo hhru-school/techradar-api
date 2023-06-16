@@ -3,6 +3,7 @@ package ru.hh.techradar.controller;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.BeanParam;
 import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.CookieParam;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
@@ -45,14 +46,14 @@ public class UserController {
   }
 
   @POST
-  @Path("/{user-id}/companies/{company-id}")
+  @Path("/{username}/companies/{company-id}")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
-  public Response joinUserAndCompany(
-      @PathParam("user-id") Long userId,
+  public Response joinUserByUsernameAndCompany(
+      @PathParam("username") String username,
       @PathParam("company-id") Long companyId
   ) {
-    userService.joinUserAndCompany(userId, companyId);
+    userService.joinUserAndCompany(username, companyId);
     return Response
         .status(Response.Status.CREATED)
         .build();
@@ -84,6 +85,15 @@ public class UserController {
         .build();
   }
 
+  @GET
+  @Path("/companies")
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response findAllCompaniesByCookiesUserId(@CookieParam("username") String username) {
+    return Response
+        .ok(companyMapper.toDtos(userService.findAllCompaniesByUsername(username)))
+        .build();
+  }
+
   @PUT
   @Path("/{id}")
   @Consumes(MediaType.APPLICATION_JSON)
@@ -104,12 +114,12 @@ public class UserController {
   }
 
   @DELETE
-  @Path("/{user-id}/companies/{company-id}")
+  @Path("/{username}/companies/{company-id}")
   public Response disjointUserAndCompany(
-      @PathParam("user-id") Long userId,
+      @PathParam("username") String userName,
       @PathParam("company-id") Long companyId
   ) {
-    userService.disjointUserAndCompany(userId, companyId);
+    userService.disjointUserAndCompany(userName, companyId);
     return Response
         .status(Response.Status.NO_CONTENT)
         .build();
