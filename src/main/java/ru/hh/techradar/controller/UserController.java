@@ -3,7 +3,6 @@ package ru.hh.techradar.controller;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.BeanParam;
 import jakarta.ws.rs.Consumes;
-import jakarta.ws.rs.CookieParam;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
@@ -13,6 +12,7 @@ import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import static ru.hh.techradar.controller.UtilService.getUsername;
 import ru.hh.techradar.dto.UserDto;
 import ru.hh.techradar.filter.UserFilter;
 import ru.hh.techradar.mapper.CompanyMapper;
@@ -88,9 +88,9 @@ public class UserController {
   @GET
   @Path("/companies")
   @Produces(MediaType.APPLICATION_JSON)
-  public Response findAllCompaniesByCookiesUserId(@CookieParam("username") String username) {
+  public Response findAllCompaniesByCookiesUserId() {
     return Response
-        .ok(companyMapper.toDtos(userService.findAllCompaniesByUsername(username)))
+        .ok(companyMapper.toDtos(userService.findAllCompaniesByUsername(getUsername())))
         .build();
   }
 
