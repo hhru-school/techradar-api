@@ -1,7 +1,6 @@
 package ru.hh.techradar.controller;
 
 import jakarta.ws.rs.Consumes;
-import jakarta.ws.rs.CookieParam;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
@@ -13,6 +12,7 @@ import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.springframework.stereotype.Controller;
+import static ru.hh.techradar.controller.UtilService.getUsername;
 import ru.hh.techradar.dto.BlipEventDto;
 import ru.hh.techradar.mapper.BlipEventMapper;
 import ru.hh.techradar.mapper.BlipEventReadMapper;
@@ -35,11 +35,9 @@ public class BlipEventController {
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   public Response save(
-      @CookieParam("username") String username,
       @QueryParam("radar-version-id") Long radarVersionId,
-      BlipEventDto dto
-  ) {
-    return Response.ok(blipEventMapper.toDto(blipEventService.saveForVersion(username, dto, radarVersionId)))
+      BlipEventDto dto) {
+    return Response.ok(blipEventMapper.toDto(blipEventService.saveForVersion(getUsername(), dto, radarVersionId)))
         .status(Response.Status.CREATED)
         .build();
   }

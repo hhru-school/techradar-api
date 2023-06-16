@@ -1,9 +1,10 @@
 package ru.hh.techradar.model;
 
 import com.opencsv.bean.CsvBindByName;
+import java.util.Objects;
 import java.util.StringJoiner;
 
-public class RadarCSV {
+public class RadarItem {
 
   @CsvBindByName(column = "name")
   private String blipName;
@@ -18,7 +19,7 @@ public class RadarCSV {
   @CsvBindByName(column = "description")
   private String description;
 
-  public RadarCSV() {
+  public RadarItem() {
   }
 
   public String getBlipName() {
@@ -70,8 +71,30 @@ public class RadarCSV {
   }
 
   @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    RadarItem radarItem = (RadarItem) o;
+    return Objects.equals(blipName, radarItem.blipName)
+        && Objects.equals(ringName, radarItem.ringName)
+        && Objects.equals(quadrantName, radarItem.quadrantName)
+        && Objects.equals(ringPosition, radarItem.ringPosition)
+        && Objects.equals(quadrantPosition, radarItem.quadrantPosition)
+        && Objects.equals(description, radarItem.description);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(blipName, ringName, quadrantName, ringPosition, quadrantPosition, description);
+  }
+
+  @Override
   public String toString() {
-    return new StringJoiner(", ", RadarCSV.class.getSimpleName() + "[", "]")
+    return new StringJoiner(", ", RadarItem.class.getSimpleName() + "[", "]")
         .add("blipName='" + blipName + "'")
         .add("ringName='" + ringName + "'")
         .add("quadrantName='" + quadrantName + "'")

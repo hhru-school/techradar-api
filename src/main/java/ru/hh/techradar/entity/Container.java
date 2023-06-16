@@ -9,16 +9,24 @@ public class Container {
   private List<Quadrant> quadrants;
   private List<Ring> rings;
   private List<Blip> blips;
+  private RadarVersion radarVersion;
 
   public Container() {
   }
 
-  public Container(BlipEvent blipEvent, Radar radar, List<Quadrant> quadrants, List<Ring> rings, List<Blip> blips) {
+  public Container(
+      BlipEvent blipEvent,
+      Radar radar,
+      List<Quadrant> quadrants,
+      List<Ring> rings,
+      List<Blip> blips,
+      RadarVersion radarVersion) {
     this.blipEvent = blipEvent;
     this.radar = radar;
     this.quadrants = quadrants;
     this.rings = rings;
     this.blips = blips;
+    this.radarVersion = radarVersion;
   }
 
   public BlipEvent getBlipEvent() {
@@ -61,6 +69,14 @@ public class Container {
     this.blips = blips;
   }
 
+  public RadarVersion getRadarVersion() {
+    return radarVersion;
+  }
+
+  public void setRadarVersion(RadarVersion radarVersion) {
+    this.radarVersion = radarVersion;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -69,10 +85,11 @@ public class Container {
     if (!(o instanceof Container container)) {
       return false;
     }
-    return Objects.equals(blipEvent, container.blipEvent) && radar.equals(container.radar) && Objects.equals(
-        quadrants,
-        container.quadrants
-    ) && Objects.equals(rings, container.rings) && Objects.equals(blips, container.blips);
+    return Objects.equals(blipEvent, container.blipEvent)
+        && radar.equals(container.radar)
+        && Objects.equals(quadrants, container.quadrants)
+        && Objects.equals(rings, container.rings)
+        && Objects.equals(blips, container.blips);
   }
 
   @Override

@@ -1,7 +1,6 @@
 package ru.hh.techradar.controller;
 
 import jakarta.ws.rs.Consumes;
-import jakarta.ws.rs.CookieParam;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
@@ -12,6 +11,7 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.springframework.stereotype.Controller;
+import static ru.hh.techradar.controller.UtilService.getUsername;
 import ru.hh.techradar.dto.CompanyDto;
 import ru.hh.techradar.entity.Company;
 import ru.hh.techradar.mapper.CompanyMapper;
@@ -42,10 +42,9 @@ public class CompanyController {
   @POST
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
-  public Response saveAndJoinUser(CompanyDto companyDto,
-      @CookieParam("username") String username) {
+  public Response saveAndJoinUser(CompanyDto companyDto) {
     Company company = companyService.save(companyMapper.toEntity(companyDto));//TODO: return here after role understanding
-    userService.joinUserAndCompany(username, company.getId());
+    userService.joinUserAndCompany(getUsername(), company.getId());
     return Response
         .ok(companyMapper.toDto(company))
         .status(Response.Status.CREATED)
