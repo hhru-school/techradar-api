@@ -37,7 +37,7 @@ public class BlipEventController {
   public Response save(
       @QueryParam("radar-version-id") Long radarVersionId,
       BlipEventDto dto) {
-    return Response.ok(blipEventMapper.toDto(blipEventService.save(getUsername(), dto, radarVersionId)))
+    return Response.ok(blipEventMapper.toDto(blipEventService.saveForVersion(getUsername(), dto, radarVersionId)))
         .status(Response.Status.CREATED)
         .build();
   }
