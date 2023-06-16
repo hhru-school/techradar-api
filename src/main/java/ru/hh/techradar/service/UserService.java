@@ -70,15 +70,15 @@ public class UserService {
   }
 
   @Transactional
-  public void joinUserAndCompany(Long userId, Long companyId) {
-    User user = findById(userId);
+  public void joinUserAndCompany(String username, Long companyId) {
+    User user = findByUsername(username);
     Company company = companyService.findById(companyId);
     user.addCompany(company);
   }
 
   @Transactional
-  public void disjointUserAndCompany(Long userId, Long companyId) {
-    User user = findById(userId);
+  public void disjointUserAndCompany(String username, Long companyId) {
+    User user = findByUsername(username);
     Company company = companyService.findById(companyId);
     user.removeCompany(company);
   }
@@ -88,5 +88,11 @@ public class UserService {
     User user = findById(userId);
     Hibernate.initialize(user.getCompanies());
     return user.getCompanies();
+  }
+
+  @Transactional(readOnly = true)
+  public Collection<Company> findAllCompaniesByUsername(String username) {
+    User user = findByUsername(username);
+    return findAllCompaniesByUserId(user.getId());
   }
 }

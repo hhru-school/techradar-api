@@ -20,7 +20,7 @@ public class RadarVersionRepository extends BaseRepositoryImpl<Long, RadarVersio
 
   public Collection<RadarVersion> findAllByRadarId(Long radarId) {
     Session session = sessionFactory.openSession();
-    return session.createQuery("SELECT rv FROM RadarVersion rv WHERE rv.radar.id = :radarId", RadarVersion.class)
+    return session.createQuery("SELECT rv FROM RadarVersion rv WHERE rv.radar.id = :radarId AND rv.parent IS NOT NULL", RadarVersion.class)
         .setParameter("radarId", radarId)
         .getResultList();
   }
@@ -140,8 +140,17 @@ public class RadarVersionRepository extends BaseRepositoryImpl<Long, RadarVersio
 
   public Collection<RadarVersion> findAllReleasedRadarVersions(Long radarId) {
     Session session = sessionFactory.openSession();
-    return session.createQuery("SELECT rv FROM RadarVersion rv WHERE rv.radar.id = :radarId AND rv.release = true", RadarVersion.class)
+    return session.createQuery("SELECT rv FROM RadarVersion rv WHERE rv.radar.id = :radarId AND rv.release = true AND rv.parent IS NOT NULL", RadarVersion.class)
         .setParameter("radarId", radarId)
         .getResultList();
+  }
+
+  public Optional<RadarVersion> getParentRadarVersion(RadarVersion radarVersion) {
+    Session session = sessionFactory.openSession();
+    return session.createQuery("""
+            SELECT rv FROM RadarVersion rv WHERE rv.id = :parentId
+            """, RadarVersion.class)
+        .setParameter("parentId", radarVersion.getParent().getId())
+        .uniqueResultOptional();
   }
 }
