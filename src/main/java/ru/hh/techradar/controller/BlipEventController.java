@@ -36,10 +36,10 @@ public class BlipEventController {
   @Produces(MediaType.APPLICATION_JSON)
   public Response save(
       @CookieParam("username") String username,
-      @QueryParam("is-insert") Boolean isInsert,
+      @QueryParam("radar-version-id") Long radarVersionId,
       BlipEventDto dto
   ) {
-    return Response.ok(blipEventMapper.toDto(blipEventService.save(username, dto, isInsert)))
+    return Response.ok(blipEventMapper.toDto(blipEventService.saveForVersion(username, dto, radarVersionId)))
         .status(Response.Status.CREATED)
         .build();
   }
