@@ -5,7 +5,7 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
     <changeSet id="230611-121124" author="calculateIt">
-        <preConditions onFail="WARN">
+        <preConditions onFail="MARK_RAN">
             <rowCount expectedRows="0" tableName="blip_template"/>
         </preConditions>
         <sql>
