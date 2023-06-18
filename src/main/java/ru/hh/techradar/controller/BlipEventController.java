@@ -11,6 +11,7 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import static ru.hh.techradar.controller.UtilService.getUsername;
 import ru.hh.techradar.dto.BlipEventDto;
@@ -31,6 +32,7 @@ public class BlipEventController {
     this.blipEventReadMapper = blipEventReadMapper;
   }
 
+  @PreAuthorize("hasAnyAuthority('ADMIN', 'MEMBER')")
   @POST
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
@@ -68,6 +70,7 @@ public class BlipEventController {
         .build();
   }
 
+  @PreAuthorize("hasAnyAuthority('ADMIN', 'MEMBER')")
   @PUT
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
@@ -82,6 +85,7 @@ public class BlipEventController {
         .build();
   }
 
+  @PreAuthorize("hasAnyAuthority('ADMIN', 'MEMBER')")
   @DELETE
   @Path("/{id}")
   public Response deleteById(@PathParam("id") Long id) {

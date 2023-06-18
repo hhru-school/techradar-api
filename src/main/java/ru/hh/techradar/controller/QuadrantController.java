@@ -1,6 +1,5 @@
 package ru.hh.techradar.controller;
 
-import jakarta.inject.Inject;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.BeanParam;
 import jakarta.ws.rs.Consumes;
@@ -11,17 +10,19 @@ import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.stereotype.Controller;
 import ru.hh.techradar.dto.QuadrantDto;
 import ru.hh.techradar.filter.ComponentFilter;
 import ru.hh.techradar.mapper.QuadrantMapper;
 import ru.hh.techradar.service.QuadrantService;
 
+@Controller
 @Path("/api/quadrants")
 public class QuadrantController {
   private final QuadrantService quadrantService;
   private final QuadrantMapper quadrantMapper;
 
-  @Inject
   public QuadrantController(
       QuadrantService quadrantService,
       QuadrantMapper quadrantMapper) {
@@ -46,6 +47,7 @@ public class QuadrantController {
         .build();
   }
 
+  @PreAuthorize("hasAnyAuthority('ADMIN', 'MEMBER')")
   @PUT
   @Path("/{id}")
   @Consumes(MediaType.APPLICATION_JSON)

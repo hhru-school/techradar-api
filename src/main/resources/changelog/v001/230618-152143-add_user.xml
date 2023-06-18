@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="230611-121124" author="nedomets">
+        <preConditions onFail="MARK_RAN">
+            <rowCount expectedRows="2" tableName="tr_user"/>
+        </preConditions>
+        <sql>
+            INSERT INTO tr_user (username, password, creation_time, last_change_time, role)
+            VALUES ('member@hh.ru', '$2a$10$buXPe7kc5Ffk.5mXjzv.D.km/naLTyOYhkTPsrgtaA720onbeXBs.', now(), now(), 'MEMBER');
+        </sql>
+        <sql>
+            INSERT INTO user_company (user_id, company_id)
+            VALUES ((SELECT user_id FROM tr_user tu WHERE tu.username = 'member@hh.ru'),
+                    (SELECT company_id FROM company c WHERE c.name = 'HeadHunter')),
+                   ((SELECT user_id FROM tr_user tu WHERE tu.username = 'admin@hh.ru'),
+                    (SELECT company_id FROM company c WHERE c.name = 'HeadHunter'));
+        </sql>
+    </changeSet>
+</databaseChangeLog>

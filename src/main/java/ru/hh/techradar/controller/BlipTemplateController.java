@@ -11,6 +11,7 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import ru.hh.techradar.dto.BlipTemplateDto;
 import ru.hh.techradar.mapper.BlipTemplateMapper;
@@ -45,6 +46,7 @@ public class BlipTemplateController {
     ).build();
   }
 
+  @PreAuthorize("hasAnyAuthority('ADMIN', 'MEMBER')")
   @PUT
   @Path("/{name}")
   @Consumes(MediaType.APPLICATION_JSON)
@@ -57,6 +59,7 @@ public class BlipTemplateController {
     ).build();
   }
 
+  @PreAuthorize("hasAnyAuthority('ADMIN', 'MEMBER')")
   @POST
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
@@ -68,6 +71,7 @@ public class BlipTemplateController {
     ).build();
   }
 
+  @PreAuthorize("hasAnyAuthority('ADMIN', 'MEMBER')")
   @DELETE
   @Path("/{name}")
   public Response remove(@PathParam("name") String name) {

@@ -1,6 +1,5 @@
 package ru.hh.techradar.controller;
 
-import jakarta.inject.Inject;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.BeanParam;
 import jakarta.ws.rs.Consumes;
@@ -11,17 +10,19 @@ import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.stereotype.Controller;
 import ru.hh.techradar.dto.RingDto;
 import ru.hh.techradar.filter.ComponentFilter;
 import ru.hh.techradar.mapper.RingMapper;
 import ru.hh.techradar.service.RingService;
 
+@Controller
 @Path("/api/rings")
 public class RingController {
   private final RingService ringService;
   private final RingMapper ringMapper;
 
-  @Inject
   public RingController(RingService ringService, RingMapper ringMapper) {
     this.ringService = ringService;
     this.ringMapper = ringMapper;
@@ -46,6 +47,7 @@ public class RingController {
         .build();
   }
 
+  @PreAuthorize("hasAnyAuthority('ADMIN', 'MEMBER')")
   @PUT
   @Path("/{id}")
   @Consumes(MediaType.APPLICATION_JSON)

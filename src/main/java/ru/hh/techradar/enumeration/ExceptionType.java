@@ -11,4 +11,5 @@ public enum ExceptionType {
   UNAUTHORIZED,
   FILE,
   OPERATION_NOT_ALLOWED,
+  ACCESS_DENIED,
 }
