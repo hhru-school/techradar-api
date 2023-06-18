@@ -14,12 +14,12 @@ services:
   techradar-api:
     container_name: techradar-api
     image: techradarapi/techradar-api:${TAG:-B-latest}
-#    build:
-#      context: .
-#      dockerfile_inline: |
-#        FROM openjdk:${OPENJDK_VERSION:-20}
-#        COPY target/*.jar app.jar
-#        ENTRYPOINT ["java","-jar","app.jar"]
+    build:
+      context: .
+      dockerfile_inline: |
+        FROM openjdk:${OPENJDK_VERSION:-20}
+        COPY target/*.jar app.jar
+        ENTRYPOINT ["java","-jar","app.jar"]
     ports:
       - "8080:8080"
     depends_on:
