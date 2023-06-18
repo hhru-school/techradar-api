@@ -42,7 +42,7 @@
                                                      'Alamofire 4', 'LESS', 'JUnit 4', 'Kotlin synthetic properties', 'Spark', 'myTarget', 'jOOQ',
                                                      'АБ-тесты', 'Hibernate', 'ClickHouse', 'Kubernetes', 'XML', 'MBProgressHUD', 'Starscream',
                                                      'Flink', 'Docker', 'Cicerone', 'react-loadable', 'Okmeter', 'Memcached', 'OkHttp', 'VK',
-                                                     'Elasticsearch', 'Mantis', 'Navigation Component', 'Flexbox', 'ZipArchive', 'CI Bamboo)',
+                                                     'Elasticsearch', 'Mantis', 'Navigation Component', 'Flexbox', 'ZipArchive', 'CI (Bamboo)',
                                                      'Combine', 'Firebase App Distribution', 'Gulp', 'Carthage', 'Performance API', 'ScribeJava',
                                                      'GDPerformanceView', 'Jest', 'Java', 'prop-types', 'SideMenu', 'Unit testing', 'Python',
                                                      'DifferenceKit', 'Logstash', 'HMS', 'ServiceWorker', 'html-react-parser', 'Graphana',
@@ -54,11 +54,10 @@
                                                      'Autoprefixer', 'Fugen', 'Python 2', 'bash', 'XCLogParser', 'WebIm', 'D3', 'Terser',
                                                      'SpringData', 'PanModal', 'MinIO', 'Android Lint', 'TestContainers', 'Material Components',
                                                      'PhoneNumberKit', 'PostgreSQL', 'RxBinding', 'MVVM', 'Single Activity', 'FileAPI', 'skaffold',
-                                                     'pip', 'lint-staged', 'date-fns', 'JUnit 5', 'unittest python)', 'fastlane', 'venv', 'Airflow',
+                                                     'pip', 'lint-staged', 'date-fns', 'JUnit 5', 'unittest (python)', 'fastlane', 'venv', 'Airflow',
                                                      'Google Auth', 'Java 17', 'Axios', 'PNG', 'Growth Hacking', 'RabbitMQ', 'FigmaGen', 'graphql',
                                                      'nodemon', 'aiohttp', 'Filebeat', 'Bootstrap', 'myTracker', 'UserX', 'statsd', 'REST',
-                                                     'RxKotlin', 'SQLite', 'Sourcery', 'Multidex', 'Xcode Interface Builder', 'unittest (python)',
-                                                     'CI (Bamboo)');
+                                                     'RxKotlin', 'SQLite', 'Sourcery', 'Multidex', 'Xcode Interface Builder');
             INSERT INTO blip_template (name, description, creation_time, last_change_time)
               VALUES ('Javascript', 'Java (не путать с javascript) — строго типизированный объектно-ориентированный язык программирования. Приложения java обычно транслируются в специальный байт-код, поэтому они могут работать на любой компьютерной архитектуре, с помощью виртуальной java-машины (jvm). ', now(), now()),
                      ('Python', 'Python — высокоуровневый язык с динамической типизацией, ориентированный на создание легко читаемого кода. Имеет две основные версии — 2 и 3.X] или [python-3.X]. ', now(), now()),
