@@ -11,10 +11,12 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -110,6 +112,7 @@ public class RadarFileService {
     Map<String, RadarItem> blipNameToRadarFile = null;
     Map<String, Quadrant> nameToQuadrant = null;
     Map<String, Ring> nameToRing = null;
+    Set<String> prevBlipNames = null;
     for (var map : sheetNameToRadarFiles.entrySet()) {
       if (!map.getValue().isEmpty()) {
         if (Objects.isNull(container)) {
@@ -117,14 +120,22 @@ public class RadarFileService {
           nameToQuadrant = container.getQuadrants().stream().collect(Collectors.toMap(Quadrant::getName, Function.identity()));
           nameToRing = container.getRings().stream().collect(Collectors.toMap(Ring::getName, Function.identity()));
           blipNameToRadarFile = map.getValue().stream()
-              .filter(r -> Objects.nonNull(r.getBlipName()) && !r.getRingName().isEmpty())
+              .filter(this::isNotEmptyBlipName)
               .collect(Collectors.toMap(RadarItem::getBlipName, Function.identity()));
+          prevBlipNames = getBlipNames(map.getValue());
         } else {
-          createAndSaveRadarVersion(username, container, blipNameToRadarFile, nameToQuadrant, nameToRing, map);
+          createAndSaveRadarVersion(username, container, blipNameToRadarFile, nameToQuadrant, nameToRing, map, prevBlipNames);
+          prevBlipNames = getBlipNames(map.getValue());
         }
       }
     }
     return Map.of("radarId", container.getRadar().getId());
+  }
+
+  private Set<String> getBlipNames(List<RadarItem> radarItems) {
+    return radarItems.stream()
+        .filter(this::isNotEmptyBlipName)
+        .map(RadarItem::getBlipName).collect(Collectors.toCollection(HashSet::new));
   }
 
   private Container saveContainer(String filename, String username, Long companyId, Map.Entry<String, List<RadarItem>> map) {
@@ -142,7 +153,8 @@ public class RadarFileService {
       Map<String, RadarItem> blipNameToRadarFile,
       Map<String, Quadrant> nameToQuadrant,
       Map<String, Ring> nameToRing,
-      Map.Entry<String, List<RadarItem>> map) {
+      Map.Entry<String, List<RadarItem>> map,
+      Set<String> prevBlipNames) {
     for (RadarItem tempRadar : map.getValue()) {
       if (blipNameToRadarFile.containsKey(tempRadar.getBlipName())) {
         RadarItem saved = blipNameToRadarFile.get(tempRadar.getBlipName());
@@ -160,8 +172,21 @@ public class RadarFileService {
         }
       }
     }
+    Set<String> currentBlipNames = getBlipNames(map.getValue());
+    removeDiffBlips(username, currentBlipNames, prevBlipNames, container);
     RadarVersion radarVersion = radarVersionService.saveReleaseVersion(container, map.getKey());
     container.setRadarVersion(radarVersion);
+  }
+
+  private void removeDiffBlips(String username, Set<String> currentBlipNames, Set<String> prevBlipNames, Container container) {
+    prevBlipNames.removeAll(currentBlipNames);
+    for (String blipName : prevBlipNames) {
+      Optional<Blip> blipOptional = container.getBlips().stream().filter(b -> b.getName().equals(blipName)).findFirst();
+      if (blipOptional.isPresent()) {
+        BlipEvent blipEvent = blipEventService.save(username, toBlipEventDeleteDto(container, blipOptional.get()), false);
+        container.setBlipEvent(blipEvent);
+      }
+    }
   }
 
   private List<RadarItem> parseCSV(InputStream inputStream) {
@@ -184,7 +209,7 @@ public class RadarFileService {
           .collect(
               Collectors.toMap(
                   Sheet::getName,
-                  this::toRadarFiles,
+                  this::toRadarItems,
                   (rf1, rf2) -> rf1,
                   LinkedHashMap::new)
           );
@@ -193,12 +218,12 @@ public class RadarFileService {
     }
   }
 
-  private List<RadarItem> toRadarFiles(Sheet sheet) {
+  private List<RadarItem> toRadarItems(Sheet sheet) {
     try (Stream<Row> rows = sheet.openStream()) {
       return rows
           .skip(1)
           .filter(r -> Objects.nonNull(r.getCellText(0)) && !r.getCellText(0).isEmpty())
-          .map(this::toRadarFile)
+          .map(this::toRadarItem)
           .collect(Collectors.toMap(
               RadarItem::getBlipName,
               Function.identity(),
@@ -210,7 +235,7 @@ public class RadarFileService {
     }
   }
 
-  private RadarItem toRadarFile(Row row) {
+  private RadarItem toRadarItem(Row row) {
     RadarItem radarItem = new RadarItem();
     radarItem.setBlipName(row.getCellText(0).trim());
     radarItem.setRingName(row.getCellText(1).trim());
@@ -302,6 +327,15 @@ public class RadarFileService {
       blipEventDto.setRingId(nameToRing.get(radarItem.getRingName()).getId());
       blipEventDto.setQuadrantId(nameToQuadrant.get(radarItem.getQuadrantName()).getId());
     }
+    return blipEventDto;
+  }
+
+  private BlipEventDto toBlipEventDeleteDto(Container container, Blip blip) {
+    BlipEventDto blipEventDto = new BlipEventDto();
+    blipEventDto.setAuthorId(container.getRadar().getAuthor().getId());
+    blipEventDto.setRadarId(container.getRadar().getId());
+    blipEventDto.setParentId(container.getBlipEvent().getId());
+    blipEventDto.setBlipId(blip.getId());
     return blipEventDto;
   }
 
