@@ -17,7 +17,7 @@ public class BlipDto {
   public BlipDto() {
   }
 
-  public BlipDto(Long id, String name, String description, BlipEventDto blipEventDto) {
+  public BlipDto(Long id, String name, String description) {
     this.id = id;
     this.name = name;
     this.description = description;

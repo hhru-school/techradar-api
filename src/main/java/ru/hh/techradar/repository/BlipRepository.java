@@ -74,8 +74,13 @@ public class BlipRepository extends BaseRepositoryImpl<Long, Blip> {
                           rv.parent_id AS radar_version_parent_id,
                           ri.position AS actual_ring_position
                    FROM blip_event be
-                            LEFT JOIN radar_version rv ON rv.radar_version_id = :radarVersionId
+                            LEFT JOIN radar_version rv ON rv.radar_version_id = (SELECT radar_version_id
+                                                                                 FROM radar_version
+                                                                                 WHERE blip_event_id = :blipEventId
+                                                                                 ORDER BY radar_version_id
+                                                                                 LIMIT 1)
                             LEFT JOIN ring ri ON be.ring_id = ri.ring_id
+                            LEFT JOIN quadrant q ON be.quadrant_id = q.quadrant_id
                    WHERE be.blip_event_id = :blipEventId
                    UNION
                    SELECT e.blip_event_id, e.parent_id,
@@ -88,9 +93,11 @@ public class BlipRepository extends BaseRepositoryImpl<Long, Blip> {
                             JOIN r ON r.parent_id = e.blip_event_id
                             LEFT JOIN radar_version rv ON e.blip_event_id = rv.blip_event_id
                             LEFT JOIN ring ri ON e.ring_id = ri.ring_id
+                            LEFT JOIN quadrant q ON e.quadrant_id = q.quadrant_id
                ), cte AS (
                    SELECT *,
-                          LEAD(r.ring_id) OVER (PARTITION BY r.blip_id ORDER BY r.level) AS prev_ring_id
+                          LEAD(r.ring_id) OVER (PARTITION BY r.blip_id ORDER BY r.level) AS prev_ring_id,
+                          LEAD(r.quadrant_id) OVER (PARTITION BY r.blip_id ORDER BY r.level) AS prev_quadrant_id
                    FROM r
                )
                
@@ -98,6 +105,7 @@ public class BlipRepository extends BaseRepositoryImpl<Long, Blip> {
                    b.blip_id, b.name, b.description, b.radar_id, b.creation_time, b.last_change_time,
                    cte.quadrant_id, cte.ring_id,
                    CASE
+                       WHEN cte.radar_version_id = :radarVersionId AND cte.quadrant_id != cte.prev_quadrant_id THEN 'SEC_MOVE'
                        WHEN cte.radar_version_id < :radarVersionId OR cte.ring_id = cte.prev_ring_id THEN 'FIXED'
                        WHEN cte.radar_version_id = :radarVersionId AND cte.prev_ring_id IS NULL THEN 'NEW'
                        WHEN cte.radar_version_id = :radarVersionId AND ri.position > cte.actual_ring_position THEN 'FORWARD'
