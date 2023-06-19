@@ -11,6 +11,7 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import ru.hh.techradar.dto.BlipDto;
 import ru.hh.techradar.mapper.BlipMapper;
@@ -27,6 +28,7 @@ public class BlipController {
     this.blipService = blipService;
   }
 
+  @PreAuthorize("hasAnyAuthority('ADMIN', 'MEMBER')")
   @POST
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
@@ -64,6 +66,7 @@ public class BlipController {
   // by blipEventId (with coordinates) and
   // by radarVersionId (with coordinates)
 
+  @PreAuthorize("hasAnyAuthority('ADMIN', 'MEMBER')")
   @PUT
   @Path("/{id}")
   @Consumes(MediaType.APPLICATION_JSON)
@@ -75,6 +78,7 @@ public class BlipController {
   }
 
   //TODO: looks like it should be cascade delete (DB level) for linked blip events. Should think of it.
+  @PreAuthorize("hasAnyAuthority('ADMIN', 'MEMBER')")
   @DELETE
   @Path("/{id}")
   public Response deleteById(@PathParam("id") Long id) {

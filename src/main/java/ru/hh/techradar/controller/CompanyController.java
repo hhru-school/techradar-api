@@ -10,6 +10,7 @@ import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import static ru.hh.techradar.controller.UtilService.getUsername;
 import ru.hh.techradar.dto.CompanyDto;
@@ -39,6 +40,7 @@ public class CompanyController {
     this.userMapper = userMapper;
   }
 
+  @PreAuthorize("hasAnyAuthority('ADMIN', 'MEMBER')")
   @POST
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
@@ -77,6 +79,7 @@ public class CompanyController {
         .build();
   }
 
+  @PreAuthorize("hasAnyAuthority('ADMIN', 'MEMBER')")
   @PUT
   @Path("/{id}")
   @Consumes(MediaType.APPLICATION_JSON)
@@ -87,6 +90,7 @@ public class CompanyController {
         .build();
   }
 
+  @PreAuthorize("hasAnyAuthority('ADMIN', 'MEMBER')")
   @DELETE
   @Path("/{id}")
   public Response deleteById(@PathParam("id") Long id) {

@@ -19,6 +19,7 @@ import ru.hh.techradar.controller.RadarFileController;
 import ru.hh.techradar.controller.RadarVersionController;
 import ru.hh.techradar.controller.RingController;
 import ru.hh.techradar.controller.UserController;
+import ru.hh.techradar.exception.AccessDeniedExceptionMapper;
 import ru.hh.techradar.exception.BadCredentialsExceptionMapper;
 import ru.hh.techradar.exception.BaseExceptionMapper;
 import ru.hh.techradar.exception.ConstraintViolationExceptionMapper;
@@ -67,6 +68,7 @@ public class ContextConfig {
     resourceConfig.register(NotFoundExceptionMapper.class);
     resourceConfig.register(BadCredentialsExceptionMapper.class);
     resourceConfig.register(BaseExceptionMapper.class);
+    resourceConfig.register(AccessDeniedExceptionMapper.class);
     resourceConfig.register(ParamExceptionMapper.class);
     resourceConfig.register(ConstraintViolationExceptionMapper.class);
     resourceConfig.register(FileExceptionMapper.class);

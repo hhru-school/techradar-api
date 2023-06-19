@@ -1,6 +1,5 @@
 package ru.hh.techradar.controller;
 
-import jakarta.inject.Inject;
 import jakarta.ws.rs.BeanParam;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
@@ -12,6 +11,8 @@ import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.stereotype.Controller;
 import static ru.hh.techradar.controller.UtilService.getUsername;
 import ru.hh.techradar.dto.UserDto;
 import ru.hh.techradar.filter.UserFilter;
@@ -19,6 +20,7 @@ import ru.hh.techradar.mapper.CompanyMapper;
 import ru.hh.techradar.mapper.UserMapper;
 import ru.hh.techradar.service.UserService;
 
+@Controller
 @Path("/api/users")
 public class UserController {
 
@@ -26,7 +28,6 @@ public class UserController {
   private final UserMapper userMapper;
   private final CompanyMapper companyMapper;
 
-  @Inject
   public UserController(
       UserService userService,
       UserMapper userMapper, CompanyMapper companyMapper) {
@@ -35,6 +36,7 @@ public class UserController {
     this.companyMapper = companyMapper;
   }
 
+  @PreAuthorize("hasAnyAuthority('ADMIN', 'MEMBER')")
   @POST
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
@@ -45,6 +47,7 @@ public class UserController {
         .build();
   }
 
+  @PreAuthorize("hasAnyAuthority('ADMIN', 'MEMBER')")
   @POST
   @Path("/{username}/companies/{company-id}")
   @Consumes(MediaType.APPLICATION_JSON)
@@ -94,6 +97,7 @@ public class UserController {
         .build();
   }
 
+  @PreAuthorize("hasAnyAuthority('ADMIN', 'MEMBER')")
   @PUT
   @Path("/{id}")
   @Consumes(MediaType.APPLICATION_JSON)
@@ -104,6 +108,7 @@ public class UserController {
         .build();
   }
 
+  @PreAuthorize("hasAnyAuthority('ADMIN', 'MEMBER')")
   @DELETE
   @Path("/{id}")
   public Response deleteById(@PathParam("id") Long id) {
@@ -113,6 +118,7 @@ public class UserController {
         .build();
   }
 
+  @PreAuthorize("hasAnyAuthority('ADMIN', 'MEMBER')")
   @DELETE
   @Path("/{username}/companies/{company-id}")
   public Response disjointUserAndCompany(
