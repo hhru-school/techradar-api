@@ -116,10 +116,10 @@ public class UserController {
   @DELETE
   @Path("/{username}/companies/{company-id}")
   public Response disjointUserAndCompany(
-      @PathParam("username") String userName,
+      @PathParam("username") String username,
       @PathParam("company-id") Long companyId
   ) {
-    userService.disjointUserAndCompany(userName, companyId);
+    userService.disjointUserAndCompany(username, companyId);
     return Response
         .status(Response.Status.NO_CONTENT)
         .build();
