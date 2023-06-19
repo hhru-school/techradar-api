@@ -39,6 +39,12 @@ public class BlipEvent extends AuditableEntity<Long> {
   @JoinColumn(name = "radar_id", nullable = false)
   private Radar radar;
 
+  @Column(name = "draw_info")
+  private String drawInfo;
+
+  @Column(name = "radar_version")
+  private String radarVersion;
+
   public BlipEvent() {
   }
 
@@ -126,6 +132,22 @@ public class BlipEvent extends AuditableEntity<Long> {
 
   public void setRadar(Radar radar) {
     this.radar = radar;
+  }
+
+  public String getDrawInfo() {
+    return drawInfo;
+  }
+
+  public void setDrawInfo(String drawInfo) {
+    this.drawInfo = drawInfo;
+  }
+
+  public String getRadarVersion() {
+    return radarVersion;
+  }
+
+  public void setRadarVersion(String radarVersion) {
+    this.radarVersion = radarVersion;
   }
 
   @Override
