@@ -18,6 +18,16 @@ public class RadarVersionRepository extends BaseRepositoryImpl<Long, RadarVersio
     this.sessionFactory = sessionFactory;
   }
 
+  @Override
+  public Optional<RadarVersion> findById(Long id) {
+    Session session = sessionFactory.openSession();
+    return session.createQuery("""
+            SELECT rv FROM RadarVersion rv LEFT JOIN FETCH rv.parent WHERE rv.id = :id
+            """, RadarVersion.class)
+        .setParameter("id", id)
+        .uniqueResultOptional();
+  }
+
   public Collection<RadarVersion> findAllByRadarId(Long radarId) {
     Session session = sessionFactory.openSession();
     return session.createQuery("SELECT rv FROM RadarVersion rv WHERE rv.radar.id = :radarId AND rv.parent IS NOT NULL", RadarVersion.class)

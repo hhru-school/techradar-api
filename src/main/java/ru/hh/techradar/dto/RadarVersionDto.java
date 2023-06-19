@@ -12,6 +12,7 @@ public class RadarVersionDto {
   private Long radarId;
   private Long blipEventId;
   private Long parentId;
+  private String parentName;
   private Integer level;
   private Boolean toggleAvailable;
   private Instant creationTime;
@@ -21,7 +22,7 @@ public class RadarVersionDto {
   }
 
   public RadarVersionDto(Long id, String name, Boolean release, Long radarId, Long blipEventId,
-      Long parentId, Integer level,
+      Long parentId, String parentName, Integer level,
       Boolean toggleAvailable, Instant creationTime, Instant lastChangeTime) {
     this.id = id;
     this.name = name;
@@ -29,6 +30,7 @@ public class RadarVersionDto {
     this.radarId = radarId;
     this.blipEventId = blipEventId;
     this.parentId = parentId;
+    this.parentName = parentName;
     this.level = level;
     this.toggleAvailable = toggleAvailable;
     this.creationTime = creationTime;
@@ -81,6 +83,14 @@ public class RadarVersionDto {
 
   public void setParentId(Long parentId) {
     this.parentId = parentId;
+  }
+
+  public String getParentName() {
+    return parentName;
+  }
+
+  public void setParentName(String parentName) {
+    this.parentName = parentName;
   }
 
   public Integer getLevel() {
