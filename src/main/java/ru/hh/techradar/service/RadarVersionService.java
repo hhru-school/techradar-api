@@ -3,7 +3,6 @@ package ru.hh.techradar.service;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import org.hibernate.Hibernate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.hh.techradar.dto.RadarVersionDto;
@@ -148,9 +147,7 @@ public class RadarVersionService {
     updateReleaseAndToggle(dto, target);
     Optional.ofNullable(dto.getName()).ifPresent(target::setName);
     updateBlipEvent(dto, target);
-    RadarVersion updatedRadarVersion = radarVersionRepository.update(target);
-    Hibernate.initialize(updatedRadarVersion.getParent());
-    return updatedRadarVersion;
+    return radarVersionRepository.update(target);
   }
 
   private void updateValidating(RadarVersionDto dto, RadarVersion target) {

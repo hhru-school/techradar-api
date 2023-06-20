@@ -58,6 +58,6 @@ public class CompanyService implements BaseService<Long, Company> {
 
   @Transactional(readOnly = true)
   public List<User> findUsersByCompanyId(Long companyId) {
-    return companyRepository.findUsersByCompany(companyId);
+    return companyRepository.findUsersByCompanyId(companyId);
   }
 }

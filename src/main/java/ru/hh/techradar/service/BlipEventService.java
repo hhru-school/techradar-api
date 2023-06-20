@@ -200,6 +200,7 @@ public class BlipEventService {
   }
 
   private void fillBlipEventForUpdate(BlipEvent target, BlipEventDto dto) {
+    Optional.ofNullable(dto.getComment()).ifPresent(target::setComment);
     Optional.ofNullable(dto.getParentId()).ifPresent(target::setParentId);
     Optional.ofNullable(dto.getBlipId()).ifPresent(bId -> target.setBlip(blipService.findById(bId)));
     Optional.ofNullable(dto.getQuadrantId()).ifPresent(qId -> target.setQuadrant(qId.map(quadrantService::findById).orElse(null)));

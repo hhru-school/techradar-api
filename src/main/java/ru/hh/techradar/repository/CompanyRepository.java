@@ -16,7 +16,7 @@ public class CompanyRepository extends BaseRepositoryImpl<Long, Company> {
     this.sessionFactory = sessionFactory;
   }
 
-  public List<User> findUsersByCompany(Long companyId) {
+  public List<User> findUsersByCompanyId(Long companyId) {
     return sessionFactory.getCurrentSession()
         .createQuery("""
             SELECT c.users FROM Company c WHERE c.id = :companyId

@@ -19,7 +19,7 @@ public class BlipRepository extends BaseRepositoryImpl<Long, Blip> {
   }
 
   public Blip findByFilter(BlipFilter filter) {
-    Session session = sessionFactory.openSession();
+    Session session = sessionFactory.getCurrentSession();
       return session.createQuery("SELECT b FROM Blip b " +
               "LEFT JOIN FETCH b.blipEvents s " +
               "WHERE b.id = :blipId AND s.creationTime <= :actualDate " +
@@ -30,7 +30,7 @@ public class BlipRepository extends BaseRepositoryImpl<Long, Blip> {
   }
 
   public List<Blip> findActualBlipsByFilter(ComponentFilter filter) {
-    Session session = sessionFactory.openSession();
+    Session session = sessionFactory.getCurrentSession();
       return session.createQuery("SELECT b FROM Blip b " +
                   "LEFT JOIN FETCH b.blipEvents be " +
                   "WHERE b.radar.id = :radarId AND be.creationTime IN (SELECT MAX(c.creationTime) FROM BlipEvent c " +
@@ -43,7 +43,7 @@ public class BlipRepository extends BaseRepositoryImpl<Long, Blip> {
   }
 
   public List<Blip> findActualBlipsByBlipEventId(Long blipEventId) {
-    Session session = sessionFactory.openSession();
+    Session session = sessionFactory.getCurrentSession();
       return session.createNativeQuery("""
                   WITH RECURSIVE r AS (
                       SELECT blip_event_id, parent_id, blip_id, quadrant_id, ring_id, 1 AS level
@@ -65,8 +65,8 @@ public class BlipRepository extends BaseRepositoryImpl<Long, Blip> {
   }
 
   public List<Blip> findActualBlipsByRadarVersionWithDrawInfo(RadarVersion radarVersion) {
-    Session session = sessionFactory.openSession();
-    return session.createNativeQuery("""
+    try (Session session = sessionFactory.openSession()) {
+      return session.createNativeQuery("""
                   WITH RECURSIVE r AS (
                       SELECT be.blip_event_id, be.parent_id, be.blip_id, be.quadrant_id, be.ring_id, 1 AS level,
                              rv.radar_version_id AS radar_version_id,
@@ -121,5 +121,6 @@ public class BlipRepository extends BaseRepositoryImpl<Long, Blip> {
           .setParameter("blipEventId", radarVersion.getBlipEvent().getId())
           .setParameter("radarVersionId", radarVersion.getId())
           .getResultList();
+    }
   }
 }

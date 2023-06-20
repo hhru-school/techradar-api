@@ -34,7 +34,7 @@ public class RadarVersion extends AuditableEntity<Long> {
   @ManyToOne
   @JoinColumn(name = "blip_event_id", nullable = false)
   private BlipEvent blipEvent;
-  @ManyToOne(fetch = FetchType.EAGER)
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "parent_id")
   private RadarVersion parent;
   @Column(name = "level")
