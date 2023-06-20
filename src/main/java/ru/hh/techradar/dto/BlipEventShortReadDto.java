@@ -1,32 +1,28 @@
 package ru.hh.techradar.dto;
-
-import com.fasterxml.jackson.annotation.JsonInclude;
 import java.time.Instant;
 import java.util.Objects;
-import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
-public class BlipEventDto {
+public class BlipEventShortReadDto {
   private Long id;
   private String comment;
   private Long parentId;
   private Long blipId;
-  private Optional<Long> quadrantId;
-  private Optional<Long> ringId;
+  private Long quadrantId;
+  private Long ringId;
   private Long authorId;
   private Long radarId;
   private Instant creationTime;
   private Instant lastChangeTime;
 
-  public BlipEventDto() {
+  public BlipEventShortReadDto() {
   }
 
-  public BlipEventDto(
+  public BlipEventShortReadDto(
       Long id,
       String comment,
       Long parentId, Long blipId,
-      Optional<Long> quadrantId,
-      Optional<Long> ringId,
+      Long quadrantId,
+      Long ringId,
       Long authorId,
       Long radarId,
       Instant creationTime,
@@ -68,20 +64,20 @@ public class BlipEventDto {
     this.blipId = blipId;
   }
 
-  public Optional<Long> getQuadrantId() {
+  public Long getQuadrantId() {
     return quadrantId;
   }
 
   public void setQuadrantId(Long quadrantId) {
-    this.quadrantId = Optional.ofNullable(quadrantId);
+    this.quadrantId = quadrantId;
   }
 
-  public Optional<Long> getRingId() {
+  public Long getRingId() {
     return ringId;
   }
 
   public void setRingId(Long ringId) {
-    this.ringId = Optional.ofNullable(ringId);
+    this.ringId = ringId;
   }
 
   public Long getAuthorId() {
@@ -129,19 +125,16 @@ public class BlipEventDto {
     if (this == o) {
       return true;
     }
-    if (!(o instanceof BlipEventDto that)) {
+    if (!(o instanceof BlipEventShortReadDto that)) {
       return false;
     }
-    return Objects.equals(id, that.id) && Objects.equals(comment, that.comment) && Objects.equals(
-        parentId,
-        that.parentId
-    ) && Objects.equals(blipId, that.blipId) && Objects.equals(quadrantId, that.quadrantId) && Objects.equals(
+    return Objects.equals(comment, that.comment) && Objects.equals(parentId, that.parentId) && Objects.equals(
+        blipId,
+        that.blipId
+    ) && Objects.equals(quadrantId, that.quadrantId) && Objects.equals(
         ringId,
         that.ringId
-    ) && authorId.equals(that.authorId) && radarId.equals(that.radarId) && Objects.equals(
-        creationTime,
-        that.creationTime
-    ) && Objects.equals(lastChangeTime, that.lastChangeTime);
+    ) && authorId.equals(that.authorId) && radarId.equals(that.radarId);
   }
 
   @Override

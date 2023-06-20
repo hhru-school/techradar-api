@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.hh.techradar.entity.Company;
+import ru.hh.techradar.entity.User;
 import ru.hh.techradar.exception.NotFoundException;
 import ru.hh.techradar.mapper.CompanyMapper;
 import ru.hh.techradar.repository.CompanyRepository;
@@ -53,5 +54,10 @@ public class CompanyService implements BaseService<Long, Company> {
   @Transactional(readOnly = true)
   public List<Company> findAll() {
     return companyRepository.findAll();
+  }
+
+  @Transactional(readOnly = true)
+  public List<User> findUsersByCompanyId(Long companyId) {
+    return companyRepository.findUsersByCompanyId(companyId);
   }
 }

@@ -30,7 +30,7 @@ public class UserService {
 
   @Transactional(readOnly = true)
   public Collection<User> findAllByFilter(UserFilter filter) {
-    return companyService.findById(filter.getCompanyId()).getUsers();
+    return companyService.findUsersByCompanyId(filter.getCompanyId());
   }
 
   @Transactional(readOnly = true)

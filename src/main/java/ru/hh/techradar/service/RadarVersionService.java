@@ -147,7 +147,7 @@ public class RadarVersionService {
     updateReleaseAndToggle(dto, target);
     Optional.ofNullable(dto.getName()).ifPresent(target::setName);
     updateBlipEvent(dto, target);
-    return target;
+    return radarVersionRepository.update(target);
   }
 
   private void updateValidating(RadarVersionDto dto, RadarVersion target) {
@@ -197,6 +197,7 @@ public class RadarVersionService {
     radarVersionRepository.deleteById(id);
   }
 
+  @Transactional(readOnly = true)
   public Collection<RadarVersion> findAllReleasedRadarVersions(Long radarId) {
     return radarVersionRepository.findAllReleasedRadarVersions(radarId);
   }

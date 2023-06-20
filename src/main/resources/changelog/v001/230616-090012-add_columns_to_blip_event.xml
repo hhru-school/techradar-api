@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="230616-090012" author="parfenovds">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <tableExists tableName="blip_event"/>
+                <not>
+                    <columnExists tableName="blip_event" columnName="draw_info"/>
+                </not>
+                <not>
+                    <columnExists tableName="blip_event" columnName="radar_version"/>
+                </not>
+            </and>
+        </preConditions>
+        <addColumn tableName="blip_event">
+            <column name="draw_info"
+                    type="varchar(255)">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+        <addColumn tableName="blip_event">
+            <column name="radar_version"
+                    type="varchar(255)">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+</databaseChangeLog>

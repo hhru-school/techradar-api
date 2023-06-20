@@ -17,6 +17,7 @@ import static ru.hh.techradar.controller.UtilService.getUsername;
 import ru.hh.techradar.dto.BlipEventDto;
 import ru.hh.techradar.mapper.BlipEventMapper;
 import ru.hh.techradar.mapper.BlipEventReadMapper;
+import ru.hh.techradar.mapper.BlipEventShortReadMapper;
 import ru.hh.techradar.service.BlipEventService;
 
 @Controller
@@ -25,11 +26,16 @@ public class BlipEventController {
   private final BlipEventMapper blipEventMapper;
   private final BlipEventService blipEventService;
   private final BlipEventReadMapper blipEventReadMapper;
+  private final BlipEventShortReadMapper blipEventShortReadMapper;
 
-  public BlipEventController(BlipEventMapper blipEventMapper, BlipEventService blipEventService, BlipEventReadMapper blipEventReadMapper) {
+  public BlipEventController(BlipEventMapper blipEventMapper,
+      BlipEventService blipEventService,
+      BlipEventReadMapper blipEventReadMapper,
+      BlipEventShortReadMapper blipEventShortReadMapper) {
     this.blipEventMapper = blipEventMapper;
     this.blipEventService = blipEventService;
     this.blipEventReadMapper = blipEventReadMapper;
+    this.blipEventShortReadMapper = blipEventShortReadMapper;
   }
 
   @PreAuthorize("hasAnyAuthority('ADMIN', 'MEMBER')")
@@ -65,8 +71,8 @@ public class BlipEventController {
   @GET
   @Produces(MediaType.APPLICATION_JSON)
   @Path("/radar-log")
-  public Response findAllBlipsByBlipEventId(@QueryParam("blip-event-id") Long blipEventId) {
-    return Response.ok(blipEventReadMapper.toDtos(blipEventService.findAllBlipsByBlipEventId(blipEventId)))
+  public Response findAllBlipsByRadarVersion(@QueryParam("radar-version-id") Long radarVersionId) {
+    return Response.ok(blipEventReadMapper.toDtos(blipEventService.findAllBlipsByRadarVersionId(radarVersionId)))
         .build();
   }
 
@@ -81,7 +87,7 @@ public class BlipEventController {
       BlipEventDto dto
   ) {
     dto.setId(blipEventId);
-    return Response.ok(blipEventMapper.toDto(blipEventService.update(dto, isMove)))
+    return Response.ok(blipEventShortReadMapper.toDto(blipEventService.update(dto, isMove)))
         .build();
   }
 

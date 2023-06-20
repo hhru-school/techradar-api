@@ -34,6 +34,8 @@ public class BlipEventReadMapper extends AbstractMapper<BlipEvent, BlipEventRead
     Optional.ofNullable(entity.getQuadrant()).ifPresent(q -> blipEventReadDto.setQuadrant(quadrantMapper.toDto(q)));
     Optional.ofNullable(entity.getRing()).ifPresent(r -> blipEventReadDto.setRing(ringMapper.toDto(r)));
     blipEventReadDto.setAuthor(userMapper.toDto(entity.getUser()));
+    blipEventReadDto.setDrawInfo(entity.getDrawInfo());
+    Optional.ofNullable(entity.getRadarVersion()).ifPresent(blipEventReadDto::setRadarVersion);
     blipEventReadDto.setCreationTime(entity.getCreationTime());
     blipEventReadDto.setLastChangeTime(entity.getLastChangeTime());
     return blipEventReadDto;

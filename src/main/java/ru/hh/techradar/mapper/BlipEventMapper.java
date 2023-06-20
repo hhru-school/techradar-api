@@ -7,7 +7,6 @@ import ru.hh.techradar.entity.BlipEvent;
 
 @Component
 public class BlipEventMapper extends AbstractMapper<BlipEvent, BlipEventDto> {
-
   @Override
   public BlipEvent toEntity(BlipEventDto dto) {
     BlipEvent blipEvent = new BlipEvent();
@@ -26,19 +25,9 @@ public class BlipEventMapper extends AbstractMapper<BlipEvent, BlipEventDto> {
     Optional.ofNullable(entity.getQuadrant()).ifPresent(q -> blipEventDto.setQuadrantId(entity.getQuadrant().getId()));
     Optional.ofNullable(entity.getRing()).ifPresent(r -> blipEventDto.setRingId(entity.getRing().getId()));
     blipEventDto.setAuthorId(entity.getUser().getId());
+    blipEventDto.setRadarId(entity.getRadar().getId());
     blipEventDto.setCreationTime(entity.getCreationTime());
     blipEventDto.setLastChangeTime(entity.getLastChangeTime());
     return blipEventDto;
-  }
-
-  public BlipEvent toUpdate(BlipEvent target, BlipEvent source) {
-    Optional.ofNullable(source.getComment()).ifPresent(target::setComment);
-    Optional.ofNullable(source.getParentId()).ifPresent(target::setParentId);
-    Optional.ofNullable(source.getBlip()).ifPresent(target::setBlip);
-    Optional.ofNullable(source.getQuadrant()).ifPresent(target::setQuadrant);
-    Optional.ofNullable(source.getRing()).ifPresent(target::setRing);
-    Optional.ofNullable(source.getUser()).ifPresent(target::setUser);
-    Optional.ofNullable(source.getRadar()).ifPresent(target::setRadar);
-    return target;
   }
 }

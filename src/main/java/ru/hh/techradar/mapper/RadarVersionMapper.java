@@ -27,6 +27,7 @@ public class RadarVersionMapper extends AbstractMapper<RadarVersion, RadarVersio
     radarVersionDto.setBlipEventId(entity.getBlipEvent().getId());
     radarVersionDto.setLevel(entity.getLevel());
     Optional.ofNullable(entity.getParent()).ifPresent(p -> radarVersionDto.setParentId(p.getId()));
+    Optional.ofNullable(entity.getParent()).ifPresent(p -> radarVersionDto.setParentName(p.getName()));
     radarVersionDto.setToggleAvailable(entity.getToggleAvailable());
     radarVersionDto.setCreationTime(entity.getCreationTime());
     radarVersionDto.setLastChangeTime(entity.getLastChangeTime());

@@ -75,7 +75,7 @@ public class CompanyController {
   @Produces(MediaType.APPLICATION_JSON)
   public Response findUsersById(@PathParam("id") Long id) {
     return Response
-        .ok(userMapper.toDtos(companyService.findById(id).getUsers()))
+        .ok(userMapper.toDtos(companyService.findUsersByCompanyId(id)))
         .build();
   }
 
