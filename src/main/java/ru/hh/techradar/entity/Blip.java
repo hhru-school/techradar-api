@@ -2,6 +2,8 @@ package ru.hh.techradar.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -13,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.StringJoiner;
+import ru.hh.techradar.enumeration.DrawInfoType;
 
 @Entity
 @Table(name = "blip")
@@ -34,8 +37,9 @@ public class Blip extends AuditableEntity<Long> {
   private Long quadrantId;
   @Column(name = "ring_id")
   private Long ringId;
+  @Enumerated(EnumType.STRING)
   @Column(name = "draw_info")
-  private String drawInfo;
+  private DrawInfoType drawInfo;
 
   public Blip() {
   }
@@ -92,11 +96,11 @@ public class Blip extends AuditableEntity<Long> {
     return blipEvents;
   }
 
-  public String getDrawInfo() {
+  public DrawInfoType getDrawInfo() {
     return drawInfo;
   }
 
-  public void setDrawInfo(String drawInfo) {
+  public void setDrawInfo(DrawInfoType drawInfo) {
     this.drawInfo = drawInfo;
   }
 

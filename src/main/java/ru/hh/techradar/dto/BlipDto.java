@@ -3,6 +3,7 @@ package ru.hh.techradar.dto;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import java.util.Objects;
 import java.util.StringJoiner;
+import ru.hh.techradar.enumeration.DrawInfoType;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class BlipDto {
@@ -12,7 +13,7 @@ public class BlipDto {
   private Long quadrantId;
   private Long ringId;
   private Long radarId;
-  private String drawInfo;
+  private DrawInfoType drawInfo;
 
   public BlipDto() {
   }
@@ -71,11 +72,11 @@ public class BlipDto {
     this.radarId = radarId;
   }
 
-  public String getDrawInfo() {
+  public DrawInfoType getDrawInfo() {
     return drawInfo;
   }
 
-  public void setDrawInfo(String drawInfo) {
+  public void setDrawInfo(DrawInfoType drawInfo) {
     this.drawInfo = drawInfo;
   }
 

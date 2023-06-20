@@ -19,46 +19,46 @@ public class BlipEventRepository extends BaseRepositoryImpl<Long, BlipEvent> {
 
   public Optional<BlipEvent> findActualBlipEventByFilter(BlipFilter filter) {
     Session session = sessionFactory.openSession();
-    return Optional.ofNullable(session.createQuery(
-            "SELECT e FROM BlipEvent e " +
-                "WHERE e.blip.id = :blipId AND e.creationTime <= :actualDate " +
-                "ORDER BY e.creationTime DESC", BlipEvent.class)
-        .setMaxResults(1)
-        .setParameter("blipId", filter.getBlipId())
-        .setParameter("actualDate", filter.getActualDate())
-        .getSingleResult());
+      return Optional.ofNullable(session.createQuery(
+              "SELECT e FROM BlipEvent e " +
+                  "WHERE e.blip.id = :blipId AND e.creationTime <= :actualDate " +
+                  "ORDER BY e.creationTime DESC", BlipEvent.class)
+          .setMaxResults(1)
+          .setParameter("blipId", filter.getBlipId())
+          .setParameter("actualDate", filter.getActualDate())
+          .getSingleResult());
   }
 
   public void updateBrothersToBeChildren(BlipEvent blipEvent) {
     Session session = sessionFactory.openSession();
-    List<BlipEvent> resultList = session.createQuery("""
-            SELECT be FROM BlipEvent be WHERE parentId = :parentId AND id != :insertedId
-            """, BlipEvent.class)
-        .setParameter("parentId", blipEvent.getParentId())
-        .setParameter("insertedId", blipEvent.getId())
-        .getResultList();
-    resultList.forEach(be -> {
-      be.setParentId(blipEvent.getId());
-      update(be);
-    });
+      List<BlipEvent> resultList = session.createQuery("""
+              SELECT be FROM BlipEvent be WHERE parentId = :parentId AND id != :insertedId
+              """, BlipEvent.class)
+          .setParameter("parentId", blipEvent.getParentId())
+          .setParameter("insertedId", blipEvent.getId())
+          .getResultList();
+      resultList.forEach(be -> {
+        be.setParentId(blipEvent.getId());
+        update(be);
+      });
   }
 
   public void updateChildrenToBeBrothers(BlipEvent blipEvent) {
     Session session = sessionFactory.openSession();
-    List<BlipEvent> resultList = session.createQuery("""
-            SELECT be FROM BlipEvent be WHERE parentId = :excludedId
-            """, BlipEvent.class)
-        .setParameter("excludedId", blipEvent.getId())
-        .getResultList();
-    resultList.forEach(be -> {
-      be.setParentId(blipEvent.getParentId());
-      update(be);
-    });
+      List<BlipEvent> resultList = session.createQuery("""
+              SELECT be FROM BlipEvent be WHERE parentId = :excludedId
+              """, BlipEvent.class)
+          .setParameter("excludedId", blipEvent.getId())
+          .getResultList();
+      resultList.forEach(be -> {
+        be.setParentId(blipEvent.getParentId());
+        update(be);
+      });
   }
 
   public List<BlipEvent> findAllBlipEventsByBlipEventId(Long blipEventId) {
     Session session = sessionFactory.openSession();
-    return session.createNativeQuery("""
+      return session.createNativeQuery("""
                 WITH RECURSIVE r AS (
                     SELECT be.blip_event_id, be.comment, be.parent_id, be.blip_id, be.quadrant_id, be.ring_id, be.author_id, be.radar_id,
                            be.creation_time, be.last_change_time, 1 AS level,
@@ -93,7 +93,7 @@ public class BlipEventRepository extends BaseRepositoryImpl<Long, BlipEvent> {
                            LEAD(r.quadrant_id) OVER (PARTITION BY r.blip_id ORDER BY r.level) AS prev_quadrant_id
                     FROM r
                 )
-                SELECT
+                SELECT DISTINCT ON (cte.blip_event_id)
                     cte.blip_event_id, cte.comment, cte.parent_id, cte.blip_id, cte.quadrant_id, cte.ring_id,
                     cte.author_id, cte.radar_id, cte.creation_time, cte.last_change_time, cte.radar_version_name AS radar_version,
                     CASE
@@ -107,7 +107,7 @@ public class BlipEventRepository extends BaseRepositoryImpl<Long, BlipEvent> {
                     END AS draw_info
                 FROM cte
                          LEFT JOIN ring ri ON cte.prev_ring_id = ri.ring_id
-                ORDER BY cte.level DESC;
+                ORDER BY cte.blip_event_id, cte.level DESC;
                 """
             , BlipEvent.class)
         .setParameter("blipEventId", blipEventId)
@@ -116,30 +116,30 @@ public class BlipEventRepository extends BaseRepositoryImpl<Long, BlipEvent> {
 
   public List<BlipEvent> findBlipEventsOfTheBlip(Long blipId, Long blipEventId) {
     Session session = sessionFactory.openSession();
-    return session.createNativeQuery("""
-                WITH RECURSIVE r AS (
-                    SELECT blip_event_id, comment, parent_id, blip_id, quadrant_id, ring_id, author_id, radar_id, creation_time, last_change_time, 1 AS level
-                    FROM blip_event
-                    WHERE blip_event_id = :blipEventId
-                    UNION
-                    SELECT e.blip_event_id, e.comment, e.parent_id,
-                           e.blip_id, e.quadrant_id, e.ring_id, e.author_id, e.radar_id, e.creation_time, e.last_change_time, r.level + 1 AS level
-                    FROM blip_event e
-                             JOIN r ON (r.parent_id = e.blip_event_id)
-                )
-                SELECT blip_event_id, comment, parent_id, blip_id, quadrant_id, ring_id, author_id, radar_id, creation_time, last_change_time FROM r WHERE blip_id = :blipId ORDER BY r.level DESC;"""
-            , BlipEvent.class)
-        .setParameter("blipEventId", blipEventId)
-        .setParameter("blipId", blipId)
-        .getResultList();
+      return session.createNativeQuery("""
+                  WITH RECURSIVE r AS (
+                      SELECT blip_event_id, comment, parent_id, blip_id, quadrant_id, ring_id, author_id, radar_id, creation_time, last_change_time, 1 AS level
+                      FROM blip_event
+                      WHERE blip_event_id = :blipEventId
+                      UNION
+                      SELECT e.blip_event_id, e.comment, e.parent_id,
+                             e.blip_id, e.quadrant_id, e.ring_id, e.author_id, e.radar_id, e.creation_time, e.last_change_time, r.level + 1 AS level
+                      FROM blip_event e
+                               JOIN r ON (r.parent_id = e.blip_event_id)
+                  )
+                  SELECT blip_event_id, comment, parent_id, blip_id, quadrant_id, ring_id, author_id, radar_id, creation_time, last_change_time FROM r WHERE blip_id = :blipId ORDER BY r.level DESC;"""
+              , BlipEvent.class)
+          .setParameter("blipEventId", blipEventId)
+          .setParameter("blipId", blipId)
+          .getResultList();
   }
 
   public List<BlipEvent> findChildren(Long blipEventId) {
     Session session = sessionFactory.openSession();
-    return session.createQuery("""
-            SELECT be FROM BlipEvent be WHERE parentId = :blipEventId
-            """, BlipEvent.class)
-        .setParameter("blipEventId", blipEventId)
-        .getResultList();
+      return session.createQuery("""
+              SELECT be FROM BlipEvent be WHERE parentId = :blipEventId
+              """, BlipEvent.class)
+          .setParameter("blipEventId", blipEventId)
+          .getResultList();
   }
 }

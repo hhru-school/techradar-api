@@ -2,6 +2,8 @@ package ru.hh.techradar.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -11,6 +13,7 @@ import jakarta.persistence.Table;
 import java.time.Instant;
 import java.util.Objects;
 import java.util.StringJoiner;
+import ru.hh.techradar.enumeration.DrawInfoType;
 
 @Entity
 @Table(name = "blip_event")
@@ -39,8 +42,9 @@ public class BlipEvent extends AuditableEntity<Long> {
   @JoinColumn(name = "radar_id", nullable = false)
   private Radar radar;
 
+  @Enumerated(EnumType.STRING)
   @Column(name = "draw_info")
-  private String drawInfo;
+  private DrawInfoType drawInfo;
 
   @Column(name = "radar_version")
   private String radarVersion;
@@ -134,11 +138,11 @@ public class BlipEvent extends AuditableEntity<Long> {
     this.radar = radar;
   }
 
-  public String getDrawInfo() {
+  public DrawInfoType getDrawInfo() {
     return drawInfo;
   }
 
-  public void setDrawInfo(String drawInfo) {
+  public void setDrawInfo(DrawInfoType drawInfo) {
     this.drawInfo = drawInfo;
   }
 

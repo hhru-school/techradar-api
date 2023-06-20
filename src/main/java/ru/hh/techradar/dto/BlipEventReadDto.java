@@ -1,6 +1,7 @@
 package ru.hh.techradar.dto;
 
 import java.time.Instant;
+import ru.hh.techradar.enumeration.DrawInfoType;
 
 public class BlipEventReadDto {
   private Long id;
@@ -9,7 +10,7 @@ public class BlipEventReadDto {
   private BlipDto blip;
   private QuadrantDto quadrant;
   private RingDto ring;
-  private String drawInfo;
+  private DrawInfoType drawInfo;
   private String radarVersion;
   private UserDto author;
   private Instant creationTime;
@@ -25,7 +26,7 @@ public class BlipEventReadDto {
       BlipDto blip,
       QuadrantDto quadrant,
       RingDto ring,
-      String drawInfo,
+      DrawInfoType drawInfo,
       String radarVersion,
       UserDto author,
       Instant creationTime,
@@ -99,11 +100,11 @@ public class BlipEventReadDto {
     this.author = author;
   }
 
-  public String getDrawInfo() {
+  public DrawInfoType getDrawInfo() {
     return drawInfo;
   }
 
-  public void setDrawInfo(String drawInfo) {
+  public void setDrawInfo(DrawInfoType drawInfo) {
     this.drawInfo = drawInfo;
   }
 

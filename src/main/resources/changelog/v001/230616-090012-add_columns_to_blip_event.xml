@@ -18,13 +18,13 @@
         </preConditions>
         <addColumn tableName="blip_event">
             <column name="draw_info"
-                    type="varchar(10)">
+                    type="varchar(255)">
                 <constraints nullable="true"/>
             </column>
         </addColumn>
         <addColumn tableName="blip_event">
             <column name="radar_version"
-                    type="varchar(50)">
+                    type="varchar(255)">
                 <constraints nullable="true"/>
             </column>
         </addColumn>

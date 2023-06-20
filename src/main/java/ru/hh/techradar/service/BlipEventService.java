@@ -69,11 +69,11 @@ public class BlipEventService {
         .orElseThrow(() -> new NotFoundException(RadarVersion.class, radarVersionId));
     RadarVersion parentRadarVersion = radarVersionRepository.getParentRadarVersion(radarVersion)
         .orElseThrow(() -> new NotFoundException(RadarVersion.class, radarVersion.getParent().getId()));
-    if (parentRadarVersion.getBlipEvent().getId()
+    if (!parentRadarVersion.getBlipEvent().getId()
         .equals(radarVersion.getBlipEvent().getId())) {
-      return isolatedSave(dto, username);
+      return insert(dto, username);
     }
-    return insert(dto, username);
+    return isolatedSave(dto, username);
   }
 
   public BlipEvent prepareRootBlipEvent(User user, Radar radar) {
