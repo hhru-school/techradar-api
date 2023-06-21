@@ -1,5 +1,6 @@
 package ru.hh.techradar.service;
 
+import jakarta.validation.Validator;
 import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,18 +17,20 @@ public class RadarService {
   private final CompanyService companyService;
   private final RadarMapper radarMapper;
   private final UserService userService;
+  private final Validator validator;
 
 
   public RadarService(
       RadarRepository radarRepository,
       CompanyService companyService,
       RadarMapper radarMapper,
-      UserService userService
-      ) {
+      UserService userService,
+      Validator validator) {
     this.radarRepository = radarRepository;
     this.companyService = companyService;
     this.radarMapper = radarMapper;
     this.userService = userService;
+    this.validator = validator;
   }
 
   @Transactional
@@ -38,6 +41,7 @@ public class RadarService {
     Radar radar = radarMapper.toEntity(dto);
     radar.setAuthor(userService.findByUsername(username));
     radar.setCompany(companyService.findById(dto.getCompanyId()));
+    validator.validate(radar);
     return radarRepository.save(radar);
   }
 
@@ -54,10 +58,15 @@ public class RadarService {
   @Transactional
   public Radar update(Long id, Radar radar) {
     Radar found = radarRepository.findById(id).orElseThrow(() -> new NotFoundException(Radar.class, id));
-    if(radar.getName() != null && !found.getName().equals(radar.getName()) && radarRepository.findByNameAndCompanyId(radar.getName(), found.getCompany().getId()).isPresent()) {
+    if (radar.getName() != null && !found.getName().equals(radar.getName()) && radarRepository.findByNameAndCompanyId(
+        radar.getName(),
+        found.getCompany().getId()
+    ).isPresent()) {
       throw new EntityExistsException(Radar.class, radar.getName());
     }
-    return radarRepository.update(radarMapper.toUpdate(found, radar));
+    radar = radarMapper.toUpdate(found, radar);
+    validator.validate(radar);
+    return radarRepository.update(radar);
   }
 
   @Transactional

@@ -1,5 +1,6 @@
 package ru.hh.techradar.service;
 
+import jakarta.validation.Validator;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -31,15 +32,17 @@ public class RadarVersionService {
   private final BlipEventService blipEventService;
   private final RadarVersionMapper radarVersionMapper;
   private final RadarService radarService;
+  private final Validator validator;
 
   public RadarVersionService(
       RadarVersionRepository radarVersionRepository,
       BlipEventService blipEventService,
-      RadarVersionMapper radarVersionMapper, RadarService radarService) {
+      RadarVersionMapper radarVersionMapper, RadarService radarService, Validator validator) {
     this.radarVersionRepository = radarVersionRepository;
     this.blipEventService = blipEventService;
     this.radarVersionMapper = radarVersionMapper;
     this.radarService = radarService;
+    this.validator = validator;
   }
 
   @Transactional
@@ -52,6 +55,7 @@ public class RadarVersionService {
     radarVersion.setParent(container.getRadarVersion());
     radarVersion.setLevel(container.getRadarVersion().getLevel() + 1);
     radarVersion.setToggleAvailable(true);
+    validator.validate(radarVersion);
     return radarVersionRepository.save(radarVersion);
   }
 
@@ -87,6 +91,7 @@ public class RadarVersionService {
         0,
         true
     );
+    validator.validate(rootRadarVersion);
     return radarVersionRepository.save(rootRadarVersion);
   }
 
@@ -99,6 +104,7 @@ public class RadarVersionService {
     int level = lastRadarVersion.getLevel() + 1;
     radarVersionToSave.setLevel(level);
     radarVersionToSave.setToggleAvailable(!checkIfReleasedVersionOnLevel(level, radarVersionToSave.getRadar().getId()));
+    validator.validate(radarVersionToSave);
     return radarVersionRepository.save(radarVersionToSave);
   }
 
@@ -147,6 +153,7 @@ public class RadarVersionService {
     updateReleaseAndToggle(dto, target);
     Optional.ofNullable(dto.getName()).ifPresent(target::setName);
     updateBlipEvent(dto, target);
+    validator.validate(target);
     return radarVersionRepository.update(target);
   }
 

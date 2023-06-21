@@ -10,10 +10,13 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PositiveOrZero;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import ru.hh.techradar.validation.ValidName;
 
 @Entity
 @Table(name = "radar_version")
@@ -24,20 +27,25 @@ public class RadarVersion extends AuditableEntity<Long> {
   private Long id;
 
   @Column(name = "name", nullable = false)
+  @ValidName
   private String name;
 
   @Column(name = "release", nullable = false)
+  @NotNull(message = "Release should be not null")
   private Boolean release;
   @ManyToOne
   @JoinColumn(name = "radar_id", nullable = false)
+  @NotNull(message = "Radar should be not null")
   private Radar radar;
   @ManyToOne
   @JoinColumn(name = "blip_event_id", nullable = false)
+  @NotNull(message = "BlipEvent should be not null")
   private BlipEvent blipEvent;
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "parent_id")
   private RadarVersion parent;
   @Column(name = "level")
+  @PositiveOrZero(message = "Level should be positive or zero")
   private Integer level;
   @Column(name = "toggle_available")
   private Boolean toggleAvailable;
