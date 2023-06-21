@@ -1,13 +1,18 @@
 package ru.hh.techradar.entity;
 
+import jakarta.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Objects;
 
 public class Container {
   private BlipEvent blipEvent;
+  @NotNull(message = "Radar should be not null")
   private Radar radar;
+  @NotNull(message = "Quadrant list should be not null")
   private List<Quadrant> quadrants;
+  @NotNull(message = "Ring list should be not null")
   private List<Ring> rings;
+  @NotNull(message = "Blip list should be not null")
   private List<Blip> blips;
   private RadarVersion radarVersion;
 
@@ -16,10 +21,10 @@ public class Container {
 
   public Container(
       BlipEvent blipEvent,
-      Radar radar,
-      List<Quadrant> quadrants,
-      List<Ring> rings,
-      List<Blip> blips,
+      @NotNull Radar radar,
+      @NotNull List<Quadrant> quadrants,
+      @NotNull List<Ring> rings,
+      @NotNull List<Blip> blips,
       RadarVersion radarVersion) {
     this.blipEvent = blipEvent;
     this.radar = radar;
@@ -37,35 +42,35 @@ public class Container {
     this.blipEvent = blipEvent;
   }
 
-  public Radar getRadar() {
+  public @NotNull Radar getRadar() {
     return radar;
   }
 
-  public void setRadar(Radar radar) {
+  public void setRadar(@NotNull Radar radar) {
     this.radar = radar;
   }
 
-  public List<Quadrant> getQuadrants() {
+  public @NotNull List<Quadrant> getQuadrants() {
     return quadrants;
   }
 
-  public void setQuadrants(List<Quadrant> quadrants) {
+  public void setQuadrants(@NotNull List<Quadrant> quadrants) {
     this.quadrants = quadrants;
   }
 
-  public List<Ring> getRings() {
+  public @NotNull List<Ring> getRings() {
     return rings;
   }
 
-  public void setRings(List<Ring> rings) {
+  public void setRings(@NotNull List<Ring> rings) {
     this.rings = rings;
   }
 
-  public List<Blip> getBlips() {
+  public @NotNull List<Blip> getBlips() {
     return blips;
   }
 
-  public void setBlips(List<Blip> blips) {
+  public void setBlips(@NotNull List<Blip> blips) {
     this.blips = blips;
   }
 

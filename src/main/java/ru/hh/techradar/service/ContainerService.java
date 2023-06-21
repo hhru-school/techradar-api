@@ -1,5 +1,6 @@
 package ru.hh.techradar.service;
 
+import jakarta.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -86,7 +87,7 @@ public class ContainerService {
   }
 
   @Transactional(readOnly = true)
-  public Container findByFilter(RevisionFilter filter) {
+  public Container findByFilter(@Valid RevisionFilter filter) {
     if (filter.getBlipEventId() == null) {
       return findByRadarVersionId(filter.getRadarVersionId());
     }
@@ -101,7 +102,10 @@ public class ContainerService {
 
     container.setRadar(radar);
 
-    List<Ring> rings = ringService.save(container.getRadar().getId(), ringMapper.toEntities(dto.getRings()));
+    List<Ring> rings = ringService.save(
+        ringMapper.toEntities(dto.getRings()).stream()
+            .peek(r -> r.setRadar(container.getRadar())).toList()
+    );
     container.setRings(rings);
     Map<String, Ring> nameToRing = getNameToRing(rings);
 
