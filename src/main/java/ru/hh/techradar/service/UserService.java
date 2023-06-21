@@ -1,9 +1,12 @@
 package ru.hh.techradar.service;
 
+import jakarta.validation.Valid;
+import jakarta.validation.Validator;
 import java.util.Collection;
 import org.hibernate.Hibernate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 import ru.hh.techradar.entity.Company;
 import ru.hh.techradar.entity.User;
 import ru.hh.techradar.exception.EntityExistsException;
@@ -19,17 +22,20 @@ public class UserService {
   private final UserMapper userMapper;
   private final CompanyService companyService;
 
+  private final Validator validator;
+
   public UserService(
       UserRepository userRepository,
       UserMapper userMapper,
-      CompanyService companyService) {
+      CompanyService companyService, Validator validator) {
     this.userRepository = userRepository;
     this.userMapper = userMapper;
     this.companyService = companyService;
+    this.validator = validator;
   }
 
   @Transactional(readOnly = true)
-  public Collection<User> findAllByFilter(UserFilter filter) {
+  public Collection<User> findAllByFilter(@Valid UserFilter filter) {
     return companyService.findUsersByCompanyId(filter.getCompanyId());
   }
 
@@ -54,18 +60,20 @@ public class UserService {
     if (!user.equals(found) && isPresent(user)) {
       throw new EntityExistsException(User.class, user.getUsername());
     }
-    return userRepository.update(userMapper.toUpdate(found, user));
+    user = userMapper.toUpdate(found, user);
+    validator.validate(user);
+    return userRepository.update(user);
   }
 
   @Transactional
-  public User save(User entity) {
+  public User save(@Valid User entity) {
     if (isPresent(entity)) {
       throw new EntityExistsException(User.class, entity.getUsername());
     }
     return userRepository.save(entity);
   }
 
-  private boolean isPresent(User entity) {
+  private boolean isPresent(@Valid User entity) {
     return userRepository.findByUsername(entity.getUsername()).isPresent();
   }
 

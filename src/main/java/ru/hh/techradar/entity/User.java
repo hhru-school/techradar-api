@@ -12,11 +12,15 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 import java.util.StringJoiner;
 import ru.hh.techradar.enumeration.Role;
+import ru.hh.techradar.validation.ValidName;
+import ru.hh.techradar.validation.ValidPassword;
 
 @Entity
 @Table(name = "tr_user")
@@ -27,10 +31,12 @@ public class User extends AuditableEntity<Long> {
   @Column(name = "user_id", nullable = false)
   private Long id;
 
-  @Column(name = "username", nullable = false, length = 45)
+  @Column(name = "username", nullable = false)
+  @ValidName
   private String username;
 
   @Column(name = "password", nullable = false)
+  @ValidPassword
   private String password;
   @Enumerated(EnumType.STRING)
   @Column(name = "role")
