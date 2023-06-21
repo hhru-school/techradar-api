@@ -73,7 +73,7 @@ public class UserController {
   @GET
   @Path("/current")
   @Produces(MediaType.APPLICATION_JSON)
-  public Response findByUsername() {
+  public Response getCurrentUser() {
     return Response
         .ok(userMapper.toDto(userService.findByUsername(getUsername())))
         .build();
