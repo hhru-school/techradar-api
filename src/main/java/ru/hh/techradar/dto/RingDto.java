@@ -1,18 +1,11 @@
 package ru.hh.techradar.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class RingDto {
   private Long id;
-  @NotBlank(message = "Ring name cannot be empty")
   private String name;
-
-  @Max(message = "Position must be less than 8", value = 8)
-  @Min(message = "Position must be bigger than 0", value = 1)
   private Integer position;
 
   public RingDto() {
