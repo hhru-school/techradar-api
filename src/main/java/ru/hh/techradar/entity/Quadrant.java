@@ -9,39 +9,39 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import java.util.StringJoiner;
+import ru.hh.techradar.validation.ValidName;
+import ru.hh.techradar.validation.ValidPosition;
 
 @Entity
 @Table(name = "quadrant")
 public class Quadrant extends AuditableEntity<Long> {
-
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "quadrant_id", nullable = false)
   private Long id;
 
-  @NotBlank
   @Column(name = "name", nullable = false)
+  @ValidName
   private String name;
 
-  @Max(message = "Position must be less than 8", value = 8)
-  @Min(message = "Position must be bigger than 0", value = 1)
   @Column(name = "position", nullable = false)
+  @ValidPosition
   private Integer position;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "radar_id", nullable = false)
+  @NotNull
   private Radar radar;
 
   public Quadrant() {
   }
 
-  public Quadrant(String name, Integer position) {
+  public Quadrant(String name, Integer position, @NotNull Radar radar) {
     this.name = name;
     this.position = position;
+    this.radar = radar;
   }
 
   public Long getId() {
@@ -68,11 +68,11 @@ public class Quadrant extends AuditableEntity<Long> {
     this.position = position;
   }
 
-  public Radar getRadar() {
+  public @NotNull Radar getRadar() {
     return radar;
   }
 
-  public void setRadar(Radar radar) {
+  public void setRadar(@NotNull Radar radar) {
     this.radar = radar;
   }
 
