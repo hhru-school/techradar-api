@@ -1,6 +1,8 @@
 package ru.hh.techradar.service;
 
 import jakarta.inject.Inject;
+import jakarta.validation.Valid;
+import jakarta.validation.Validator;
 import java.util.Collection;
 import jakarta.validation.Valid;
 import jakarta.validation.Validator;
