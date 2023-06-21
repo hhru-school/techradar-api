@@ -1,6 +1,8 @@
 package ru.hh.techradar.service;
 
 import jakarta.inject.Inject;
+import jakarta.validation.Valid;
+import jakarta.validation.Validator;
 import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,14 +17,16 @@ public class CompanyService implements BaseService<Long, Company> {
 
   private final CompanyRepository companyRepository;
   private final CompanyMapper companyMapper;
+  private final Validator validator;
 
   @Inject
   public CompanyService(
       CompanyRepository companyRepository,
-      CompanyMapper companyMapper
-  ) {
+      CompanyMapper companyMapper,
+      Validator validator) {
     this.companyRepository = companyRepository;
     this.companyMapper = companyMapper;
+    this.validator = validator;
   }
 
   @Override
@@ -41,12 +45,14 @@ public class CompanyService implements BaseService<Long, Company> {
   @Transactional
   public Company update(Long id, Company company) {
     Company found = companyRepository.findById(id).orElseThrow(() -> new NotFoundException(Company.class, id));
-    return companyRepository.update(companyMapper.toUpdate(found, company));
+    company = companyMapper.toUpdate(found, company);
+    validator.validate(company);
+    return companyRepository.update(company);
   }
 
   @Override
   @Transactional
-  public Company save(Company company) {
+  public Company save(@Valid Company company) {
     return companyRepository.save(company);
   }
 
