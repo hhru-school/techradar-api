@@ -11,11 +11,13 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.StringJoiner;
 import ru.hh.techradar.enumeration.DrawInfoType;
+import ru.hh.techradar.validation.ValidDescription;
 
 @Entity
 @Table(name = "blip")
@@ -25,11 +27,13 @@ public class Blip extends AuditableEntity<Long> {
   @Column(name = "blip_id", nullable = false)
   private Long id;
   @Column(name = "name", nullable = false)
+  @ValidDescription
   private String name;
   @Column(name = "description")
   private String description;
   @ManyToOne
   @JoinColumn(name = "radar_id", nullable = false)
+  @NotNull(message = "Radar should be not null")
   private Radar radar;
   @OneToMany(mappedBy = "blip", orphanRemoval = true)
   private List<BlipEvent> blipEvents = new ArrayList<>();
@@ -44,12 +48,13 @@ public class Blip extends AuditableEntity<Long> {
   public Blip() {
   }
 
-  public Blip(Long id, String name, String description, Radar radar, List<BlipEvent> blipEvents) {
+  public Blip(Long id, @NotNull String name, String description, @NotNull Radar radar, List<BlipEvent> blipEvents, @NotNull DrawInfoType drawInfo) {
     this.id = id;
     this.name = name;
     this.description = description;
     this.radar = radar;
     this.blipEvents = blipEvents;
+    this.drawInfo = drawInfo;
   }
 
   public Long getId() {
@@ -60,11 +65,11 @@ public class Blip extends AuditableEntity<Long> {
     this.id = id;
   }
 
-  public String getName() {
+  public @NotNull String getName() {
     return name;
   }
 
-  public void setName(String name) {
+  public void setName(@NotNull String name) {
     this.name = name;
   }
 
@@ -76,11 +81,11 @@ public class Blip extends AuditableEntity<Long> {
     this.description = description;
   }
 
-  public Radar getRadar() {
+  public @NotNull Radar getRadar() {
     return radar;
   }
 
-  public void setRadar(Radar radar) {
+  public void setRadar(@NotNull Radar radar) {
     this.radar = radar;
   }
 
