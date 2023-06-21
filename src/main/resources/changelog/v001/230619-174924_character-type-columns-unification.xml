@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="230619-174924" author="calculateIt">
+        <preConditions>
+            <and>
+                <columnExists tableName="radar" columnName="name"/>
+                <columnExists tableName="tr_user" columnName="username"/>
+                <columnExists tableName="tr_user" columnName="role"/>
+                <columnExists tableName="blip_template" columnName="name"/>
+                <columnExists tableName="blip_template" columnName="description"/>
+                <columnExists tableName="ring" columnName="name"/>
+                <columnExists tableName="quadrant" columnName="name"/>
+                <columnExists tableName="blip" columnName="name"/>
+                <columnExists tableName="blip" columnName="description"/>
+                <columnExists tableName="blip" columnName="draw_info"/>
+                <columnExists tableName="blip_event" columnName="comment"/>
+                <columnExists tableName="radar_version" columnName="name"/>
+            </and>
+        </preConditions>
+        <modifyDataType tableName="radar" columnName="name" newDataType="varchar(255)"/>
+
+        <modifyDataType tableName="tr_user" columnName="username" newDataType="varchar(255)"/>
+        <modifyDataType tableName="tr_user" columnName="role" newDataType="varchar(255)"/>
+
+        <modifyDataType tableName="blip_template" columnName="name" newDataType="varchar(255)"/>
+        <modifyDataType tableName="blip_template" columnName="description" newDataType="text"/>
+
+        <modifyDataType tableName="ring" columnName="name" newDataType="varchar(255)"/>
+
+        <modifyDataType tableName="quadrant" columnName="name" newDataType="varchar(255)"/>
+
+        <modifyDataType tableName="blip" columnName="name" newDataType="varchar(255)"/>
+        <modifyDataType tableName="blip" columnName="description" newDataType="text"/>
+        <modifyDataType tableName="blip" columnName="draw_info" newDataType="varchar(255)"/>
+
+        <modifyDataType tableName="blip_event" columnName="comment" newDataType="text"/>
+
+        <modifyDataType tableName="radar_version" columnName="name" newDataType="varchar(255)"/>
+    </changeSet>
+</databaseChangeLog>
