@@ -61,9 +61,9 @@ public class RadarVersion extends AuditableEntity<Long> {
       Instant lastChangeTime,
       Long id,
       String name,
-      Boolean release,
-      Radar radar,
-      BlipEvent blipEvent, RadarVersion parent, Integer level, Boolean toggleAvailable) {
+      @NotNull Boolean release,
+      @NotNull Radar radar,
+      @NotNull BlipEvent blipEvent, RadarVersion parent, Integer level, Boolean toggleAvailable) {
     super(creationTime, lastChangeTime);
     this.id = id;
     this.name = name;
@@ -91,27 +91,27 @@ public class RadarVersion extends AuditableEntity<Long> {
     this.name = name;
   }
 
-  public Boolean getRelease() {
+  public @NotNull Boolean getRelease() {
     return release;
   }
 
-  public void setRelease(Boolean release) {
+  public void setRelease(@NotNull Boolean release) {
     this.release = release;
   }
 
-  public Radar getRadar() {
+  public @NotNull Radar getRadar() {
     return radar;
   }
 
-  public void setRadar(Radar radar) {
+  public void setRadar(@NotNull Radar radar) {
     this.radar = radar;
   }
 
-  public BlipEvent getBlipEvent() {
+  public @NotNull BlipEvent getBlipEvent() {
     return blipEvent;
   }
 
-  public void setBlipEvent(BlipEvent blipEvent) {
+  public void setBlipEvent(@NotNull BlipEvent blipEvent) {
     this.blipEvent = blipEvent;
   }
 

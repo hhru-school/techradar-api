@@ -25,7 +25,7 @@ public class QuadrantMapper extends AbstractMapper<Quadrant, QuadrantDto> {
   }
 
   public Quadrant update(Quadrant target, Quadrant source) {
-    Optional.ofNullable(source.getRadar()).ifPresent(target::setRadar);
+    Optional.of(source.getRadar()).ifPresent(target::setRadar);
     Optional.ofNullable(source.getPosition()).ifPresent(target::setPosition);
     Optional.ofNullable(source.getName()).ifPresent(target::setName);
     return target;
