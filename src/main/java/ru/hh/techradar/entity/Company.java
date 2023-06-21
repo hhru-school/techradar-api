@@ -6,6 +6,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.util.HashSet;
 import java.util.Set;
@@ -24,6 +25,9 @@ public class Company extends AuditableEntity<Long> {
   private String name;
   @ManyToMany(mappedBy = "companies")
   private Set<User> users = new HashSet<>();
+
+  @OneToMany(mappedBy = "company")
+  private Set<Radar> radars = new HashSet<>();
 
   public Company() {
   }
@@ -55,6 +59,14 @@ public class Company extends AuditableEntity<Long> {
 
   public void setUsers(Set<User> employees) {
     this.users = employees;
+  }
+
+  public Set<Radar> getRadars() {
+    return radars;
+  }
+
+  public void setRadars(Set<Radar> radars) {
+    this.radars = radars;
   }
 
   @Override

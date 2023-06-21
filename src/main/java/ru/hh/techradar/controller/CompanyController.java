@@ -62,6 +62,15 @@ public class CompanyController {
   }
 
   @GET
+  @Path("/companies-with-radars")
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response findAllCompaniesWithRadars() {
+    return Response
+        .ok(companyMapper.toDtos(companyService.findAllCompaniesWithRadars()))
+        .build();
+  }
+
+  @GET
   @Path("/{id}")
   @Produces(MediaType.APPLICATION_JSON)
   public Response findById(@PathParam("id") Long id) {
