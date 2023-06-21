@@ -13,7 +13,6 @@ public class UserMapper implements BaseMapper<User, UserDto> {
   public User toEntity(UserDto dto) {
     User user = new User();
     user.setUsername(dto.getUsername());
-    user.setPassword(dto.getPassword());
     return user;
   }
 
@@ -22,6 +21,7 @@ public class UserMapper implements BaseMapper<User, UserDto> {
     UserDto userDto = new UserDto();
     userDto.setId(entity.getId());
     userDto.setUsername(entity.getUsername());
+    userDto.setRole(entity.getRole());
     return userDto;
   }
 

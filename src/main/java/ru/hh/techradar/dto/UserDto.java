@@ -2,21 +2,16 @@ package ru.hh.techradar.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import java.util.Objects;
+import ru.hh.techradar.enumeration.Role;
 
 @JsonInclude(JsonInclude.Include. NON_NULL)
 public class UserDto {
 
   private Long id;
   private String username;
-  private String password;
+  private Role role;
 
   public UserDto() {
-  }
-
-  public UserDto(Long id, String username, String password) {
-    this.id = id;
-    this.username = username;
-    this.password = password;
   }
 
   public Long getId() {
@@ -35,12 +30,12 @@ public class UserDto {
     this.username = username;
   }
 
-  public String getPassword() {
-    return password;
+  public Role getRole() {
+    return role;
   }
 
-  public void setPassword(String password) {
-    this.password = password;
+  public void setRole(Role role) {
+    this.role = role;
   }
 
   @Override
@@ -52,14 +47,13 @@ public class UserDto {
       return false;
     }
     UserDto userDto = (UserDto) o;
-    return Objects.equals(id, userDto.id) && Objects.equals(username, userDto.username) && Objects.equals(
-        password,
-        userDto.password
-    );
+    return Objects.equals(id, userDto.id)
+        && Objects.equals(username, userDto.username)
+        && Objects.equals(role, userDto.role);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, username, password);
+    return Objects.hash(id, username, role);
   }
 }

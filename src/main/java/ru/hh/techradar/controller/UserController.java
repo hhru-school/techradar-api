@@ -71,6 +71,15 @@ public class UserController {
   }
 
   @GET
+  @Path("/current")
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response findByUsername() {
+    return Response
+        .ok(userMapper.toDto(userService.findByUsername(getUsername())))
+        .build();
+  }
+
+  @GET
   @Path("/{id}")
   @Produces(MediaType.APPLICATION_JSON)
   public Response findById(@PathParam("id") Long id) {
