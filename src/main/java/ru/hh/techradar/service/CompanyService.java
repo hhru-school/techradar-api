@@ -1,6 +1,7 @@
 package ru.hh.techradar.service;
 
 import jakarta.inject.Inject;
+import java.util.Collection;
 import jakarta.validation.Valid;
 import jakarta.validation.Validator;
 import java.util.List;
@@ -65,5 +66,10 @@ public class CompanyService implements BaseService<Long, Company> {
   @Transactional(readOnly = true)
   public List<User> findUsersByCompanyId(Long companyId) {
     return companyRepository.findUsersByCompanyId(companyId);
+  }
+
+  @Transactional(readOnly = true)
+  public Collection<Company> findAllCompaniesWithRadars() {
+    return companyRepository.findAllCompaniesWithRadars();
   }
 }
