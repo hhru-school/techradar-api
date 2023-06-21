@@ -47,13 +47,11 @@ public class UserDto {
       return false;
     }
     UserDto userDto = (UserDto) o;
-    return Objects.equals(id, userDto.id)
-        && Objects.equals(username, userDto.username)
-        && Objects.equals(role, userDto.role);
+    return Objects.equals(username, userDto.username);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, username, role);
+    return Objects.hash(username);
   }
 }
