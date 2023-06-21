@@ -8,7 +8,9 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
 import java.util.Objects;
+import ru.hh.techradar.validation.ValidName;
 
 @Entity
 @Table(name = "radar")
@@ -20,20 +22,23 @@ public class Radar extends AuditableEntity<Long> {
   private Long id;
 
   @Column(name = "name", nullable = false)
+  @ValidName
   private String name;
 
   @ManyToOne
   @JoinColumn(name = "company_id", nullable = false)
+  @NotNull(message = "Company should be not null")
   private Company company;
 
   @ManyToOne
   @JoinColumn(name = "author_id", nullable = false)
+  @NotNull(message = "Author should be not null")
   private User author;
 
   public Radar() {
   }
 
-  public Radar(String name, Company company, User author) {
+  public Radar(String name, @NotNull Company company, @NotNull User author) {
     this.name = name;
     this.company = company;
     this.author = author;
@@ -55,19 +60,19 @@ public class Radar extends AuditableEntity<Long> {
     this.name = name;
   }
 
-  public Company getCompany() {
+  public @NotNull Company getCompany() {
     return company;
   }
 
-  public void setCompany(Company company) {
+  public void setCompany(@NotNull Company company) {
     this.company = company;
   }
 
-  public User getAuthor() {
+  public @NotNull User getAuthor() {
     return author;
   }
 
-  public void setAuthor(User author) {
+  public void setAuthor(@NotNull User author) {
     this.author = author;
   }
 

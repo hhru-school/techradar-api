@@ -1,5 +1,6 @@
 package ru.hh.techradar.mapper;
 
+import java.util.Optional;
 import org.springframework.stereotype.Component;
 import ru.hh.techradar.dto.QuadrantDto;
 import ru.hh.techradar.entity.Quadrant;
@@ -21,5 +22,12 @@ public class QuadrantMapper extends AbstractMapper<Quadrant, QuadrantDto> {
     dto.setName(entity.getName());
     dto.setPosition(entity.getPosition());
     return dto;
+  }
+
+  public Quadrant update(Quadrant target, Quadrant source) {
+    Optional.of(source.getRadar()).ifPresent(target::setRadar);
+    Optional.ofNullable(source.getPosition()).ifPresent(target::setPosition);
+    Optional.ofNullable(source.getName()).ifPresent(target::setName);
+    return target;
   }
 }

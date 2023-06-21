@@ -1,6 +1,5 @@
 package ru.hh.techradar.controller;
 
-import jakarta.validation.Valid;
 import jakarta.ws.rs.BeanParam;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
@@ -31,7 +30,7 @@ public class RingController {
   @GET
   @Produces(MediaType.APPLICATION_JSON)
   public Response findAllByFilter(
-      @BeanParam @Valid ComponentFilter filter
+      @BeanParam ComponentFilter filter
   ) {
     return Response
         .ok(ringMapper.toDtos(ringService.findAllByFilter(filter)))
@@ -52,7 +51,7 @@ public class RingController {
   @Path("/{id}")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
-  public Response update(@PathParam("id") Long id, @Valid RingDto dto) {
+  public Response update(@PathParam("id") Long id, RingDto dto) {
     return Response
         .ok(ringMapper.toDto(ringService.update(id, ringMapper.toEntity(dto))))
         .build();

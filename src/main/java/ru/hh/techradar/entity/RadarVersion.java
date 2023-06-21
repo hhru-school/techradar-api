@@ -10,10 +10,13 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PositiveOrZero;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import ru.hh.techradar.validation.ValidName;
 
 @Entity
 @Table(name = "radar_version")
@@ -24,20 +27,25 @@ public class RadarVersion extends AuditableEntity<Long> {
   private Long id;
 
   @Column(name = "name", nullable = false)
+  @ValidName
   private String name;
 
   @Column(name = "release", nullable = false)
+  @NotNull(message = "Release should be not null")
   private Boolean release;
   @ManyToOne
   @JoinColumn(name = "radar_id", nullable = false)
+  @NotNull(message = "Radar should be not null")
   private Radar radar;
   @ManyToOne
   @JoinColumn(name = "blip_event_id", nullable = false)
+  @NotNull(message = "BlipEvent should be not null")
   private BlipEvent blipEvent;
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "parent_id")
   private RadarVersion parent;
   @Column(name = "level")
+  @PositiveOrZero(message = "Level should be positive or zero")
   private Integer level;
   @Column(name = "toggle_available")
   private Boolean toggleAvailable;
@@ -53,9 +61,9 @@ public class RadarVersion extends AuditableEntity<Long> {
       Instant lastChangeTime,
       Long id,
       String name,
-      Boolean release,
-      Radar radar,
-      BlipEvent blipEvent, RadarVersion parent, Integer level, Boolean toggleAvailable) {
+      @NotNull Boolean release,
+      @NotNull Radar radar,
+      @NotNull BlipEvent blipEvent, RadarVersion parent, Integer level, Boolean toggleAvailable) {
     super(creationTime, lastChangeTime);
     this.id = id;
     this.name = name;
@@ -83,27 +91,27 @@ public class RadarVersion extends AuditableEntity<Long> {
     this.name = name;
   }
 
-  public Boolean getRelease() {
+  public @NotNull Boolean getRelease() {
     return release;
   }
 
-  public void setRelease(Boolean release) {
+  public void setRelease(@NotNull Boolean release) {
     this.release = release;
   }
 
-  public Radar getRadar() {
+  public @NotNull Radar getRadar() {
     return radar;
   }
 
-  public void setRadar(Radar radar) {
+  public void setRadar(@NotNull Radar radar) {
     this.radar = radar;
   }
 
-  public BlipEvent getBlipEvent() {
+  public @NotNull BlipEvent getBlipEvent() {
     return blipEvent;
   }
 
-  public void setBlipEvent(BlipEvent blipEvent) {
+  public void setBlipEvent(@NotNull BlipEvent blipEvent) {
     this.blipEvent = blipEvent;
   }
 

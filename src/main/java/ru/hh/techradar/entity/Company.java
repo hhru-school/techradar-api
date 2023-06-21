@@ -10,6 +10,7 @@ import jakarta.persistence.Table;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.StringJoiner;
+import ru.hh.techradar.validation.ValidName;
 
 @Entity
 @Table(name = "company")
@@ -21,6 +22,7 @@ public class Company extends AuditableEntity<Long> {
   private Long id;
 
   @Column(name = "name", nullable = false)
+  @ValidName
   private String name;
   @ManyToMany(mappedBy = "companies")
   private Set<User> users = new HashSet<>();

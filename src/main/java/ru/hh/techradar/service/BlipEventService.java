@@ -1,5 +1,6 @@
 package ru.hh.techradar.service;
 
+import jakarta.validation.Validator;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -31,6 +32,7 @@ public class BlipEventService {
   private final RadarService radarService;
   private final RadarVersionRepository radarVersionRepository;
   private final BlipEventMapper blipEventMapper;
+  private final Validator validator;
 
   public BlipEventService(
       BlipEventRepository blipEventRepository,
@@ -39,7 +41,7 @@ public class BlipEventService {
       RingService ringService,
       UserService userService,
       RadarService radarService,
-      RadarVersionRepository radarVersionRepository, BlipEventMapper blipEventMapper) {
+      RadarVersionRepository radarVersionRepository, BlipEventMapper blipEventMapper, Validator validator) {
     this.blipEventRepository = blipEventRepository;
     this.blipService = blipService;
     this.quadrantService = quadrantService;
@@ -48,6 +50,7 @@ public class BlipEventService {
     this.radarService = radarService;
     this.radarVersionRepository = radarVersionRepository;
     this.blipEventMapper = blipEventMapper;
+    this.validator = validator;
   }
 
   @Transactional
@@ -121,6 +124,7 @@ public class BlipEventService {
   @Transactional
   public BlipEvent isolatedSave(BlipEventDto dto, String username) {
     BlipEvent blipEvent = fillBlipEvent(dto, username);
+    validator.validate(blipEvent);
     return blipEventRepository.save(blipEvent);
   }
 
@@ -177,6 +181,7 @@ public class BlipEventService {
     blipEventRepository.updateChildrenToBeBrothers(foundBlipEvent);
     BlipEvent updatedBlipEvent = update(blipEventDto, false);
     blipEventRepository.updateBrothersToBeChildren(updatedBlipEvent);
+    validator.validate(updatedBlipEvent);
     return updatedBlipEvent;
   }
 
@@ -185,6 +190,7 @@ public class BlipEventService {
     Long id = dto.getId();
     BlipEvent target = blipEventRepository.findById(id).orElseThrow(() -> new NotFoundException(BlipEvent.class, id));
     fillBlipEventForUpdate(target, dto);
+    validator.validate(target);
     return blipEventRepository.update(target);
   }
 

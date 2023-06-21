@@ -1,5 +1,7 @@
 package ru.hh.techradar.service;
 
+import jakarta.validation.Valid;
+import jakarta.validation.Validator;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -25,24 +27,27 @@ public class BlipService {
   private final BlipMapper blipMapper;
   private final BlipRepository blipRepository;
   private final RadarService radarService;
+  private final Validator validator;
 
   public BlipService(
       BlipMapper blipMapper,
-      BlipRepository blipRepository, RadarService radarService) {
+      BlipRepository blipRepository, RadarService radarService, Validator validator) {
     this.blipMapper = blipMapper;
     this.blipRepository = blipRepository;
     this.radarService = radarService;
+    this.validator = validator;
   }
 
   @Transactional
   public Blip save(BlipDto dto) {
     Blip blip = blipMapper.toEntity(dto);
     blip.setRadar(radarService.findById(dto.getRadarId()));
+    validator.validate(blip);
     return blipRepository.save(blip);
   }
 
   @Transactional
-  public Blip saveEntity(Blip blip) {
+  public Blip saveEntity(@Valid Blip blip) {
     return blipRepository.save(blip);
   }
 
@@ -50,10 +55,11 @@ public class BlipService {
   public List<Blip> saveAll(Collection<Blip> blips, Radar radar) {
     validateUniqueness(blips);
     List<Blip> resultList = new ArrayList<>();
-    blips.forEach(b -> {
+    blips.stream().peek(b -> {
       b.setRadar(radar);
       resultList.add(saveEntity(b));
-    });
+    }).forEach(validator::validate);
+
     return resultList;
   }
 
@@ -73,7 +79,7 @@ public class BlipService {
   }
 
   @Transactional(readOnly = true)
-  public Blip findByFilter(BlipFilter filter) {
+  public Blip findByFilter(@Valid BlipFilter filter) {
     return blipRepository.findByFilter(filter);
   }
 
@@ -83,7 +89,7 @@ public class BlipService {
   }
 
   @Transactional(readOnly = true)
-  public List<Blip> findAllByFilter(ComponentFilter filter) {
+  public List<Blip> findAllByFilter(@Valid ComponentFilter filter) {
     return blipRepository.findActualBlipsByFilter(filter);
   }
 
@@ -96,7 +102,9 @@ public class BlipService {
   @Transactional
   public Blip update(Long id, Blip entity) {
     Blip found = blipRepository.findById(id).orElseThrow(() -> new NotFoundException(Blip.class, id));
-    return blipRepository.update(blipMapper.toUpdate(found, entity));
+    entity = blipMapper.toUpdate(found, entity);
+    validator.validate(entity);
+    return blipRepository.update(entity);
   }
 
   @Transactional
@@ -104,7 +112,7 @@ public class BlipService {
     blipRepository.deleteById(id);
   }
 
-  public List<Blip> findActualBlipsByRadarVersionWithDrawInfo(RadarVersion radarVersion) {
+  public List<Blip> findActualBlipsByRadarVersionWithDrawInfo(@Valid RadarVersion radarVersion) {
     return blipRepository.findActualBlipsByRadarVersionWithDrawInfo(radarVersion);
   }
 }

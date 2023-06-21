@@ -10,6 +10,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
 import java.time.Instant;
 import java.util.Objects;
 import java.util.StringJoiner;
@@ -37,9 +38,11 @@ public class BlipEvent extends AuditableEntity<Long> {
   private Ring ring;
   @ManyToOne
   @JoinColumn(name = "author_id", nullable = false)
+  @NotNull(message = "User should be not null")
   private User user;
   @ManyToOne
   @JoinColumn(name = "radar_id", nullable = false)
+  @NotNull(message = "Radar should be not null")
   private Radar radar;
 
   @Enumerated(EnumType.STRING)
@@ -58,11 +61,11 @@ public class BlipEvent extends AuditableEntity<Long> {
       Blip blip,
       Quadrant quadrant,
       Ring ring,
-      User user,
+      @NotNull User user,
       Instant creationTime,
       Instant lastChangeTime,
       Long parentId,
-      Radar radar) {
+      @NotNull Radar radar) {
     super(creationTime, lastChangeTime);
     this.id = id;
     this.comment = comment;
@@ -114,11 +117,11 @@ public class BlipEvent extends AuditableEntity<Long> {
     this.ring = ring;
   }
 
-  public User getUser() {
+  public @NotNull User getUser() {
     return user;
   }
 
-  public void setUser(User user) {
+  public void setUser(@NotNull User user) {
     this.user = user;
   }
 
@@ -130,11 +133,11 @@ public class BlipEvent extends AuditableEntity<Long> {
     this.parentId = parentId;
   }
 
-  public Radar getRadar() {
+  public @NotNull Radar getRadar() {
     return radar;
   }
 
-  public void setRadar(Radar radar) {
+  public void setRadar(@NotNull Radar radar) {
     this.radar = radar;
   }
 

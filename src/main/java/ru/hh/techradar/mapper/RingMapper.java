@@ -1,5 +1,6 @@
 package ru.hh.techradar.mapper;
 
+import java.util.Optional;
 import org.springframework.stereotype.Component;
 import ru.hh.techradar.dto.RingDto;
 import ru.hh.techradar.entity.Ring;
@@ -21,5 +22,12 @@ public class RingMapper extends AbstractMapper<Ring, RingDto> {
     dto.setName(entity.getName());
     dto.setPosition(entity.getPosition());
     return dto;
+  }
+
+  public Ring update(Ring target, Ring source) {
+    Optional.ofNullable(source.getRadar()).ifPresent(target::setRadar);
+    Optional.ofNullable(source.getPosition()).ifPresent(target::setPosition);
+    Optional.ofNullable(source.getName()).ifPresent(target::setName);
+    return target;
   }
 }

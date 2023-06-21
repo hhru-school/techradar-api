@@ -9,10 +9,10 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import java.util.StringJoiner;
+import ru.hh.techradar.validation.ValidName;
+import ru.hh.techradar.validation.ValidPosition;
 
 @Entity
 @Table(name = "ring")
@@ -21,21 +21,24 @@ public class Ring extends AuditableEntity<Long> {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "ring_id", nullable = false)
   private Long id;
-  @NotBlank
+
   @Column(name = "name", nullable = false)
+  @ValidName
   private String name;
 
-  @Max(message = "Position must be less than 8", value = 8)
-  @Min(message = "Position must be bigger than 0", value = 1)
   @Column(name = "position", nullable = false)
+  @ValidPosition
   private Integer position;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "radar_id", nullable = false)
+  @NotNull(message = "Radar should be not null")
   private Radar radar;
 
-  public Ring(Radar radar) {
+  public Ring(String name, Integer position, Radar radar) {
+    this.name = name;
     this.radar = radar;
+    this.position = position;
   }
 
   public Ring() {
