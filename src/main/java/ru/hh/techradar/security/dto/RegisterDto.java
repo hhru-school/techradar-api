@@ -1,17 +1,14 @@
 package ru.hh.techradar.security.dto;
 
 import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.Pattern;
-import org.hibernate.validator.constraints.Length;
+import ru.hh.techradar.validation.ValidPassword;
 
 public class RegisterDto {
 
-  @Email(message = "Не валидный e-mail: '${validatedValue}'")
-  @Length(min = 5, max = 45, message = "E-mail contains from 5 to 45 symbols")
+  @Email(regexp = "^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$",
+      message = "Invalid Email address")
   private String username;
-  @Pattern(
-      message = "Не валидный пароль. Пароль может содержать: цифры(0-9), буквы латинского алфавита(a-z,A-Z), символы (!@#$%^&*) и длинна не менее трех символов",
-      regexp = "[0-9a-zA-Z!@#$%^&*]{3,}")
+  @ValidPassword
   private String password;
   private String confirmPassword;
 
