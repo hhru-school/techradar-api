@@ -35,7 +35,7 @@ public class Ring extends AuditableEntity<Long> {
   @NotNull(message = "Radar should be not null")
   private Radar radar;
 
-  public Ring(String name, Integer position, Radar radar) {
+  public Ring(String name, Integer position, @NotNull Radar radar) {
     this.name = name;
     this.radar = radar;
     this.position = position;
@@ -68,11 +68,11 @@ public class Ring extends AuditableEntity<Long> {
     this.position = position;
   }
 
-  public Radar getRadar() {
+  public @NotNull Radar getRadar() {
     return radar;
   }
 
-  public void setRadar(Radar radar) {
+  public void setRadar(@NotNull Radar radar) {
     this.radar = radar;
   }
 
