@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="230622-170000" author="parfenovds">
+        <modifyDataType tableName="blip" columnName="description" newDataType="text"/>
+        <sql>
+            INSERT INTO company (name, creation_time, last_change_time)
+            VALUES ('Company-0', now(), now());
+            SELECT setval('company_company_id_seq', (SELECT max(company_id) FROM company));
+            UPDATE radar SET company_id = (SELECT company_id FROM company WHERE name = 'Company-0') WHERE name='Backend-0';
+            UPDATE radar SET company_id = (SELECT company_id FROM company WHERE name = 'Company-0') WHERE name='Android-0';
+            UPDATE radar SET company_id = (SELECT company_id FROM company WHERE name = 'Company-0') WHERE name='Frontend-0';
+            UPDATE radar SET company_id = (SELECT company_id FROM company WHERE name = 'Company-0') WHERE name='iOS-0';
+        </sql>
+
+    </changeSet>
+</databaseChangeLog>
