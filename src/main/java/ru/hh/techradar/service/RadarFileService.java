@@ -161,6 +161,7 @@ public class RadarFileService {
         if (!saved.getQuadrantName().equals(tempRadar.getQuadrantName()) || !saved.getRingName().equals(tempRadar.getRingName())) {
           BlipEvent blipEvent = blipEventService.save(username, toBlipEventUpdateDto(tempRadar, container, nameToQuadrant, nameToRing), false);
           container.setBlipEvent(blipEvent);
+          blipNameToRadarFile.put(tempRadar.getBlipName(), tempRadar);
         }
       } else {
         if (nameToQuadrant.containsKey(tempRadar.getQuadrantName()) && nameToRing.containsKey(tempRadar.getRingName())) {
