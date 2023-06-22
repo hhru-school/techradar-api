@@ -40,7 +40,7 @@ public class AuthenticationService {
       User user = new User();
       user.setUsername(register.getUsername());
       user.setPassword(passwordEncoder.encode(register.getPassword()));
-      user.setRole(Role.USER);
+      user.setRole(Role.MEMBER);
       //todo нужно проработать логику привязки пользователя к компании
       userService.save(user);
       return Map.of("message", "Успешная регистрация!");
